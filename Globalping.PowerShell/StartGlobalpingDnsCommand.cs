@@ -3,19 +3,30 @@ using Globalping;
 
 namespace Globalping.PowerShell;
 
+/// <summary>Start a DNS lookup using Globalping.</summary>
+/// <para>Queries DNS records from remote probes.</para>
+/// <example>
+///   <summary>Resolve A record</summary>
+///   <prefix>PS> </prefix>
+///   <code>Start-GlobalpingDns -Target "evotec.xyz"</code>
+///   <para>Returns DNS records from available probes.</para>
+/// </example>
 [Cmdlet(VerbsLifecycle.Start, "GlobalpingDns")]
 [OutputType(typeof(DnsRecordResult))]
 [OutputType(typeof(string))]
 [OutputType(typeof(MeasurementResponse))]
 public class StartGlobalpingDnsCommand : StartGlobalpingBaseCommand
 {
+    /// <para>Return the raw measurement response.</para>
     [Parameter]
     [Alias("AsRaw")]
     public SwitchParameter Raw { get; set; }
 
+    /// <para>Output DNS results in classic text form.</para>
     [Parameter]
     public SwitchParameter Classic { get; set; }
 
+    /// <para>Additional DNS options for the request.</para>
     [Parameter]
     public DnsOptions? Options { get; set; }
 

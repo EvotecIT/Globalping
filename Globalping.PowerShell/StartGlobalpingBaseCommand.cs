@@ -7,25 +7,33 @@ using Globalping;
 
 namespace Globalping.PowerShell;
 
+/// <summary>Base class for Globalping measurement cmdlets.</summary>
+/// <para>Provides common parameters shared between Start-Globalping commands.</para>
 public abstract class StartGlobalpingBaseCommand : PSCmdlet
 {
     protected abstract MeasurementType Type { get; }
 
+    /// <para>Target host name, address or URL.</para>
     [Parameter(Mandatory = true)]
     public string Target { get; set; } = string.Empty;
 
+    /// <para>Detailed location definitions for probes.</para>
     [Parameter]
     public LocationRequest[]? Locations { get; set; }
 
+    /// <para>Short location identifiers such as city or country codes.</para>
     [Parameter]
     public string[]? SimpleLocations { get; set; }
 
+    /// <para>Maximum number of probes to use.</para>
     [Parameter]
     public int? Limit { get; set; }
 
+    /// <para>Request progress updates while measurement runs.</para>
     [Parameter]
     public SwitchParameter InProgressUpdates { get; set; }
 
+    /// <para>API key used to authenticate with Globalping.</para>
     [Parameter]
     [Alias("Token")]
     public string? ApiKey { get; set; }
