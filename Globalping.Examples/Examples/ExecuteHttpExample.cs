@@ -1,7 +1,8 @@
 using System;
 using Globalping;
-                    Method = HttpRequestMethod.GET,
-using System.Net.Http;
+namespace Globalping.Examples
+{
+}
 using System.Threading.Tasks;
 
 namespace Globalping.Examples;
