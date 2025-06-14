@@ -15,7 +15,7 @@ public class Stats {
     public int Total { get; set; }
 
     [JsonPropertyName("loss")]
-    public int Loss { get; set; }
+    public double Loss { get; set; }
 
     [JsonPropertyName("rcv")]
     public int Rcv { get; set; }
