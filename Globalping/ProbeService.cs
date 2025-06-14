@@ -70,6 +70,24 @@ public class ProbeService {
         GetOnlineProbesAsync().GetAwaiter().GetResult();
 
     /// <summary>
+    /// Retrieves API usage limits for the current caller.
+    /// </summary>
+    /// <returns>Object describing remaining rate limits.</returns>
+    public async Task<Limits?> GetLimitsAsync()
+    {
+        var response = await _httpClient.GetAsync("https://api.globalping.io/v1/limits").ConfigureAwait(false);
+        response.EnsureSuccessStatusCode();
+        var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+        return await JsonSerializer.DeserializeAsync<Limits>(stream, _jsonOptions).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Synchronous wrapper for <see cref="GetLimitsAsync"/>.
+    /// </summary>
+    public Limits? GetLimits() =>
+        GetLimitsAsync().GetAwaiter().GetResult();
+
+    /// <summary>
     /// Creates a measurement request on the Globalping service.
     /// </summary>
     /// <param name="measurementRequest">Request payload describing the measurement.</param>
