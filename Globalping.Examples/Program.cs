@@ -6,3 +6,4 @@ ExecuteMtrExample.RunAsync().GetAwaiter().GetResult();
 ExecuteDnsExample.RunAsync().GetAwaiter().GetResult();
 ExecuteTracerouteExample.RunAsync().GetAwaiter().GetResult();
 ExecuteHttpExample.RunAsync().GetAwaiter().GetResult();
+CheckLimitsExample.RunAsync().GetAwaiter().GetResult();
