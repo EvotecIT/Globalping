@@ -4,8 +4,8 @@ Start-Globalping -Type Ping -Target "evotec.xyz" -Verbose | Format-Table
 
 Start-Globalping -Type Ping -Target "evotec.xyz" -Verbose -SimpleLocations "DE" | Format-Table
 
-$multi = Start-Globalping -Type Ping -Target "evotec.xyz" -Verbose -Limit 3 -SimpleLocations "DE", "US", "GB"
-$multi.Results | Format-Table
+$multi = Start-Globalping -Type Ping -Target "evotec.xyz" -Verbose -SimpleLocations "DE", "US", "GB"
+$multi.GetSummaries() | Format-Table
 
 $loc = @(
     [Globalping.LocationRequest]@{ Country = "DE"; Limit = 1 },
@@ -19,5 +19,6 @@ $loc = @(
     [Globalping.LocationRequest]@{ Country = "SE"; Limit = 1 },
     [Globalping.LocationRequest]@{ Country = "CH"; Limit = 1 }
 )
-Start-Globalping -Type Ping -Target "evotec.xyz" -Verbose -Locations $loc | Format-Table
+$locResult = Start-Globalping -Type Ping -Target "evotec.xyz" -Verbose -Locations $loc
+$locResult.GetSummaries() | Format-Table
 

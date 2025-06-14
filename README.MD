@@ -37,11 +37,11 @@ Run a simple measurement:
 Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE" | Format-Table
 ```
 
-To use the `Locations` parameter provide `LocationRequest` objects. When specifying multiple locations be sure to increase the measurement `Limit` so each probe is executed:
+To use the `Locations` parameter provide `LocationRequest` objects. The cmdlet will automatically run one probe for each location when `Limit` is not specified:
 
 ```powershell
 $locations = @(
-    [Globalping.LocationRequest]@{ Country = "DE"; Limit = 2 },
+    [Globalping.LocationRequest]@{ Country = "DE"; Limit = 1 },
     [Globalping.LocationRequest]@{ Country = "US"; Limit = 1 }
 )
 Start-Globalping -Type Ping -Target "example.com" -Locations $locations | Format-Table
@@ -49,10 +49,17 @@ Start-Globalping -Type Ping -Target "example.com" -Locations $locations | Format
 
 ```powershell
 # request three probes from specific countries
-$result = Start-Globalping -Type Ping -Target "example.com" -Limit 3 -SimpleLocations "DE", "US", "GB"
-$result.Results | Format-Table
+$result = Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE", "US", "GB"
+$result.GetSummaries() | Format-Table
 ```
 
 Use ISO 3166-1 alpha-2 country codes (e.g. `GB` for United Kingdom).
+
+To easily access key data from the API response use the `GetSummaries()` extension method:
+
+```powershell
+$result = Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE"
+$result.GetSummaries() | Format-Table
+```
 
 The API specification is available at [api.globalping.io/v1/spec.yaml](https://api.globalping.io/v1/spec.yaml).
