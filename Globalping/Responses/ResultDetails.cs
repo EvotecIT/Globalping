@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Globalping;
@@ -17,7 +18,7 @@ public class ResultDetails {
     public string? ResolvedHostname { get; set; }
 
     [JsonPropertyName("timings")]
-    public List<Timing>? Timings { get; set; }
+    public JsonElement? Timings { get; set; }
 
     [JsonPropertyName("stats")]
     public Stats? Stats { get; set; }
