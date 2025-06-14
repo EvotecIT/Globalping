@@ -4,7 +4,7 @@ name: Test PowerShell Module (All)
 on:
   push:
     branches:
-      - '**'
+      - master
     paths-ignore:
       - '*.md'
       - 'Docs/**'
@@ -12,7 +12,7 @@ on:
       - '.gitignore'
   pull_request:
     branches:
-      - '**'
+      - master
 
 env:
   DOTNET_VERSION: '8.x'
