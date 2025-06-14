@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -7,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Globalping;
 
@@ -30,7 +32,7 @@ public class ProbeService {
 
         if (!_httpClient.DefaultRequestHeaders.AcceptEncoding.Any())
         {
-            if (Enum.IsDefined(typeof(DecompressionMethods), nameof(DecompressionMethods.Brotli)))
+            if (Enum.TryParse("Brotli", out DecompressionMethods _))
             {
                 _httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("br"));
             }

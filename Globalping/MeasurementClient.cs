@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -26,7 +27,7 @@ public class MeasurementClient {
         }
 
         if (!_httpClient.DefaultRequestHeaders.AcceptEncoding.Any()) {
-            if (Enum.IsDefined(typeof(DecompressionMethods), nameof(DecompressionMethods.Brotli))) {
+            if (Enum.TryParse("Brotli", out DecompressionMethods _)) {
                 _httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("br"));
             } else {
                 _httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
