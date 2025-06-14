@@ -2,6 +2,7 @@ using System.Management.Automation;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Linq;
 using Globalping;
 
 namespace Globalping.PowerShell;
@@ -31,14 +32,23 @@ public class StartGlobalpingCommand : PSCmdlet
     [Parameter]
     public SwitchParameter InProgressUpdates { get; set; }
 
+    [Parameter]
+    [Alias("Token")]
+    public string? ApiKey { get; set; }
+
     protected override void ProcessRecord()
     {
         using var httpClient = new HttpClient();
-        var service = new ProbeService(httpClient);
+        var service = new ProbeService(httpClient, ApiKey);
 
-        var limit = Limit ?? 0;
-        if (!MyInvocation.BoundParameters.ContainsKey(nameof(Limit)))
+        int? limit = Limit;
+        var calculateLimit = !MyInvocation.BoundParameters.ContainsKey(nameof(Limit));
+        var hasLocationLimits = Locations is not null && Locations.Any(l => l.Limit.HasValue);
+
+        if (calculateLimit && !hasLocationLimits)
         {
+            limit = 0;
+
             if (SimpleLocations is not null)
             {
                 limit += SimpleLocations.Length;
@@ -59,8 +69,12 @@ public class StartGlobalpingCommand : PSCmdlet
         }
         var builder = new MeasurementRequestBuilder()
             .WithType(Type)
-            .WithTarget(Target)
-            .WithLimit(limit);
+            .WithTarget(Target);
+
+        if (limit.HasValue)
+        {
+            builder.WithLimit(limit);
+        }
 
         if (SimpleLocations is not null)
         {
@@ -116,7 +130,7 @@ public class StartGlobalpingCommand : PSCmdlet
             return;
         }
 
-        var client = new MeasurementClient(httpClient);
+        var client = new MeasurementClient(httpClient, ApiKey);
         var result = client.GetMeasurementByIdAsync(id).GetAwaiter().GetResult();
         WriteVerbose($"Response: {JsonSerializer.Serialize(result, jsonOptions)}");
         WriteObject(result);
