@@ -17,6 +17,9 @@ public class StartGlobalpingHttpCommand : StartGlobalpingBaseCommand
     public SwitchParameter Classic { get; set; }
 
     [Parameter]
+    public SwitchParameter HeadersOnly { get; set; }
+
+    [Parameter]
     public HttpOptions? Options { get; set; }
 
     protected override MeasurementType Type => MeasurementType.Http;
@@ -39,7 +42,14 @@ public class StartGlobalpingHttpCommand : StartGlobalpingBaseCommand
         {
             foreach (var resp in result.GetHttpResponses())
             {
-                WriteObject(resp);
+                if (HeadersOnly.IsPresent)
+                {
+                    WriteObject(resp.Headers);
+                }
+                else
+                {
+                    WriteObject(resp);
+                }
             }
         }
         else

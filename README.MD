@@ -80,4 +80,10 @@ Use `-Classic` to output the raw ping text similar to the traditional `ping` com
 Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE" -Classic
 ```
 
+To fetch only HTTP headers use `Start-GlobalpingHttp` with the `-HeadersOnly` parameter:
+
+```powershell
+Start-GlobalpingHttp -Target "https://example.com" -HeadersOnly
+```
+
 The API specification is available at [api.globalping.io/v1/spec.yaml](https://api.globalping.io/v1/spec.yaml).
