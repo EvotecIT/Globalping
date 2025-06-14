@@ -27,6 +27,9 @@ namespace Globalping.PowerShell;
 /// </example>
 public abstract class StartGlobalpingBaseCommand : PSCmdlet
 {
+    /// <summary>
+    /// Gets the measurement type implemented by the derived cmdlet.
+    /// </summary>
     protected abstract MeasurementType Type { get; }
 
     /// <para>Target host name, IP address or URL to test.</para>
@@ -65,8 +68,14 @@ public abstract class StartGlobalpingBaseCommand : PSCmdlet
     [Alias("Token")]
     public string? ApiKey { get; set; }
 
+    /// <summary>
+    /// Gets additional measurement options used when building the request.
+    /// </summary>
     protected virtual IMeasurementOptions? MeasurementOptions => null;
 
+    /// <summary>
+    /// Creates the measurement request and writes the resulting objects to the pipeline.
+    /// </summary>
     protected override void ProcessRecord()
     {
         using var httpClient = new HttpClient();
@@ -168,6 +177,10 @@ public abstract class StartGlobalpingBaseCommand : PSCmdlet
         HandleOutput(result);
     }
 
+    /// <summary>
+    /// Handles the measurement response produced by <see cref="ProcessRecord"/>.
+    /// </summary>
+    /// <param name="result">Measurement result returned by the service.</param>
     protected virtual void HandleOutput(MeasurementResponse? result)
     {
         WriteObject(result);

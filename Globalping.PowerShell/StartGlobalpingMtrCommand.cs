@@ -39,10 +39,13 @@ public class StartGlobalpingMtrCommand : StartGlobalpingBaseCommand
     [Parameter]
     public MtrOptions? Options { get; set; }
 
+    /// <inheritdoc/>
     protected override MeasurementType Type => MeasurementType.Mtr;
 
+    /// <inheritdoc/>
     protected override IMeasurementOptions? MeasurementOptions => Options;
 
+    /// <inheritdoc/>
     protected override void HandleOutput(MeasurementResponse? result)
     {
         if (Classic.IsPresent && result?.Results != null)

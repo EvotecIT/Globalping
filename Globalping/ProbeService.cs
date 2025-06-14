@@ -12,6 +12,10 @@ using System.Linq;
 
 namespace Globalping;
 
+/// <summary>
+/// Provides simple access to the Globalping API for probe discovery and
+/// measurement management.
+/// </summary>
 public class ProbeService {
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _jsonOptions = new()
@@ -48,6 +52,10 @@ public class ProbeService {
         }
     }
 
+    /// <summary>
+    /// Retrieves the list of currently online probes.
+    /// </summary>
+    /// <returns>Collection of available probes.</returns>
     public async Task<List<Probes>> GetOnlineProbesAsync() {
         var response = await _httpClient.GetAsync("https://api.globalping.io/v1/probes").ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
@@ -55,9 +63,17 @@ public class ProbeService {
         return await JsonSerializer.DeserializeAsync<List<Probes>>(stream, _jsonOptions).ConfigureAwait(false) ?? new List<Probes>();
     }
 
+    /// <summary>
+    /// Synchronous wrapper for <see cref="GetOnlineProbesAsync"/>.
+    /// </summary>
     public List<Probes> GetOnlineProbes() =>
         GetOnlineProbesAsync().GetAwaiter().GetResult();
 
+    /// <summary>
+    /// Creates a measurement request on the Globalping service.
+    /// </summary>
+    /// <param name="measurementRequest">Request payload describing the measurement.</param>
+    /// <returns>Identifier of the created measurement.</returns>
     public async Task<string> CreateMeasurementAsync(MeasurementRequest measurementRequest) {
         var requestUri = "https://api.globalping.io/v1/measurements";
         var requestContent = new StringContent(JsonSerializer.Serialize(measurementRequest, _jsonOptions), Encoding.UTF8, "application/json");
@@ -73,6 +89,9 @@ public class ProbeService {
         return result?.Id ?? string.Empty;
     }
 
+    /// <summary>
+    /// Synchronous wrapper for <see cref="CreateMeasurementAsync"/>.
+    /// </summary>
     public string CreateMeasurement(MeasurementRequest measurementRequest) =>
         CreateMeasurementAsync(measurementRequest).GetAwaiter().GetResult();
 }

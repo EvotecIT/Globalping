@@ -2,6 +2,9 @@ using System.Collections.Generic;
 
 namespace Globalping;
 
+/// <summary>
+/// Fluent helper used to construct <see cref="MeasurementRequest"/> instances.
+/// </summary>
 public class MeasurementRequestBuilder
 {
     private readonly MeasurementRequest _request = new();
@@ -97,5 +100,9 @@ public class MeasurementRequestBuilder
         return this;
     }
 
+    /// <summary>
+    /// Finalizes the builder and returns the configured request instance.
+    /// </summary>
+    /// <returns>The constructed <see cref="MeasurementRequest"/>.</returns>
     public MeasurementRequest Build() => _request;
 }

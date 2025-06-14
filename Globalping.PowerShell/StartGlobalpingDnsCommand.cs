@@ -39,10 +39,13 @@ public class StartGlobalpingDnsCommand : StartGlobalpingBaseCommand
     [Parameter]
     public DnsOptions? Options { get; set; }
 
+    /// <inheritdoc/>
     protected override MeasurementType Type => MeasurementType.Dns;
 
+    /// <inheritdoc/>
     protected override IMeasurementOptions? MeasurementOptions => Options;
 
+    /// <inheritdoc/>
     protected override void HandleOutput(MeasurementResponse? result)
     {
         if (Classic.IsPresent && result?.Results != null)

@@ -39,10 +39,13 @@ public class StartGlobalpingTracerouteCommand : StartGlobalpingBaseCommand
     [Parameter]
     public TracerouteOptions? Options { get; set; }
 
+    /// <inheritdoc/>
     protected override MeasurementType Type => MeasurementType.Traceroute;
 
+    /// <inheritdoc/>
     protected override IMeasurementOptions? MeasurementOptions => Options;
 
+    /// <inheritdoc/>
     protected override void HandleOutput(MeasurementResponse? result)
     {
         if (Classic.IsPresent && result?.Results != null)
