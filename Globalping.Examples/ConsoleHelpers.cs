@@ -38,7 +38,11 @@ public static class ConsoleHelpers
         table.AddColumn("Value");
 
         IEnumerable<KeyValuePair<string, object?>> entries;
-        if (data is IDictionary dict)
+        if (data is IDictionary<string, object?> genericDict)
+        {
+            entries = genericDict;
+        }
+        else if (data is IDictionary dict)
         {
             entries = dict.Cast<DictionaryEntry>()
                 .Select(e => new KeyValuePair<string, object?>(e.Key?.ToString() ?? string.Empty, e.Value));
