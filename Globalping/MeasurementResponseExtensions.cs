@@ -129,7 +129,7 @@ public static class MeasurementResponseExtensions {
         }
 
         var list = new List<TracerouteHopResult>();
-        foreach (var line in raw.Split('\n')) {
+        foreach (var line in raw!.Split('\n')) {
             var t = line.Trim();
             if (string.IsNullOrEmpty(t) || t.StartsWith("traceroute")) {
                 continue;
@@ -163,7 +163,7 @@ public static class MeasurementResponseExtensions {
         }
 
         var list = new List<MtrHopResult>();
-        var lines = raw.Split('\n');
+        var lines = raw!.Split('\n');
         var start = false;
         foreach (var line in lines) {
             var t = line.Trim();
@@ -223,7 +223,7 @@ public static class MeasurementResponseExtensions {
         }
 
         var list = new List<DnsRecordResult>();
-        var lines = raw.Split('\n');
+        var lines = raw!.Split('\n');
         var inAnswer = false;
         var flags = string.Empty;
         var opcode = string.Empty;
@@ -326,7 +326,7 @@ public static class MeasurementResponseExtensions {
         }
 
         var result = new HttpResponseResult();
-        var lines = raw.Split('\n');
+        var lines = raw!.Split('\n');
         var index = 0;
         if (lines.Length > 0) {
             var first = lines[0].Trim();
