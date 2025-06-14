@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
+using System.Text.Json.Serialization;
 
 namespace Globalping;
 
 public class Result {
-    public Probe Probe { get; set; }
-    public ResultDetails MeasurementResult { get; set; }
+    [JsonPropertyName("probe")]
+    public Probe Probe { get; set; } = new();
+
+    [JsonPropertyName("result")]
+    public ResultDetails Data { get; set; } = new();
 }
