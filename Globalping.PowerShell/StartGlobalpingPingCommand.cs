@@ -4,12 +4,25 @@ using Globalping;
 namespace Globalping.PowerShell;
 
 /// <summary>Start a ping measurement using Globalping.</summary>
-/// <para>Executes ping from selected probes and returns timing results or raw data.</para>
+/// <para>Instructs remote probes to send ICMP echo requests to the specified target.</para>
+/// <para>The cmdlet outputs <see cref="PingTimingResult"/> objects, raw results or classic text depending on the selected parameters.</para>
 /// <example>
 ///   <summary>Ping from multiple locations</summary>
 ///   <prefix>PS> </prefix>
 ///   <code>Start-GlobalpingPing -Target "evotec.xyz" -SimpleLocations "DE", "US"</code>
 ///   <para>Runs ping from probes in Germany and the United States.</para>
+/// </example>
+/// <example>
+///   <summary>Request five packets</summary>
+///   <prefix>PS> </prefix>
+///   <code>Start-GlobalpingPing -Target "example.com" -SimpleLocations "PL" -Options @{ Packets = 5 }</code>
+///   <para>Uses <see cref="PingOptions"/> to set the packet count.</para>
+/// </example>
+/// <example>
+///   <summary>Output classic text</summary>
+///   <prefix>PS> </prefix>
+///   <code>Start-GlobalpingPing -Target "example.com" -Classic</code>
+///   <para>Displays the raw ping output returned by the probe.</para>
 /// </example>
 [Cmdlet(VerbsLifecycle.Start, "GlobalpingPing")]
 [OutputType(typeof(PingTimingResult))]
@@ -18,15 +31,18 @@ namespace Globalping.PowerShell;
 public class StartGlobalpingPingCommand : StartGlobalpingBaseCommand
 {
     /// <para>Return the unprocessed measurement response.</para>
+    /// <para>When set the cmdlet outputs the <see cref="MeasurementResponse"/> object returned by the API.</para>
     [Parameter]
     [Alias("AsRaw")]
     public SwitchParameter Raw { get; set; }
 
-    /// <para>Output ping results in classic text format.</para>
+    /// <para>Output ping results in the classic text format.</para>
+    /// <para>Each probe returns the textual output of its ping utility.</para>
     [Parameter]
     public SwitchParameter Classic { get; set; }
 
     /// <para>Additional ping options sent with the request.</para>
+    /// <para>Use this to configure packet count or other low level settings.</para>
     [Parameter]
     public PingOptions? Options { get; set; }
 

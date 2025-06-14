@@ -4,12 +4,18 @@ using Globalping;
 namespace Globalping.PowerShell;
 
 /// <summary>Start a traceroute measurement using Globalping.</summary>
-/// <para>Runs traceroute from specified probes and returns hop details or raw output.</para>
+/// <para>Collects hop information from remote probes with optional classic text output.</para>
 /// <example>
 ///   <summary>Traceroute to a host</summary>
 ///   <prefix>PS> </prefix>
 ///   <code>Start-GlobalpingTraceroute -Target "evotec.xyz"</code>
 ///   <para>Performs traceroute to the target host.</para>
+/// </example>
+/// <example>
+///   <summary>Return raw output</summary>
+///   <prefix>PS> </prefix>
+///   <code>Start-GlobalpingTraceroute -Target "example.com" -Classic</code>
+///   <para>Writes the traceroute text produced by the probe.</para>
 /// </example>
 [Cmdlet(VerbsLifecycle.Start, "GlobalpingTraceroute")]
 [OutputType(typeof(TracerouteHopResult))]
@@ -18,15 +24,18 @@ namespace Globalping.PowerShell;
 public class StartGlobalpingTracerouteCommand : StartGlobalpingBaseCommand
 {
     /// <para>Return the full measurement response.</para>
+    /// <para>The object is not converted to individual hops.</para>
     [Parameter]
     [Alias("AsRaw")]
     public SwitchParameter Raw { get; set; }
 
     /// <para>Output traceroute in classic text form.</para>
+    /// <para>Returns the text produced by the traceroute utility.</para>
     [Parameter]
     public SwitchParameter Classic { get; set; }
 
     /// <para>Additional traceroute options for the request.</para>
+    /// <para>Allows packet size or protocol customization.</para>
     [Parameter]
     public TracerouteOptions? Options { get; set; }
 
