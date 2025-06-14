@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Globalping.Responses;
-internal class Result {
+namespace Globalping;
+
+public class Result {
+    public Probe Probe { get; set; }
+    public ResultDetails MeasurementResult { get; set; }
 }

@@ -1,8 +1,3 @@
-using System.Net.Http;
-using System.Threading.Tasks;
-using Globalping.Models;
-using System.Threading;
-
 namespace Globalping;
 
 public class MeasurementClient {
