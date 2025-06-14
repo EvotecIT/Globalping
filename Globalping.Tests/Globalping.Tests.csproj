@@ -22,8 +22,12 @@
 		</PackageReference>
 	</ItemGroup>
 
-	<ItemGroup>
-		<Using Include="Xunit" />
-	</ItemGroup>
+        <ItemGroup>
+                <Using Include="Xunit" />
+        </ItemGroup>
+
+        <ItemGroup>
+                <ProjectReference Include="../Globalping/Globalping.csproj" />
+        </ItemGroup>
 
 </Project>
