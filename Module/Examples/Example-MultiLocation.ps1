@@ -1,9 +1,12 @@
 ﻿Import-Module $PSScriptRoot\..\Globalping.psd1 -Force
 
-$multi = Start-Globalping -Type Ping -Target "evotec.xyz" -Verbose -SimpleLocations "DE", "US", "GB"
+$multi = Start-Globalping -Type Ping -Target "evotec.xyz" -SimpleLocations "DE", "US", "GB"
 $multi | Format-Table *
 
-$multiRaw = Start-Globalping -Type Ping -Target "evotec.xyz" -Verbose -SimpleLocations "DE", "US", "GB" -AsRaw
+$multiClassic = Start-Globalping -Type Ping -Target "evotec.xyz" -SimpleLocations "DE", "US", "GB" -Classic
+$multiClassic
+
+$multiRaw = Start-Globalping -Type Ping -Target "evotec.xyz" -SimpleLocations "DE", "US", "GB" -AsRaw
 $multiRaw | Format-Table
 $multiRaw.Results | Format-Table
 $multiRaw.Results.Probe | Format-Table
