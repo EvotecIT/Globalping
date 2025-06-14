@@ -10,8 +10,8 @@ namespace Globalping.PowerShell;
 public class StartGlobalpingPingCommand : StartGlobalpingBaseCommand
 {
     [Parameter]
-    [Alias("Raw")]
-    public SwitchParameter AsRaw { get; set; }
+    [Alias("AsRaw")]
+    public SwitchParameter Raw { get; set; }
 
     [Parameter]
     public SwitchParameter Classic { get; set; }
@@ -35,7 +35,7 @@ public class StartGlobalpingPingCommand : StartGlobalpingBaseCommand
                 }
             }
         }
-        else if (!AsRaw.IsPresent && result is not null)
+        else if (!Raw.IsPresent && result is not null)
         {
             foreach (var timing in result.GetPingTimings())
             {

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace Globalping;
 
@@ -58,5 +59,183 @@ public static class MeasurementResponseExtensions {
 
             return Enumerable.Empty<PingTimingResult>();
         });
+    }
+
+    public static IEnumerable<TracerouteHopResult> GetTracerouteHops(this MeasurementResponse response) {
+        if (response.Results == null) {
+            return Enumerable.Empty<TracerouteHopResult>();
+        }
+
+        return response.Results.SelectMany(r => ParseTraceroute(r.Data?.RawOutput).Select(h =>
+        {
+            h.Target = response.Target;
+            h.Continent = r.Probe.Continent;
+            h.City = r.Probe.City;
+            h.Country = r.Probe.Country;
+            h.State = r.Probe.State;
+            h.Asn = r.Probe.Asn;
+            h.Network = r.Probe.Network;
+            h.ResolvedAddress = r.Data?.ResolvedAddress;
+            h.ResolvedHostname = r.Data?.ResolvedHostname;
+            h.Status = r.Data?.Status;
+            return h;
+        }));
+    }
+
+    public static IEnumerable<MtrHopResult> GetMtrHops(this MeasurementResponse response) {
+        if (response.Results == null) {
+            return Enumerable.Empty<MtrHopResult>();
+        }
+
+        return response.Results.SelectMany(r => ParseMtr(r.Data?.RawOutput).Select(h =>
+        {
+            h.Target = response.Target;
+            h.Continent = r.Probe.Continent;
+            h.City = r.Probe.City;
+            h.Country = r.Probe.Country;
+            h.State = r.Probe.State;
+            h.ProbeAsn = r.Probe.Asn;
+            h.Network = r.Probe.Network;
+            h.ResolvedAddress = r.Data?.ResolvedAddress;
+            h.ResolvedHostname = r.Data?.ResolvedHostname;
+            h.Status = r.Data?.Status;
+            return h;
+        }));
+    }
+
+    public static IEnumerable<DnsRecordResult> GetDnsRecords(this MeasurementResponse response) {
+        if (response.Results == null) {
+            return Enumerable.Empty<DnsRecordResult>();
+        }
+
+        return response.Results.SelectMany(r => ParseDns(r.Data?.RawOutput).Select(h =>
+        {
+            h.Target = response.Target;
+            h.Continent = r.Probe.Continent;
+            h.City = r.Probe.City;
+            h.Country = r.Probe.Country;
+            h.State = r.Probe.State;
+            h.Asn = r.Probe.Asn;
+            h.Network = r.Probe.Network;
+            h.ResolvedAddress = r.Data?.ResolvedAddress;
+            h.ResolvedHostname = r.Data?.ResolvedHostname;
+            h.Status = r.Data?.Status;
+            return h;
+        }));
+    }
+
+    private static IEnumerable<TracerouteHopResult> ParseTraceroute(string? raw) {
+        if (string.IsNullOrWhiteSpace(raw)) {
+            return Enumerable.Empty<TracerouteHopResult>();
+        }
+
+        var list = new List<TracerouteHopResult>();
+        foreach (var line in raw.Split('\n')) {
+            var t = line.Trim();
+            if (string.IsNullOrEmpty(t) || t.StartsWith("traceroute")) {
+                continue;
+            }
+            var match = Regex.Match(t, "^(\\d+)\\s+([^\\s]+)\\s+\\(([^\\)]+)\\)\\s+([0-9.]+)\\s+ms\\s+([0-9.]+)\\s+ms(?:\\s+([0-9.]+)\\s+ms)?");
+            if (match.Success) {
+                var hop = new TracerouteHopResult {
+                    Hop = int.Parse(match.Groups[1].Value),
+                    Host = match.Groups[2].Value,
+                    IpAddress = match.Groups[3].Value
+                };
+                if (double.TryParse(match.Groups[4].Value, out var r1)) {
+                    hop.Time1 = r1;
+                }
+                if (double.TryParse(match.Groups[5].Value, out var r2)) {
+                    hop.Time2 = r2;
+                }
+                if (match.Groups[6].Success && double.TryParse(match.Groups[6].Value, out var r3)) {
+                    hop.Time3 = r3;
+                }
+                list.Add(hop);
+            }
+        }
+
+        return list;
+    }
+
+    private static IEnumerable<MtrHopResult> ParseMtr(string? raw) {
+        if (string.IsNullOrWhiteSpace(raw)) {
+            return Enumerable.Empty<MtrHopResult>();
+        }
+
+        var list = new List<MtrHopResult>();
+        var lines = raw.Split('\n');
+        var start = false;
+        foreach (var line in lines) {
+            var t = line.Trim();
+            if (string.IsNullOrEmpty(t)) {
+                continue;
+            }
+            if (!start) {
+                if (t.StartsWith("Host")) {
+                    start = true;
+                }
+                continue;
+            }
+
+            if (t.Contains("waiting for reply")) {
+                var numMatch = Regex.Match(t, "^(\\d+)");
+                if (numMatch.Success) {
+                    list.Add(new MtrHopResult { Hop = int.Parse(numMatch.Value), Host = "waiting for reply" });
+                }
+                continue;
+            }
+
+            var m = Regex.Match(t, "^(\\d+)\\.\\s+(AS[^\\s]+)\\s+([^\\(]+)\\s+\\(([^\\)]+)\\)\\s+([0-9.]+)%\\s+(\\d+)\\s+(\\d+)\\s+([0-9.]+)\\s+([0-9.]+)\\s+([0-9.]+)");
+            if (m.Success) {
+                var hop = new MtrHopResult {
+                    Hop = int.Parse(m.Groups[1].Value),
+                    Asn = m.Groups[2].Value,
+                    Host = m.Groups[3].Value.Trim(),
+                    IpAddress = m.Groups[4].Value,
+                    LossPercent = double.Parse(m.Groups[5].Value),
+                    Drop = int.Parse(m.Groups[6].Value),
+                    Rcv = int.Parse(m.Groups[7].Value),
+                    Avg = double.Parse(m.Groups[8].Value),
+                    StDev = double.Parse(m.Groups[9].Value),
+                    Javg = double.Parse(m.Groups[10].Value)
+                };
+                list.Add(hop);
+            }
+        }
+        return list;
+    }
+
+    private static IEnumerable<DnsRecordResult> ParseDns(string? raw) {
+        if (string.IsNullOrWhiteSpace(raw)) {
+            return Enumerable.Empty<DnsRecordResult>();
+        }
+
+        var list = new List<DnsRecordResult>();
+        var lines = raw.Split('\n');
+        var inAnswer = false;
+        foreach (var line in lines) {
+            var t = line.Trim();
+            if (t.StartsWith(";; ANSWER SECTION")) {
+                inAnswer = true;
+                continue;
+            }
+            if (inAnswer) {
+                if (t.StartsWith(";;")) {
+                    break;
+                }
+                var m = Regex.Match(t, "^(\\S+)\\.\\s+(\\d+)\\s+IN\\s+(\\S+)\\s+(.+)$");
+                if (m.Success) {
+                    var rec = new DnsRecordResult {
+                        Name = m.Groups[1].Value,
+                        Ttl = int.Parse(m.Groups[2].Value),
+                        Type = m.Groups[3].Value,
+                        Data = m.Groups[4].Value
+                    };
+                    list.Add(rec);
+                }
+            }
+        }
+        return list;
     }
 }
