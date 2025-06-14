@@ -24,6 +24,48 @@ public class MeasurementRequestBuilder
         return AddLocation(loc);
     }
 
+    public MeasurementRequestBuilder AddContinent(string continent, int? limit = null)
+    {
+        var loc = new LocationRequest { Continent = continent, Limit = limit };
+        return AddLocation(loc);
+    }
+
+    public MeasurementRequestBuilder AddRegion(string region, int? limit = null)
+    {
+        var loc = new LocationRequest { Region = region, Limit = limit };
+        return AddLocation(loc);
+    }
+
+    public MeasurementRequestBuilder AddState(string state, int? limit = null)
+    {
+        var loc = new LocationRequest { State = state, Limit = limit };
+        return AddLocation(loc);
+    }
+
+    public MeasurementRequestBuilder AddCity(string city, int? limit = null)
+    {
+        var loc = new LocationRequest { City = city, Limit = limit };
+        return AddLocation(loc);
+    }
+
+    public MeasurementRequestBuilder AddAsn(int asn, int? limit = null)
+    {
+        var loc = new LocationRequest { Asn = asn, Limit = limit };
+        return AddLocation(loc);
+    }
+
+    public MeasurementRequestBuilder AddNetwork(string network, int? limit = null)
+    {
+        var loc = new LocationRequest { Network = network, Limit = limit };
+        return AddLocation(loc);
+    }
+
+    public MeasurementRequestBuilder AddTags(IEnumerable<string> tags, int? limit = null)
+    {
+        var loc = new LocationRequest { Tags = new List<string>(tags), Limit = limit };
+        return AddLocation(loc);
+    }
+
     public MeasurementRequestBuilder AddMagic(string magic)
     {
         var loc = new LocationRequest { Magic = magic };
