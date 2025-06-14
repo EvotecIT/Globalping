@@ -7,12 +7,12 @@ public class MtrHopResult
     public string Asn { get; set; } = string.Empty;
     public string Host { get; set; } = string.Empty;
     public string IpAddress { get; set; } = string.Empty;
-    public double LossPercent { get; set; }
-    public int Drop { get; set; }
-    public int Rcv { get; set; }
-    public double Avg { get; set; }
-    public double StDev { get; set; }
-    public double Javg { get; set; }
+    public double? LossPercent { get; set; }
+    public int? Drop { get; set; }
+    public int? Rcv { get; set; }
+    public double? Avg { get; set; }
+    public double? StDev { get; set; }
+    public double? Javg { get; set; }
     public string Country { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
     public string Network { get; set; } = string.Empty;

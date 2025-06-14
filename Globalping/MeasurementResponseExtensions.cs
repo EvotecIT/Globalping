@@ -125,7 +125,7 @@ public static class MeasurementResponseExtensions {
         }));
     }
 
-    private static IEnumerable<TracerouteHopResult> ParseTraceroute(string? raw) {
+    internal static IEnumerable<TracerouteHopResult> ParseTraceroute(string? raw) {
         if (string.IsNullOrWhiteSpace(raw)) {
             return Enumerable.Empty<TracerouteHopResult>();
         }
@@ -159,7 +159,7 @@ public static class MeasurementResponseExtensions {
         return list;
     }
 
-    private static IEnumerable<MtrHopResult> ParseMtr(string? raw) {
+    internal static IEnumerable<MtrHopResult> ParseMtr(string? raw) {
         if (string.IsNullOrWhiteSpace(raw)) {
             return Enumerable.Empty<MtrHopResult>();
         }
@@ -193,21 +193,33 @@ public static class MeasurementResponseExtensions {
                     Hop = int.Parse(m.Groups[1].Value),
                     Asn = m.Groups[2].Value,
                     Host = m.Groups[3].Value.Trim(),
-                    IpAddress = m.Groups[4].Value,
-                    LossPercent = double.Parse(m.Groups[5].Value, CultureInfo.InvariantCulture),
-                    Drop = int.Parse(m.Groups[6].Value),
-                    Rcv = int.Parse(m.Groups[7].Value),
-                    Avg = double.Parse(m.Groups[8].Value, CultureInfo.InvariantCulture),
-                    StDev = double.Parse(m.Groups[9].Value, CultureInfo.InvariantCulture),
-                    Javg = double.Parse(m.Groups[10].Value, CultureInfo.InvariantCulture)
+                    IpAddress = m.Groups[4].Value
                 };
+                if (double.TryParse(m.Groups[5].Value, NumberStyles.Float, CultureInfo.InvariantCulture, out var loss)) {
+                    hop.LossPercent = loss;
+                }
+                if (int.TryParse(m.Groups[6].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var drop)) {
+                    hop.Drop = drop;
+                }
+                if (int.TryParse(m.Groups[7].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var rcv)) {
+                    hop.Rcv = rcv;
+                }
+                if (double.TryParse(m.Groups[8].Value, NumberStyles.Float, CultureInfo.InvariantCulture, out var avg)) {
+                    hop.Avg = avg;
+                }
+                if (double.TryParse(m.Groups[9].Value, NumberStyles.Float, CultureInfo.InvariantCulture, out var stdev)) {
+                    hop.StDev = stdev;
+                }
+                if (double.TryParse(m.Groups[10].Value, NumberStyles.Float, CultureInfo.InvariantCulture, out var javg)) {
+                    hop.Javg = javg;
+                }
                 list.Add(hop);
             }
         }
         return list;
     }
 
-    private static IEnumerable<DnsRecordResult> ParseDns(string? raw) {
+    internal static IEnumerable<DnsRecordResult> ParseDns(string? raw) {
         if (string.IsNullOrWhiteSpace(raw)) {
             return Enumerable.Empty<DnsRecordResult>();
         }
@@ -261,7 +273,7 @@ public static class MeasurementResponseExtensions {
         }));
     }
 
-    private static IEnumerable<HttpResponseResult> ParseHttp(string? raw) {
+    internal static IEnumerable<HttpResponseResult> ParseHttp(string? raw) {
         if (string.IsNullOrWhiteSpace(raw)) {
             return Enumerable.Empty<HttpResponseResult>();
         }
