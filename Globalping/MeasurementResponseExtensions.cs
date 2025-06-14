@@ -238,4 +238,66 @@ public static class MeasurementResponseExtensions {
         }
         return list;
     }
+
+    public static IEnumerable<HttpResponseResult> GetHttpResponses(this MeasurementResponse response) {
+        if (response.Results == null) {
+            return Enumerable.Empty<HttpResponseResult>();
+        }
+
+        return response.Results.SelectMany(r => ParseHttp(r.Data?.RawOutput).Select(h =>
+        {
+            h.Target = response.Target;
+            h.Continent = r.Probe.Continent;
+            h.City = r.Probe.City;
+            h.Country = r.Probe.Country;
+            h.State = r.Probe.State;
+            h.Asn = r.Probe.Asn;
+            h.Network = r.Probe.Network;
+            h.ResolvedAddress = r.Data?.ResolvedAddress;
+            h.ResolvedHostname = r.Data?.ResolvedHostname;
+            h.Status = r.Data?.Status;
+            return h;
+        }));
+    }
+
+    private static IEnumerable<HttpResponseResult> ParseHttp(string? raw) {
+        if (string.IsNullOrWhiteSpace(raw)) {
+            return Enumerable.Empty<HttpResponseResult>();
+        }
+
+        var result = new HttpResponseResult();
+        var lines = raw.Split('\n');
+        var index = 0;
+        if (lines.Length > 0) {
+            var first = lines[0].Trim();
+            var m = Regex.Match(first, "^(HTTP/\\S+)\\s+(\\d{3})\\s*(.*)$");
+            if (m.Success) {
+                result.Protocol = m.Groups[1].Value;
+                result.StatusCode = int.Parse(m.Groups[2].Value);
+                result.StatusDescription = m.Groups[3].Value.Trim();
+            }
+            index = 1;
+        }
+
+        for (; index < lines.Length; index++) {
+            var line = lines[index].TrimEnd();
+            if (string.IsNullOrEmpty(line)) {
+                index++;
+                break;
+            }
+
+            var sep = line.IndexOf(':');
+            if (sep > 0) {
+                var key = line.Substring(0, sep).Trim();
+                var value = line.Substring(sep + 1).Trim();
+                result.Headers[key] = value;
+            }
+        }
+
+        if (index < lines.Length) {
+            result.Body = string.Join("\n", lines.Skip(index));
+        }
+
+        return new[] { result };
+    }
 }

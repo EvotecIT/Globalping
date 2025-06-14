@@ -4,6 +4,7 @@ using Globalping;
 namespace Globalping.PowerShell;
 
 [Cmdlet(VerbsLifecycle.Start, "GlobalpingHttp")]
+[OutputType(typeof(HttpResponseResult))]
 [OutputType(typeof(string))]
 [OutputType(typeof(MeasurementResponse))]
 public class StartGlobalpingHttpCommand : StartGlobalpingBaseCommand
@@ -32,6 +33,13 @@ public class StartGlobalpingHttpCommand : StartGlobalpingBaseCommand
                 {
                     WriteObject(r.Data.RawOutput);
                 }
+            }
+        }
+        else if (!Raw.IsPresent && result is not null)
+        {
+            foreach (var resp in result.GetHttpResponses())
+            {
+                WriteObject(resp);
             }
         }
         else
