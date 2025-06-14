@@ -21,6 +21,8 @@ public class MeasurementClient {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     };
 
+    public ApiUsageInfo LastResponseInfo { get; private set; } = new();
+
     /// <summary>
     /// Initializes a new instance of the <see cref="MeasurementClient"/> class.
     /// </summary>
@@ -47,6 +49,39 @@ public class MeasurementClient {
         }
     }
 
+    private void UpdateUsageInfo(HttpResponseMessage response)
+    {
+        var headers = response.Headers;
+        LastResponseInfo = new ApiUsageInfo
+        {
+            RateLimitLimit = TryGetInt(headers, "X-RateLimit-Limit"),
+            RateLimitConsumed = TryGetInt(headers, "X-RateLimit-Consumed"),
+            RateLimitRemaining = TryGetInt(headers, "X-RateLimit-Remaining"),
+            RateLimitReset = TryGetLong(headers, "X-RateLimit-Reset"),
+            CreditsConsumed = TryGetInt(headers, "X-Credits-Consumed"),
+            CreditsRemaining = TryGetInt(headers, "X-Credits-Remaining"),
+            RequestCost = TryGetInt(headers, "X-Request-Cost")
+        };
+    }
+
+    private static int? TryGetInt(HttpResponseHeaders headers, string name)
+    {
+        if (headers.TryGetValues(name, out var values) && int.TryParse(values.FirstOrDefault(), out var v))
+        {
+            return v;
+        }
+        return null;
+    }
+
+    private static long? TryGetLong(HttpResponseHeaders headers, string name)
+    {
+        if (headers.TryGetValues(name, out var values) && long.TryParse(values.FirstOrDefault(), out var v))
+        {
+            return v;
+        }
+        return null;
+    }
+
     /// <summary>
     /// Retrieves a measurement result by its identifier.
     /// </summary>
@@ -62,6 +97,7 @@ public class MeasurementClient {
 
         do {
             var response = await _httpClient.GetAsync(url).ConfigureAwait(false);
+            UpdateUsageInfo(response);
             response.EnsureSuccessStatusCode();
             var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
             measurementResponse = await JsonSerializer.DeserializeAsync<MeasurementResponse>(stream, _jsonOptions).ConfigureAwait(false);
