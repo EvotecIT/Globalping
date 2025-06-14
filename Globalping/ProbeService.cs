@@ -21,6 +21,9 @@ public class ProbeService {
         return await JsonSerializer.DeserializeAsync<List<Probes>>(stream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }).ConfigureAwait(false) ?? new List<Probes>();
     }
 
+    public List<Probes> GetOnlineProbes() =>
+        GetOnlineProbesAsync().GetAwaiter().GetResult();
+
     public async Task<string> CreateMeasurementAsync(MeasurementRequest measurementRequest, bool inProgressUpdates = false) {
         var requestUri = "https://api.globalping.io/v1/measurements";
         var requestContent = new StringContent(JsonSerializer.Serialize(measurementRequest), Encoding.UTF8, "application/json");
@@ -34,4 +37,7 @@ public class ProbeService {
         var result = await response.Content.ReadFromJsonAsync<MeasurementResponse>(new JsonSerializerOptions { PropertyNameCaseInsensitive = true }).ConfigureAwait(false);
         return result?.Id ?? string.Empty;
     }
+
+    public string CreateMeasurement(MeasurementRequest measurementRequest, bool inProgressUpdates = false) =>
+        CreateMeasurementAsync(measurementRequest, inProgressUpdates).GetAwaiter().GetResult();
 }

@@ -34,4 +34,7 @@ public class MeasurementClient {
 
         return measurementResponse;
     }
+
+    public MeasurementResponse? GetMeasurementById(string id) =>
+        GetMeasurementByIdAsync(id).GetAwaiter().GetResult();
 }

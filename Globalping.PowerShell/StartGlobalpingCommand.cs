@@ -18,6 +18,9 @@ public class StartGlobalpingCommand : PSCmdlet
     public LocationRequest[]? Locations { get; set; }
 
     [Parameter]
+    public string[]? SimpleLocations { get; set; }
+
+    [Parameter]
     public IMeasurementOptions? MeasurementOptions { get; set; }
 
     [Parameter]
@@ -31,6 +34,21 @@ public class StartGlobalpingCommand : PSCmdlet
         var builder = new MeasurementRequestBuilder()
             .WithType(Type)
             .WithTarget(Target);
+
+        if (SimpleLocations is not null)
+        {
+            foreach (var loc in SimpleLocations)
+            {
+                if (loc.Length == 2)
+                {
+                    builder.AddCountry(loc);
+                }
+                else
+                {
+                    builder.AddMagic(loc);
+                }
+            }
+        }
 
         if (Locations is not null)
         {
