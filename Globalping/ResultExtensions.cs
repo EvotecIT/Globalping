@@ -81,8 +81,6 @@ public static class ResultExtensions
             h.Asn = result.Probe.Asn;
             h.State = result.Probe.State;
             h.Continent = result.Probe.Continent;
-            h.ResolvedAddress = result.Data?.ResolvedAddress;
-            h.ResolvedHostname = result.Data?.ResolvedHostname;
             h.Status = result.Data?.Status;
             return h;
         });

@@ -118,8 +118,6 @@ public static class MeasurementResponseExtensions {
             h.State = r.Probe.State;
             h.Asn = r.Probe.Asn;
             h.Network = r.Probe.Network;
-            h.ResolvedAddress = r.Data?.ResolvedAddress;
-            h.ResolvedHostname = r.Data?.ResolvedHostname;
             h.Status = r.Data?.Status;
             return h;
         }));
@@ -227,8 +225,48 @@ public static class MeasurementResponseExtensions {
         var list = new List<DnsRecordResult>();
         var lines = raw.Split('\n');
         var inAnswer = false;
-        foreach (var line in lines) {
+        var flags = string.Empty;
+        var opcode = string.Empty;
+        var headerStatus = string.Empty;
+        var qName = string.Empty;
+        var qType = string.Empty;
+        var qCount = 0;
+        var aCount = 0;
+        var authCount = 0;
+        var addCount = 0;
+        for (var i = 0; i < lines.Length; i++) {
+            var line = lines[i];
             var t = line.Trim();
+            if (t.StartsWith(";; ->>HEADER<<-")) {
+                var m = Regex.Match(t, @"opcode:\s*(\S+),\s*status:\s*(\S+),\s*id:\s*(\d+)");
+                if (m.Success) {
+                    opcode = m.Groups[1].Value;
+                    headerStatus = m.Groups[2].Value;
+                }
+                continue;
+            }
+            if (t.StartsWith(";; flags:")) {
+                var m = Regex.Match(t, @"flags:\s*([^;]+);\s*QUERY:\s*(\d+),\s*ANSWER:\s*(\d+),\s*AUTHORITY:\s*(\d+),\s*ADDITIONAL:\s*(\d+)");
+                if (m.Success) {
+                    flags = m.Groups[1].Value.Trim();
+                    qCount = int.Parse(m.Groups[2].Value);
+                    aCount = int.Parse(m.Groups[3].Value);
+                    authCount = int.Parse(m.Groups[4].Value);
+                    addCount = int.Parse(m.Groups[5].Value);
+                }
+                continue;
+            }
+            if (t.StartsWith(";; QUESTION SECTION")) {
+                if (i + 1 < lines.Length) {
+                    var q = lines[i + 1].Trim(';').Trim();
+                    var qm = Regex.Match(q, "^(\\S+)\\.\\s+IN\\s+(\\S+)");
+                    if (qm.Success) {
+                        qName = qm.Groups[1].Value;
+                        qType = qm.Groups[2].Value;
+                    }
+                }
+                continue;
+            }
             if (t.StartsWith(";; ANSWER SECTION")) {
                 inAnswer = true;
                 continue;
@@ -240,6 +278,15 @@ public static class MeasurementResponseExtensions {
                 var m = Regex.Match(t, "^(\\S+)\\.\\s+(\\d+)\\s+IN\\s+(\\S+)\\s+(.+)$");
                 if (m.Success) {
                     var rec = new DnsRecordResult {
+                        QuestionName = qName,
+                        QuestionType = qType,
+                        Flags = flags,
+                        Opcode = opcode,
+                        HeaderStatus = headerStatus,
+                        QueryCount = qCount,
+                        AnswerCount = aCount,
+                        AuthorityCount = authCount,
+                        AdditionalCount = addCount,
                         Name = m.Groups[1].Value,
                         Ttl = int.Parse(m.Groups[2].Value),
                         Type = m.Groups[3].Value,

@@ -37,6 +37,13 @@ public class MeasurementClient {
             response.EnsureSuccessStatusCode();
             var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
             measurementResponse = await JsonSerializer.DeserializeAsync<MeasurementResponse>(stream, _jsonOptions).ConfigureAwait(false);
+            if (measurementResponse?.Results != null)
+            {
+                foreach (var r in measurementResponse.Results)
+                {
+                    r.Target = measurementResponse.Target;
+                }
+            }
 
             if (measurementResponse?.Status == "in-progress") {
                 await Task.Delay(500).ConfigureAwait(false);
