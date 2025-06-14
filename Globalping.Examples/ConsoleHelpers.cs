@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Spectre.Console;
 using Spectre.Console.Json;
+using Spectre.Console.Rendering;
 
 namespace Globalping.Examples;
 
@@ -24,42 +26,86 @@ public static class ConsoleHelpers
             AnsiConsole.MarkupLine($"[yellow]{title}[/]");
         }
 
-        var table = new Table().RoundedBorder();
-        table.AddColumn("Property");
-        table.AddColumn("Value");
-
-        foreach (var prop in data.GetType().GetProperties())
-        {
-            var value = prop.GetValue(data);
-            if (value == null)
-            {
-                continue;
-            }
-
-            var formatted = Markup.Escape(FormatValue(value));
-            table.AddRow(Markup.Escape(prop.Name), formatted);
-        }
-
+        var table = CreateTable(data);
         AnsiConsole.Write(table);
         AnsiConsole.WriteLine();
     }
 
-    private static string FormatValue(object value)
+    private static Table CreateTable(object data)
     {
-        if (value is string s)
+        var table = new Table().RoundedBorder();
+        table.AddColumn("Property");
+        table.AddColumn("Value");
+
+        IEnumerable<KeyValuePair<string, object?>> entries;
+        if (data is IDictionary dict)
         {
-            return s;
+            entries = dict.Cast<DictionaryEntry>()
+                .Select(e => new KeyValuePair<string, object?>(e.Key?.ToString() ?? string.Empty, e.Value));
         }
-        if (value is IEnumerable enumerable && value is not IDictionary)
+        else
         {
-            var items = enumerable.Cast<object>().Select(FormatValue);
-            return string.Join(", ", items);
+            entries = data.GetType().GetProperties()
+                .Select(p => new KeyValuePair<string, object?>(p.Name, p.GetValue(data)));
         }
-        if (value.GetType().IsClass)
+
+        foreach (var entry in entries)
         {
-            return JsonSerializer.Serialize(value, JsonOptions);
+            if (entry.Value == null)
+            {
+                continue;
+            }
+
+            table.AddRow(new Markup(Markup.Escape(entry.Key)), RenderValue(entry.Value));
         }
-        return value.ToString() ?? string.Empty;
+
+        return table;
+    }
+
+    private static IRenderable RenderValue(object value)
+    {
+        switch (value)
+        {
+            case string s:
+                return new Markup(Markup.Escape(s));
+            case JsonElement je:
+                return RenderJsonElement(je);
+            case IEnumerable enumerable when value is not IDictionary:
+                var list = enumerable.Cast<object>().ToList();
+                return CreateListTable(list);
+            default:
+                if (value.GetType().IsClass)
+                {
+                    return CreateTable(value);
+                }
+                return new Markup(Markup.Escape(value.ToString() ?? string.Empty));
+        }
+    }
+
+    private static IRenderable RenderJsonElement(JsonElement element)
+    {
+        switch (element.ValueKind)
+        {
+            case JsonValueKind.Object:
+                var dict = JsonSerializer.Deserialize<Dictionary<string, object>>(element.GetRawText(), JsonOptions) ?? new();
+                return CreateTable(dict);
+            case JsonValueKind.Array:
+                var list = JsonSerializer.Deserialize<List<object>>(element.GetRawText(), JsonOptions) ?? new();
+                return CreateListTable(list);
+            default:
+                return new Markup(Markup.Escape(element.ToString()));
+        }
+    }
+
+    private static Table CreateListTable(IEnumerable<object> items)
+    {
+        var table = new Table().RoundedBorder();
+        table.AddColumn("Value");
+        foreach (var item in items)
+        {
+            table.AddRow(RenderValue(item));
+        }
+        return table;
     }
 
     public static void WriteJson(object data, string? title = null)
