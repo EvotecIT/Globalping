@@ -1,24 +1,18 @@
 using System;
 using Globalping;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Globalping.Examples;
 
-public static class ExecuteHttpExample
-{
-    public static async Task RunAsync()
-    {
+public static class ExecuteHttpExample {
+    public static async Task RunAsync() {
         var builder = new MeasurementRequestBuilder()
             .WithType(MeasurementType.Http)
             .WithTarget("cdn.jsdelivr.net")
             .AddMagic("Europe")
-            .WithMeasurementOptions(new HttpOptions
-            {
-                Request = new HttpRequestOptions
-                {
-                    Method = "GET",
+            .WithMeasurementOptions(new HttpOptions {
+                Request = new HttpRequestOptions {
+                    Method = HttpRequestMethod.GET,
                     Path = "/"
                 }
             });
@@ -26,9 +20,8 @@ public static class ExecuteHttpExample
         var request = builder.Build();
         request.InProgressUpdates = false;
 
-        using var httpClient = new HttpClient(new HttpClientHandler
-        {
-            AutomaticDecompression = DecompressionMethods.All
+        using var httpClient = new HttpClient(new HttpClientHandler {
+            AutomaticDecompression = System.Net.DecompressionMethods.All
         });
         var apiKey = Environment.GetEnvironmentVariable("GLOBALPING_TOKEN");
         var probeService = new ProbeService(httpClient, apiKey);
@@ -41,14 +34,11 @@ public static class ExecuteHttpExample
 
         ConsoleHelpers.WriteJson(request, $"Request sent (HTTP ID: {measurementId})");
 
-        if (result != null)
-        {
+        if (result != null) {
             ConsoleHelpers.WriteJson(result, "Measurement result");
 
-            if (result.Results != null)
-            {
-                foreach (var item in result.Results)
-                {
+            if (result.Results != null) {
+                foreach (var item in result.Results) {
                     ConsoleHelpers.WriteTable(item.Probe, "Probe");
                     ConsoleHelpers.WriteTable(item.Data, "Result details");
                 }
