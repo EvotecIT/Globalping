@@ -13,6 +13,7 @@ namespace Globalping.PowerShell;
 /// </example>
 [Cmdlet(VerbsCommon.Get, "GlobalpingLimit")]
 [OutputType(typeof(Limits))]
+[OutputType(typeof(Credits))]
 public class GetGlobalpingLimitCommand : PSCmdlet
 {
     /// <summary>API key used for authenticated calls.</summary>
@@ -33,6 +34,10 @@ public class GetGlobalpingLimitCommand : PSCmdlet
         });
         var service = new ProbeService(httpClient, ApiKey);
         var limits = service.GetLimitsAsync().GetAwaiter().GetResult();
+        if (limits?.Credits is not null)
+        {
+            WriteObject(limits.Credits);
+        }
         WriteObject(limits);
     }
 }

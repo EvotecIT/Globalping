@@ -29,4 +29,20 @@ public sealed class LimitsDeserializationTests
         Assert.Equal(8, create.Remaining);
         Assert.Equal(1000, create.Reset);
     }
+
+    [Fact]
+    public void DeserializesCredits()
+    {
+        var json = """
+        {
+            "rateLimit": {},
+            "credits": { "remaining": 42 }
+        }
+        """;
+
+        var limits = JsonSerializer.Deserialize<Limits>(json);
+        Assert.NotNull(limits);
+        Assert.NotNull(limits!.Credits);
+        Assert.Equal(42, limits.Credits!.Remaining);
+    }
 }
