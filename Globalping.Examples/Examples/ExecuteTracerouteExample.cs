@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -17,7 +18,10 @@ public static class ExecuteTracerouteExample
         var request = builder.Build();
         request.InProgressUpdates = false;
 
-        using var httpClient = new HttpClient();
+        using var httpClient = new HttpClient(new HttpClientHandler
+        {
+            AutomaticDecompression = DecompressionMethods.All
+        });
         var apiKey = Environment.GetEnvironmentVariable("GLOBALPING_TOKEN");
         var probeService = new ProbeService(httpClient, apiKey);
         var measurementId = await probeService.CreateMeasurementAsync(request);
