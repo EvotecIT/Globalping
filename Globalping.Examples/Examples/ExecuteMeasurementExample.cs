@@ -26,15 +26,15 @@ public static class ExecuteMeasurementExample
         var client = new MeasurementClient(httpClient, apiKey);
         var result = await client.GetMeasurementByIdAsync(measurementId);
 
-        ConsoleHelpers.WriteTable(request, "Request sent");
-        ConsoleHelpers.WriteTable(result, "Measurement result");
+        ConsoleHelpers.WriteJson(request, "Request sent");
+        ConsoleHelpers.WriteJson(result, "Measurement result");
 
         if (result.Results != null)
         {
             foreach (var item in result.Results)
             {
                 ConsoleHelpers.WriteTable(item.Probe, "Probe");
-                ConsoleHelpers.WriteTable(item.Data, "Result details");
+                ConsoleHelpers.WriteJson(item.Data, "Result details");
             }
         }
     }

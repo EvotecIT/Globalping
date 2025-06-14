@@ -36,7 +36,8 @@ public static class ConsoleHelpers
                 continue;
             }
 
-            table.AddRow(prop.Name, FormatValue(value));
+            var formatted = Markup.Escape(FormatValue(value));
+            table.AddRow(Markup.Escape(prop.Name), formatted);
         }
 
         AnsiConsole.Write(table);

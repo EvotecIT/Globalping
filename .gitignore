@@ -369,3 +369,6 @@ build/*
 /.idea/
 
 /Ignore/*
+# Tools
+/dotnet-install.sh
+/packages-microsoft-prod.deb
