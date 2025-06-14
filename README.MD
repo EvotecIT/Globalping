@@ -1,5 +1,6 @@
 <p align="center">
   <a href="https://github.com/EvotecIT/Globalping/actions/workflows/dotnet-tests.yml"><img src="https://github.com/EvotecIT/Globalping/actions/workflows/dotnet-tests.yml/badge.svg"></a>
+  <a href="https://codecov.io/gh/EvotecIT/Globalping"><img src="https://codecov.io/gh/EvotecIT/Globalping/branch/master/graph/badge.svg" /></a>
   <a href="https://www.powershellgallery.com/packages/Globalping"><img src="https://img.shields.io/powershellgallery/p/Globalping.svg"></a>
   <a href="https://github.com/EvotecIT/Globalping"><img src="https://img.shields.io/github/languages/top/evotecit/Globalping.svg"></a>
   <a href="https://github.com/EvotecIT/Globalping"><img src="https://img.shields.io/github/languages/code-size/evotecit/Globalping.svg"></a>
