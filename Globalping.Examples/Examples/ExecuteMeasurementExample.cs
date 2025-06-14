@@ -1,7 +1,7 @@
 using System;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
+using Spectre.Console;
 
 namespace Globalping.Examples;
 
@@ -26,7 +26,16 @@ public static class ExecuteMeasurementExample
         var client = new MeasurementClient(httpClient, apiKey);
         var result = await client.GetMeasurementByIdAsync(measurementId);
 
-        var options = new JsonSerializerOptions { WriteIndented = true };
-        Console.WriteLine(JsonSerializer.Serialize(result, options));
+        ConsoleHelpers.WriteTable(request, "Request sent");
+        ConsoleHelpers.WriteTable(result, "Measurement result");
+
+        if (result.Results != null)
+        {
+            foreach (var item in result.Results)
+            {
+                ConsoleHelpers.WriteTable(item.Probe, "Probe");
+                ConsoleHelpers.WriteTable(item.Data, "Result details");
+            }
+        }
     }
 }
