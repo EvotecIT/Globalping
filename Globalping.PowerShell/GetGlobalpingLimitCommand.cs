@@ -34,10 +34,6 @@ public class GetGlobalpingLimitCommand : PSCmdlet
         });
         var service = new ProbeService(httpClient, ApiKey);
         var limits = service.GetLimitsAsync().GetAwaiter().GetResult();
-        if (limits?.Credits is not null)
-        {
-            WriteObject(limits.Credits);
-        }
         WriteObject(limits);
     }
 }
