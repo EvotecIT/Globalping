@@ -16,7 +16,7 @@ public class HttpRequestOptions
     public string? Query { get; set; }
 
     [JsonPropertyName("method")]
-    public string Method { get; set; } = "HEAD";
+    public HttpRequestMethod Method { get; set; } = HttpRequestMethod.Head;
 
     [JsonPropertyName("headers")]
     public Dictionary<string, string> Headers { get; set; } = new(StringComparer.OrdinalIgnoreCase);
