@@ -58,5 +58,11 @@ public static class BuildRequestExample
                 Resolver = "8.8.8.8"
             });
         ConsoleHelpers.WriteJson(builder.Build(), "Request 6");
+
+        builder = new MeasurementRequestBuilder()
+            .WithType(MeasurementType.Ping)
+            .WithTarget("example.com")
+            .ReuseLocationsFromId("previous-id");
+        ConsoleHelpers.WriteJson(builder.Build(), "Request 7");
     }
 }

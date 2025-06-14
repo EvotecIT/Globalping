@@ -13,8 +13,15 @@ public class MeasurementRequest {
     [JsonPropertyName("inProgressUpdates")]
     public bool InProgressUpdates { get; set; } = false;
 
-    [JsonPropertyName("locations")]
+    [JsonIgnore]
     public List<LocationRequest>? Locations { get; set; }
+
+    [JsonIgnore]
+    public string? ReuseLocationsFromId { get; set; }
+
+    [JsonPropertyName("locations")]
+    public object? SerializedLocations =>
+        (object?)ReuseLocationsFromId ?? Locations;
 
     [JsonPropertyName("limit")]
     public int? Limit { get; set; }

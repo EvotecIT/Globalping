@@ -41,6 +41,10 @@ public abstract class StartGlobalpingBaseCommand : PSCmdlet
     [Parameter]
     public LocationRequest[]? Locations { get; set; }
 
+    /// <summary>Reuse probe locations from a previous measurement.</summary>
+    [Parameter]
+    public string? ReuseLocationsFromId { get; set; }
+
     /// <para>Short location identifiers such as city or country codes.</para>
     /// <para>Two-letter strings are treated as ISO country codes. Longer
     /// values map to the "magic" location syntax used by the API.</para>
@@ -74,9 +78,10 @@ public abstract class StartGlobalpingBaseCommand : PSCmdlet
 
         int? limit = Limit;
         var calculateLimit = !MyInvocation.BoundParameters.ContainsKey(nameof(Limit));
-        var hasLocationLimits = Locations is not null && Locations.Any(l => l.Limit.HasValue);
+        var hasLocationLimits = ReuseLocationsFromId is null &&
+            Locations is not null && Locations.Any(l => l.Limit.HasValue);
 
-        if (calculateLimit && !hasLocationLimits)
+        if (ReuseLocationsFromId is null && calculateLimit && !hasLocationLimits)
         {
             limit = 0;
 
@@ -102,12 +107,17 @@ public abstract class StartGlobalpingBaseCommand : PSCmdlet
             .WithType(Type)
             .WithTarget(Target);
 
+        if (ReuseLocationsFromId is not null)
+        {
+            builder.ReuseLocationsFromId(ReuseLocationsFromId);
+        }
+
         if (limit.HasValue)
         {
             builder.WithLimit(limit);
         }
 
-        if (SimpleLocations is not null)
+        if (ReuseLocationsFromId is null && SimpleLocations is not null)
         {
             foreach (var loc in SimpleLocations)
             {
@@ -122,7 +132,7 @@ public abstract class StartGlobalpingBaseCommand : PSCmdlet
             }
         }
 
-        if (Locations is not null)
+        if (ReuseLocationsFromId is null && Locations is not null)
         {
             builder.WithLocations(Locations);
         }
