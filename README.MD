@@ -37,7 +37,7 @@ Run a simple measurement:
 Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE" | Format-Table
 ```
 
-To use the `Locations` parameter provide `LocationRequest` objects:
+To use the `Locations` parameter provide `LocationRequest` objects. When specifying multiple locations be sure to increase the measurement `Limit` so each probe is executed:
 
 ```powershell
 $locations = @(
@@ -46,5 +46,13 @@ $locations = @(
 )
 Start-Globalping -Type Ping -Target "example.com" -Locations $locations | Format-Table
 ```
+
+```powershell
+# request three probes from specific countries
+$result = Start-Globalping -Type Ping -Target "example.com" -Limit 3 -SimpleLocations "DE", "US", "GB"
+$result.Results | Format-Table
+```
+
+Use ISO 3166-1 alpha-2 country codes (e.g. `GB` for United Kingdom).
 
 The API specification is available at [api.globalping.io/v1/spec.yaml](https://api.globalping.io/v1/spec.yaml).

@@ -21,6 +21,10 @@ public class StartGlobalpingCommand : PSCmdlet
     public string[]? SimpleLocations { get; set; }
 
     [Parameter]
+    [ValidateRange(1, int.MaxValue)]
+    public int Limit { get; set; } = 1;
+
+    [Parameter]
     public IMeasurementOptions? MeasurementOptions { get; set; }
 
     [Parameter]
@@ -33,7 +37,8 @@ public class StartGlobalpingCommand : PSCmdlet
 
         var builder = new MeasurementRequestBuilder()
             .WithType(Type)
-            .WithTarget(Target);
+            .WithTarget(Target)
+            .WithLimit(Limit);
 
         if (SimpleLocations is not null)
         {

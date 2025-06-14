@@ -4,12 +4,13 @@ Start-Globalping -Type Ping -Target "evotec.xyz" -Verbose | Format-Table
 
 Start-Globalping -Type Ping -Target "evotec.xyz" -Verbose -SimpleLocations "DE" | Format-Table
 
-Start-Globalping -Type Ping -Target "evotec.xyz" -Verbose -SimpleLocations "DE", "US", "UK" | Format-Table
+$multi = Start-Globalping -Type Ping -Target "evotec.xyz" -Verbose -Limit 3 -SimpleLocations "DE", "US", "GB"
+$multi.Results | Format-Table
 
 $loc = @(
     [Globalping.LocationRequest]@{ Country = "DE"; Limit = 1 },
     [Globalping.LocationRequest]@{ Country = "US"; Limit = 1 },
-    [Globalping.LocationRequest]@{ Country = "UK"; Limit = 1 },
+    [Globalping.LocationRequest]@{ Country = "GB"; Limit = 1 },
     [Globalping.LocationRequest]@{ Country = "PL"; Limit = 1 },
     [Globalping.LocationRequest]@{ Country = "FR"; Limit = 1 },
     [Globalping.LocationRequest]@{ Country = "IT"; Limit = 1 },
