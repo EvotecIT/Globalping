@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace Globalping;
 
@@ -142,13 +143,13 @@ public static class MeasurementResponseExtensions {
                     Host = match.Groups[2].Value,
                     IpAddress = match.Groups[3].Value
                 };
-                if (double.TryParse(match.Groups[4].Value, out var r1)) {
+                if (double.TryParse(match.Groups[4].Value, NumberStyles.Float, CultureInfo.InvariantCulture, out var r1)) {
                     hop.Time1 = r1;
                 }
-                if (double.TryParse(match.Groups[5].Value, out var r2)) {
+                if (double.TryParse(match.Groups[5].Value, NumberStyles.Float, CultureInfo.InvariantCulture, out var r2)) {
                     hop.Time2 = r2;
                 }
-                if (match.Groups[6].Success && double.TryParse(match.Groups[6].Value, out var r3)) {
+                if (match.Groups[6].Success && double.TryParse(match.Groups[6].Value, NumberStyles.Float, CultureInfo.InvariantCulture, out var r3)) {
                     hop.Time3 = r3;
                 }
                 list.Add(hop);
@@ -193,12 +194,12 @@ public static class MeasurementResponseExtensions {
                     Asn = m.Groups[2].Value,
                     Host = m.Groups[3].Value.Trim(),
                     IpAddress = m.Groups[4].Value,
-                    LossPercent = double.Parse(m.Groups[5].Value),
+                    LossPercent = double.Parse(m.Groups[5].Value, CultureInfo.InvariantCulture),
                     Drop = int.Parse(m.Groups[6].Value),
                     Rcv = int.Parse(m.Groups[7].Value),
-                    Avg = double.Parse(m.Groups[8].Value),
-                    StDev = double.Parse(m.Groups[9].Value),
-                    Javg = double.Parse(m.Groups[10].Value)
+                    Avg = double.Parse(m.Groups[8].Value, CultureInfo.InvariantCulture),
+                    StDev = double.Parse(m.Groups[9].Value, CultureInfo.InvariantCulture),
+                    Javg = double.Parse(m.Groups[10].Value, CultureInfo.InvariantCulture)
                 };
                 list.Add(hop);
             }
