@@ -1,20 +1,15 @@
+using System.Linq;
 using System.Management.Automation;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Linq;
 using Globalping;
 
 namespace Globalping.PowerShell;
 
-[Cmdlet(VerbsLifecycle.Start, "Globalping")]
-[OutputType(typeof(PingTimingResult))]
-[OutputType(typeof(string))]
-[OutputType(typeof(MeasurementResponse))]
-public class StartGlobalpingCommand : PSCmdlet
+public abstract class StartGlobalpingBaseCommand : PSCmdlet
 {
-    [Parameter(Mandatory = true)]
-    public MeasurementType Type { get; set; }
+    protected abstract MeasurementType Type { get; }
 
     [Parameter(Mandatory = true)]
     public string Target { get; set; } = string.Empty;
@@ -29,21 +24,13 @@ public class StartGlobalpingCommand : PSCmdlet
     public int? Limit { get; set; }
 
     [Parameter]
-    public IMeasurementOptions? MeasurementOptions { get; set; }
-
-    [Parameter]
     public SwitchParameter InProgressUpdates { get; set; }
 
     [Parameter]
     [Alias("Token")]
     public string? ApiKey { get; set; }
 
-    [Parameter]
-    [Alias("Raw")]
-    public SwitchParameter AsRaw { get; set; }
-
-    [Parameter]
-    public SwitchParameter Classic { get; set; }
+    protected virtual IMeasurementOptions? MeasurementOptions => null;
 
     protected override void ProcessRecord()
     {
@@ -143,26 +130,11 @@ public class StartGlobalpingCommand : PSCmdlet
         var result = client.GetMeasurementByIdAsync(id).GetAwaiter().GetResult();
         WriteVerbose($"Response: {JsonSerializer.Serialize(result, jsonOptions)}");
 
-        if (Classic.IsPresent && Type == MeasurementType.Ping && result?.Results != null)
-        {
-            foreach (var r in result.Results)
-            {
-                if (r.Data?.RawOutput is not null)
-                {
-                    WriteObject(r.Data.RawOutput);
-                }
-            }
-        }
-        else if (!AsRaw.IsPresent && Type == MeasurementType.Ping && result is not null)
-        {
-            foreach (var timing in result.GetPingTimings())
-            {
-                WriteObject(timing);
-            }
-        }
-        else
-        {
-            WriteObject(result);
-        }
+        HandleOutput(result);
+    }
+
+    protected virtual void HandleOutput(MeasurementResponse? result)
+    {
+        WriteObject(result);
     }
 }

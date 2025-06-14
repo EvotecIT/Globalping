@@ -31,20 +31,32 @@ public static class MeasurementResponseExtensions {
         }
 
         return response.Results.SelectMany(r =>
-            r.Data?.Timings?.Select((t, idx) => new PingTimingResult {
-                Target = response.Target,
-                Continent = r.Probe.Continent,
-                City = r.Probe.City,
-                Country = r.Probe.Country,
-                IcmpSequence = idx + 1,
-                TTL = t.Ttl,
-                Time = t.Rtt,
-                State = r.Probe.State,
-                Asn = r.Probe.Asn,
-                Network = r.Probe.Network,
-                ResolvedAddress = r.Data?.ResolvedAddress,
-                ResolvedHostname = r.Data?.ResolvedHostname,
-                Status = r.Data?.Status,
-            }) ?? Enumerable.Empty<PingTimingResult>());
+        {
+            if (r.Data?.Timings is JsonElement element && element.ValueKind == JsonValueKind.Array)
+            {
+                return element.EnumerateArray().Select((t, idx) =>
+                {
+                    var timing = JsonSerializer.Deserialize<Timing>(t.GetRawText());
+                    return new PingTimingResult
+                    {
+                        Target = response.Target,
+                        Continent = r.Probe.Continent,
+                        City = r.Probe.City,
+                        Country = r.Probe.Country,
+                        IcmpSequence = idx + 1,
+                        TTL = timing?.Ttl ?? 0,
+                        Time = timing?.Rtt ?? 0,
+                        State = r.Probe.State,
+                        Asn = r.Probe.Asn,
+                        Network = r.Probe.Network,
+                        ResolvedAddress = r.Data?.ResolvedAddress,
+                        ResolvedHostname = r.Data?.ResolvedHostname,
+                        Status = r.Data?.Status,
+                    };
+                });
+            }
+
+            return Enumerable.Empty<PingTimingResult>();
+        });
     }
 }
