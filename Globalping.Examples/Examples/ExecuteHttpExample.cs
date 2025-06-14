@@ -1,4 +1,5 @@
 using System;
+using Globalping;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -12,7 +13,14 @@ public static class ExecuteHttpExample
             .WithType(MeasurementType.Http)
             .WithTarget("cdn.jsdelivr.net")
             .AddMagic("Europe")
-            .WithMeasurementOptions(new HttpOptions());
+            .WithMeasurementOptions(new HttpOptions
+            {
+                Request = new HttpRequestOptions
+                {
+                    Method = "GET",
+                    Path = "/"
+                }
+            });
 
         var request = builder.Build();
         request.InProgressUpdates = false;

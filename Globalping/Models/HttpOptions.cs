@@ -1,4 +1,3 @@
-﻿using HttpRequest = System.Net.Http.HttpRequestMessage;
 using System.Text.Json.Serialization;
 
 namespace Globalping;
@@ -6,7 +5,7 @@ namespace Globalping;
 
 public class HttpOptions : IMeasurementOptions {
     [JsonPropertyName("request")]
-    public HttpRequest Request { get; set; } = new HttpRequest();
+    public HttpRequestOptions Request { get; set; } = new HttpRequestOptions();
 
     [JsonPropertyName("resolver")]
     public string? Resolver { get; set; }
