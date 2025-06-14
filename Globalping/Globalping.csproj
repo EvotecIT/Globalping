@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <Company>Evotec</Company>
@@ -12,13 +12,14 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-  <ItemGroup>
-    <Using Include="System.Net.Http" />
-  </ItemGroup>
+    <ItemGroup>
+        <Using Include="System.Net.Http" />
+    </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'net472'">
-    <PackageReference Include="System.Text.Json" Version="8.0.0" />
-    <PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
-  </ItemGroup>
+    <ItemGroup
+        Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'net472'">
+        <PackageReference Include="System.Text.Json" Version="8.0.5" />
+        <PackageReference Include="System.Net.Http.Json" Version="8.0.1" />
+    </ItemGroup>
 
 </Project>
