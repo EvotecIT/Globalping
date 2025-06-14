@@ -11,8 +11,8 @@ public sealed class LimitsDeserializationTests
         var json = """
         {
             "rateLimit": {
-                "measurement": {
-                    "ping": { "type": "ip", "limit": 10, "remaining": 8, "reset": 1000 }
+                "measurements": {
+                    "create": { "type": "ip", "limit": 10, "remaining": 8, "reset": 1000 }
                 }
             }
         }
@@ -20,13 +20,13 @@ public sealed class LimitsDeserializationTests
 
         var limits = JsonSerializer.Deserialize<Limits>(json);
         Assert.NotNull(limits);
-        Assert.True(limits!.RateLimit.ContainsKey("measurement"));
-        var measurement = limits.RateLimit["measurement"];
-        Assert.True(measurement.ContainsKey("ping"));
-        var ping = measurement["ping"];
-        Assert.Equal("ip", ping.Type);
-        Assert.Equal(10, ping.Limit);
-        Assert.Equal(8, ping.Remaining);
-        Assert.Equal(1000, ping.Reset);
+        Assert.True(limits!.RateLimit.ContainsKey("measurements"));
+        var measurements = limits.RateLimit["measurements"];
+        Assert.True(measurements.ContainsKey("create"));
+        var create = measurements["create"];
+        Assert.Equal("ip", create.Type);
+        Assert.Equal(10, create.Limit);
+        Assert.Equal(8, create.Remaining);
+        Assert.Equal(1000, create.Reset);
     }
 }

@@ -10,6 +10,7 @@ public class Limits
 {
     /// <summary>
     /// Nested dictionary containing rate limits grouped by category and action.
+    /// Currently the API exposes limits under <c>rateLimit.measurements.create</c>.
     /// </summary>
     [JsonPropertyName("rateLimit")]
     public Dictionary<string, Dictionary<string, RateLimitDetails>> RateLimit { get; set; } = new();
