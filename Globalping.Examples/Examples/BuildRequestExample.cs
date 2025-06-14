@@ -41,5 +41,22 @@ public static class BuildRequestExample
             .WithTarget("cdn.jsdelivr.net")
             .WithMeasurementOptions(new PingOptions { Packets = 6 });
         ConsoleHelpers.WriteJson(builder.Build(), "Request 4");
+
+        builder = new MeasurementRequestBuilder()
+            .WithType(MeasurementType.Mtr)
+            .WithTarget("cdn.jsdelivr.net")
+            .AddMagic("Europe")
+            .WithMeasurementOptions(new MtrOptions { Packets = 3 });
+        ConsoleHelpers.WriteJson(builder.Build(), "Request 5");
+
+        builder = new MeasurementRequestBuilder()
+            .WithType(MeasurementType.Dns)
+            .WithTarget("cloudflare.com")
+            .AddMagic("US")
+            .WithMeasurementOptions(new DnsOptions {
+                Query = new DnsQuery { Type = DnsQueryType.A },
+                Resolver = "8.8.8.8"
+            });
+        ConsoleHelpers.WriteJson(builder.Build(), "Request 6");
     }
 }

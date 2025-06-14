@@ -1,19 +1,23 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Spectre.Console;
 
 namespace Globalping.Examples;
 
-public static class ExecuteMeasurementExample
+public static class ExecuteDnsExample
 {
     public static async Task RunAsync()
     {
         var builder = new MeasurementRequestBuilder()
-            .WithType(MeasurementType.Ping)
-            .WithTarget("cdn.jsdelivr.net")
-            .AddMagic("Europe")
-            .WithMeasurementOptions(new PingOptions { Packets = 2 });
+            .WithType(MeasurementType.Dns)
+            .WithTarget("cloudflare.com")
+            .AddMagic("US")
+            .WithMeasurementOptions(new DnsOptions
+            {
+                Query = new DnsQuery { Type = DnsQueryType.A },
+                Resolver = "8.8.8.8",
+                Trace = false
+            });
 
         var request = builder.Build();
         request.InProgressUpdates = false;
@@ -26,7 +30,7 @@ public static class ExecuteMeasurementExample
         var client = new MeasurementClient(httpClient, apiKey);
         var result = await client.GetMeasurementByIdAsync(measurementId);
 
-        ConsoleHelpers.WriteJson(request, "Request sent");
+        ConsoleHelpers.WriteJson(request, "Request sent (DNS)");
         ConsoleHelpers.WriteJson(result, "Measurement result");
 
         if (result.Results != null)
