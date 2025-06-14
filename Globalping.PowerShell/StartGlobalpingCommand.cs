@@ -8,6 +8,7 @@ using Globalping;
 namespace Globalping.PowerShell;
 
 [Cmdlet(VerbsLifecycle.Start, "Globalping")]
+[OutputType(typeof(PingTimingResult))]
 [OutputType(typeof(MeasurementResponse))]
 public class StartGlobalpingCommand : PSCmdlet
 {
@@ -35,6 +36,10 @@ public class StartGlobalpingCommand : PSCmdlet
     [Parameter]
     [Alias("Token")]
     public string? ApiKey { get; set; }
+
+    [Parameter]
+    [Alias("Raw")]
+    public SwitchParameter AsRaw { get; set; }
 
     protected override void ProcessRecord()
     {
@@ -133,6 +138,17 @@ public class StartGlobalpingCommand : PSCmdlet
         var client = new MeasurementClient(httpClient, ApiKey);
         var result = client.GetMeasurementByIdAsync(id).GetAwaiter().GetResult();
         WriteVerbose($"Response: {JsonSerializer.Serialize(result, jsonOptions)}");
-        WriteObject(result);
+
+        if (!AsRaw.IsPresent && Type == MeasurementType.Ping && result is not null)
+        {
+            foreach (var timing in result.GetPingTimings())
+            {
+                WriteObject(timing);
+            }
+        }
+        else
+        {
+            WriteObject(result);
+        }
     }
 }

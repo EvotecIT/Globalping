@@ -27,4 +27,28 @@ public static class MeasurementResponseExtensions
             Stats = r.Data?.Stats
         });
     }
+
+    public static IEnumerable<PingTimingResult> GetPingTimings(this MeasurementResponse response)
+    {
+        if (response.Results == null)
+        {
+            return Enumerable.Empty<PingTimingResult>();
+        }
+
+        return response.Results.SelectMany(r =>
+            r.Data?.Timings?.Select(t => new PingTimingResult
+            {
+                Country = r.Probe.Country,
+                City = r.Probe.City,
+                State = r.Probe.State,
+                Continent = r.Probe.Continent,
+                Asn = r.Probe.Asn,
+                Network = r.Probe.Network,
+                ResolvedAddress = r.Data?.ResolvedAddress,
+                ResolvedHostname = r.Data?.ResolvedHostname,
+                Status = r.Data?.Status,
+                Ttl = t.Ttl,
+                Rtt = t.Rtt
+            }) ?? Enumerable.Empty<PingTimingResult>());
+    }
 }

@@ -62,4 +62,16 @@ $result = Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE
 $result.GetSummaries() | Format-Table
 ```
 
+By default `Start-Globalping` will return individual ping timings flattened with
+location information. To get the raw API response pass `-AsRaw`:
+
+```powershell
+Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE" | Format-Table
+```
+
+```powershell
+# return the original `MeasurementResponse`
+Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE" -AsRaw
+```
+
 The API specification is available at [api.globalping.io/v1/spec.yaml](https://api.globalping.io/v1/spec.yaml).
