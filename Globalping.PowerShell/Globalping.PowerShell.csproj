@@ -25,7 +25,7 @@
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
 
-     <ItemGroup>
+    <ItemGroup>
         <Using Include="System.Collections" />
         <Using Include="System.Management.Automation" />
         <Using Include="System.Threading.Tasks" />
@@ -66,4 +66,3 @@
 
 
 </Project>
-
