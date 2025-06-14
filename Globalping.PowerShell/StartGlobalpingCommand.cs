@@ -1,5 +1,7 @@
 using System.Management.Automation;
 using System.Net.Http;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Globalping;
 
 namespace Globalping.PowerShell;
@@ -88,7 +90,26 @@ public class StartGlobalpingCommand : PSCmdlet
         var request = builder.Build();
         request.InProgressUpdates = InProgressUpdates.IsPresent;
 
-        var id = service.CreateMeasurementAsync(request).GetAwaiter().GetResult();
+        var jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        };
+        jsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+
+        WriteVerbose($"Request: {JsonSerializer.Serialize(request, jsonOptions)}");
+
+        string id;
+        try
+        {
+            id = service.CreateMeasurementAsync(request).GetAwaiter().GetResult();
+            WriteVerbose($"Measurement id: {id}");
+        }
+        catch (HttpRequestException ex)
+        {
+            WriteVerbose($"Request failed: {ex.Message}");
+            throw;
+        }
         if (string.IsNullOrEmpty(id))
         {
             WriteError(new ErrorRecord(new InvalidOperationException("Measurement creation failed"), "CreateFailed", ErrorCategory.InvalidOperation, Target));
@@ -97,6 +118,7 @@ public class StartGlobalpingCommand : PSCmdlet
 
         var client = new MeasurementClient(httpClient);
         var result = client.GetMeasurementByIdAsync(id).GetAwaiter().GetResult();
+        WriteVerbose($"Response: {JsonSerializer.Serialize(result, jsonOptions)}");
         WriteObject(result);
     }
 }

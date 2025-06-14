@@ -1,1 +1,1 @@
-﻿[assembly: Parallelize(Scope = ExecutionScope.MethodLevel)]
+// MSTest settings removed to allow xUnit based tests to compile without MSTest dependencies
