@@ -74,4 +74,10 @@ Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE" | Format
 Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE" -AsRaw
 ```
 
+Use `-Classic` to output the raw ping text similar to the traditional `ping` command:
+
+```powershell
+Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE" -Classic
+```
+
 The API specification is available at [api.globalping.io/v1/spec.yaml](https://api.globalping.io/v1/spec.yaml).

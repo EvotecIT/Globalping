@@ -36,12 +36,13 @@ public static class MeasurementResponseExtensions
         }
 
         return response.Results.SelectMany(r =>
-            r.Data?.Timings?.Select(t => new PingTimingResult
+            r.Data?.Timings?.Select((t, idx) => new PingTimingResult
             {
-                Target = response.Target,
-                IcmpSequence = 0,
-                Country = r.Probe.Country,
+                Continent = r.Probe.Continent,
                 City = r.Probe.City,
+                IcmpSequence = idx + 1,
+                Rtt = t.Rtt,
+                Status = r.Data?.Status
                 State = r.Probe.State,
                 Continent = r.Probe.Continent,
                 Asn = r.Probe.Asn,

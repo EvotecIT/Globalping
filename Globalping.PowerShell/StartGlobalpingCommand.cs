@@ -9,6 +9,7 @@ namespace Globalping.PowerShell;
 
 [Cmdlet(VerbsLifecycle.Start, "Globalping")]
 [OutputType(typeof(PingTimingResult))]
+[OutputType(typeof(string))]
 [OutputType(typeof(MeasurementResponse))]
 public class StartGlobalpingCommand : PSCmdlet
 {
@@ -40,6 +41,9 @@ public class StartGlobalpingCommand : PSCmdlet
     [Parameter]
     [Alias("Raw")]
     public SwitchParameter AsRaw { get; set; }
+
+    [Parameter]
+    public SwitchParameter Classic { get; set; }
 
     protected override void ProcessRecord()
     {
@@ -139,7 +143,17 @@ public class StartGlobalpingCommand : PSCmdlet
         var result = client.GetMeasurementByIdAsync(id).GetAwaiter().GetResult();
         WriteVerbose($"Response: {JsonSerializer.Serialize(result, jsonOptions)}");
 
-        if (!AsRaw.IsPresent && Type == MeasurementType.Ping && result is not null)
+        if (Classic.IsPresent && Type == MeasurementType.Ping && result?.Results != null)
+        {
+            foreach (var r in result.Results)
+            {
+                if (r.Data?.RawOutput is not null)
+                {
+                    WriteObject(r.Data.RawOutput);
+                }
+            }
+        }
+        else if (!AsRaw.IsPresent && Type == MeasurementType.Ping && result is not null)
         {
             foreach (var timing in result.GetPingTimings())
             {
