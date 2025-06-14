@@ -8,29 +8,29 @@ public partial class Result
         => ResultExtensions.ToPingTimings(this, target);
 
     public IEnumerable<PingTimingResult> ToPingTimings()
-        => ResultExtensions.ToPingTimings(this, string.Empty);
+        => ResultExtensions.ToPingTimings(this, Target);
 
     public IEnumerable<TracerouteHopResult> ToTracerouteHops(string target)
         => ResultExtensions.ToTracerouteHops(this, target);
 
     public IEnumerable<TracerouteHopResult> ToTracerouteHops()
-        => ResultExtensions.ToTracerouteHops(this, string.Empty);
+        => ResultExtensions.ToTracerouteHops(this, Target);
 
     public IEnumerable<MtrHopResult> ToMtrHops(string target)
         => ResultExtensions.ToMtrHops(this, target);
 
     public IEnumerable<MtrHopResult> ToMtrHops()
-        => ResultExtensions.ToMtrHops(this, string.Empty);
+        => ResultExtensions.ToMtrHops(this, Target);
 
     public IEnumerable<DnsRecordResult> ToDnsRecords(string target)
         => ResultExtensions.ToDnsRecords(this, target);
 
     public IEnumerable<DnsRecordResult> ToDnsRecords()
-        => ResultExtensions.ToDnsRecords(this, string.Empty);
+        => ResultExtensions.ToDnsRecords(this, Target);
 
     public HttpResponseResult? ToHttpResponse(string target)
         => ResultExtensions.ToHttpResponse(this, target);
 
     public HttpResponseResult? ToHttpResponse()
-        => ResultExtensions.ToHttpResponse(this, string.Empty);
+        => ResultExtensions.ToHttpResponse(this, Target);
 }
