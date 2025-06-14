@@ -17,7 +17,7 @@ public class MeasurementRequest {
     public List<LocationRequest>? Locations { get; set; }
 
     [JsonPropertyName("limit")]
-    public int Limit { get; set; } = 1;
+    public int? Limit { get; set; }
 
     [JsonPropertyName("measurementOptions")]
     public IMeasurementOptions? MeasurementOptions { get; set; }

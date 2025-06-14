@@ -49,7 +49,7 @@ public class MeasurementRequestBuilder
         return this;
     }
 
-    public MeasurementRequestBuilder WithLimit(int limit)
+    public MeasurementRequestBuilder WithLimit(int? limit)
     {
         _request.Limit = limit;
         return this;
