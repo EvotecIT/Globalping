@@ -29,6 +29,12 @@ public class MeasurementResponse {
     [JsonPropertyName("measurementOptions")]
     public MeasurementOptions? MeasurementOptions { get; set; }
 
+    [JsonPropertyName("locations")]
+    public List<LocationRequest>? Locations { get; set; }
+
+    [JsonPropertyName("limit")]
+    public int? Limit { get; set; }
+
     [JsonPropertyName("results")]
     public List<Result>? Results { get; set; }
 }
