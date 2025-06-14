@@ -6,7 +6,7 @@ namespace Globalping;
 
 public static class ResultExtensions
 {
-    public static IEnumerable<PingTimingResult> ToPingTimings(this Result result, string target)
+    public static List<PingTimingResult> ToPingTimings(this Result result, string target)
     {
         if (result.Data?.Timings is JsonElement element && element.ValueKind == JsonValueKind.Array)
         {
@@ -29,12 +29,12 @@ public static class ResultExtensions
                     ResolvedHostname = result.Data?.ResolvedHostname,
                     Status = result.Data?.Status,
                 };
-            });
+            }).ToList();
         }
-        return Enumerable.Empty<PingTimingResult>();
+        return new List<PingTimingResult>();
     }
 
-    public static IEnumerable<TracerouteHopResult> ToTracerouteHops(this Result result, string target)
+    public static List<TracerouteHopResult> ToTracerouteHops(this Result result, string target)
     {
         return MeasurementResponseExtensions.ParseTraceroute(result.Data?.RawOutput).Select(h =>
         {
@@ -49,10 +49,10 @@ public static class ResultExtensions
             h.ResolvedHostname = result.Data?.ResolvedHostname;
             h.Status = result.Data?.Status;
             return h;
-        });
+        }).ToList();
     }
 
-    public static IEnumerable<MtrHopResult> ToMtrHops(this Result result, string target)
+    public static List<MtrHopResult> ToMtrHops(this Result result, string target)
     {
         return MeasurementResponseExtensions.ParseMtr(result.Data?.RawOutput).Select(h =>
         {
@@ -67,10 +67,10 @@ public static class ResultExtensions
             h.ResolvedHostname = result.Data?.ResolvedHostname;
             h.Status = result.Data?.Status;
             return h;
-        });
+        }).ToList();
     }
 
-    public static IEnumerable<DnsRecordResult> ToDnsRecords(this Result result, string target)
+    public static List<DnsRecordResult> ToDnsRecords(this Result result, string target)
     {
         return MeasurementResponseExtensions.ParseDns(result.Data?.RawOutput).Select(h =>
         {
@@ -83,7 +83,7 @@ public static class ResultExtensions
             h.Continent = result.Probe.Continent;
             h.Status = result.Data?.Status;
             return h;
-        });
+        }).ToList();
     }
 
     public static HttpResponseResult? ToHttpResponse(this Result result, string target)

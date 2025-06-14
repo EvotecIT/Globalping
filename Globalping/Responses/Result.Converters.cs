@@ -4,28 +4,28 @@ namespace Globalping;
 
 public partial class Result
 {
-    public IEnumerable<PingTimingResult> ToPingTimings(string target)
+    public List<PingTimingResult> ToPingTimings(string target)
         => ResultExtensions.ToPingTimings(this, target);
 
-    public IEnumerable<PingTimingResult> ToPingTimings()
+    public List<PingTimingResult> ToPingTimings()
         => ResultExtensions.ToPingTimings(this, Target);
 
-    public IEnumerable<TracerouteHopResult> ToTracerouteHops(string target)
+    public List<TracerouteHopResult> ToTracerouteHops(string target)
         => ResultExtensions.ToTracerouteHops(this, target);
 
-    public IEnumerable<TracerouteHopResult> ToTracerouteHops()
+    public List<TracerouteHopResult> ToTracerouteHops()
         => ResultExtensions.ToTracerouteHops(this, Target);
 
-    public IEnumerable<MtrHopResult> ToMtrHops(string target)
+    public List<MtrHopResult> ToMtrHops(string target)
         => ResultExtensions.ToMtrHops(this, target);
 
-    public IEnumerable<MtrHopResult> ToMtrHops()
+    public List<MtrHopResult> ToMtrHops()
         => ResultExtensions.ToMtrHops(this, Target);
 
-    public IEnumerable<DnsRecordResult> ToDnsRecords(string target)
+    public List<DnsRecordResult> ToDnsRecords(string target)
         => ResultExtensions.ToDnsRecords(this, target);
 
-    public IEnumerable<DnsRecordResult> ToDnsRecords()
+    public List<DnsRecordResult> ToDnsRecords()
         => ResultExtensions.ToDnsRecords(this, Target);
 
     public HttpResponseResult? ToHttpResponse(string target)
