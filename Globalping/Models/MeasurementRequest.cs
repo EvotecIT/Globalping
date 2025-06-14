@@ -1,10 +1,13 @@
-﻿namespace Globalping;
+using System.Collections.Generic;
+
+namespace Globalping;
 
 public class MeasurementRequest {
     public MeasurementType Type { get; set; }
-    public string Target { get; set; }
+    public string Target { get; set; } = string.Empty;
     public bool InProgressUpdates { get; set; } = false;
-    public object Locations { get; set; } // Keep as object to support various formats
+    public List<LocationRequest>? Locations { get; set; }
     public int Limit { get; set; } = 1;
-    public IMeasurementOptions MeasurementOptions { get; set; }
+    public IMeasurementOptions? MeasurementOptions { get; set; }
 }
+

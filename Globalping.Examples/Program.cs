@@ -1,58 +1,43 @@
-﻿using System.Dynamic;
+using System.Text.Json;
 using Globalping;
 
+var options = new JsonSerializerOptions { WriteIndented = true };
 
-Console.WriteLine("Hello, World!");
+var builder = new MeasurementRequestBuilder()
+    .WithType(MeasurementType.Ping)
+    .WithTarget("cdn.jsdelivr.net")
+    .AddCountry("DE")
+    .AddCountry("PL");
+var request1 = builder.Build();
+Console.WriteLine(JsonSerializer.Serialize(request1, options));
 
+builder = new MeasurementRequestBuilder()
+    .WithType(MeasurementType.Ping)
+    .WithTarget("cdn.jsdelivr.net")
+    .AddCountry("DE", 4)
+    .AddCountry("PL", 2);
+var request2 = builder.Build();
+Console.WriteLine(JsonSerializer.Serialize(request2, options));
 
+builder = new MeasurementRequestBuilder()
+    .WithType(MeasurementType.Ping)
+    .WithTarget("cdn.jsdelivr.net")
+    .AddMagic("FR")
+    .AddMagic("Poland")
+    .AddMagic("Berlin+Germany")
+    .AddMagic("California")
+    .AddMagic("Europe")
+    .AddMagic("Western Europe")
+    .AddMagic("AS13335")
+    .AddMagic("aws-us-east-1")
+    .AddMagic("Google");
+var request3 = builder.Build();
+Console.WriteLine(JsonSerializer.Serialize(request3, options));
 
-var probeService = new ProbeService(new HttpClient());
-var probes = await probeService.GetOnlineProbesAsync();
-Console.WriteLine(probes);
+builder = new MeasurementRequestBuilder()
+    .WithType(MeasurementType.Ping)
+    .WithTarget("cdn.jsdelivr.net")
+    .WithMeasurementOptions(new PingOptions { Packets = 6 });
+var request4 = builder.Build();
+Console.WriteLine(JsonSerializer.Serialize(request4, options));
 
-var measurementRequestCountry = new MeasurementRequest {
-    Type = MeasurementType.Ping,
-    Target = "cdn.jsdelivr.net",
-    Locations = new List<LocationRequest>
-    {
-        new LocationRequest { Country = "DE" },
-        new LocationRequest { Country = "PL" }
-    }
-};
-
-
-var measurementRequestCountryAndLimit = new MeasurementRequest {
-    Type = MeasurementType.Ping,
-    Target = "cdn.jsdelivr.net",
-    Locations = new List<LocationRequest>
-    {
-        new LocationRequest { Country = "DE", Limit = 4 },
-        new LocationRequest { Country = "PL", Limit = 2 }
-    }
-};
-
-var measurementRequestMagic = new MeasurementRequest {
-    Type = MeasurementType.Ping,
-    Target = "cdn.jsdelivr.net",
-    Locations = new List<LocationRequest>
-    {
-        new LocationRequest { Magic = "FR" },
-        // Add other "magic" locations...
-    }
-};
-
-
-var measurementRequestCustomOptions = new MeasurementRequest {
-    Type = MeasurementType.Ping,
-    Target = "cdn.jsdelivr.net",
-    MeasurementOptions = new PingOptions {
-        Packets = 6
-    }
-};
-
-
-var measurementRequestPreviousManagementId = new MeasurementRequest {
-    Type = MeasurementType.Ping,
-    Target = "cdn.jsdelivr.net",
-    Locations = "1wzMrzLBZfaPoT1c" // Previous measurement ID
-};
