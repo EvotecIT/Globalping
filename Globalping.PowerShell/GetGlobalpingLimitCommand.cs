@@ -14,18 +14,15 @@ namespace Globalping.PowerShell;
 [Cmdlet(VerbsCommon.Get, "GlobalpingLimit")]
 [OutputType(typeof(Limits))]
 [OutputType(typeof(Credits))]
-public class GetGlobalpingLimitCommand : PSCmdlet
-{
+public class GetGlobalpingLimitCommand : PSCmdlet {
     /// <summary>API key used for authenticated calls.</summary>
     [Parameter]
     [Alias("Token")]
     public string? ApiKey { get; set; }
 
     /// <inheritdoc/>
-    protected override void ProcessRecord()
-    {
-        using var httpClient = new HttpClient(new HttpClientHandler
-        {
+    protected override void ProcessRecord() {
+        using var httpClient = new HttpClient(new HttpClientHandler {
 #if NET6_0_OR_GREATER
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate | DecompressionMethods.Brotli
 #else
