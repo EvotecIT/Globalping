@@ -63,7 +63,7 @@ $result.GetSummaries() | Format-Table
 ```
 
 By default `Start-Globalping` will return individual ping timings flattened with
-location information. To get the raw API response pass `-AsRaw`:
+location information. To get the raw API response pass `-Raw`:
 
 ```powershell
 Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE" | Format-Table
@@ -71,13 +71,26 @@ Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE" | Format
 
 ```powershell
 # return the original `MeasurementResponse`
-Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE" -AsRaw
+Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE" -Raw
+```
+
+Convert a single result to structured objects:
+
+```powershell
+$mtr = Start-GlobalpingMtr -Target "example.com" -Raw
+$mtr.Results[0].ToMtrHops($mtr.Target) | Format-Table
 ```
 
 Use `-Classic` to output the raw ping text similar to the traditional `ping` command:
 
 ```powershell
 Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE" -Classic
+```
+
+To fetch only HTTP headers use `Start-GlobalpingHttp` with the `-HeadersOnly` parameter:
+
+```powershell
+Start-GlobalpingHttp -Target "https://example.com" -HeadersOnly
 ```
 
 The API specification is available at [api.globalping.io/v1/spec.yaml](https://api.globalping.io/v1/spec.yaml).

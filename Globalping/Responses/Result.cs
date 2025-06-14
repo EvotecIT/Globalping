@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Globalping;
 
-public class Result {
+public partial class Result {
     [JsonPropertyName("probe")]
     public Probe Probe { get; set; } = new();
 

@@ -6,7 +6,7 @@ $multi | Format-Table *
 $multiClassic = Start-GlobalpingPing -Target "evotec.xyz" -SimpleLocations "DE", "US", "GB" -Classic
 $multiClassic
 
-$multiRaw = Start-GlobalpingPing -Target "evotec.xyz" -SimpleLocations "DE", "US", "GB" -AsRaw
+$multiRaw = Start-GlobalpingPing -Target "evotec.xyz" -SimpleLocations "DE", "US", "GB" -Raw
 $multiRaw | Format-Table
 $multiRaw.Results | Format-Table
 $multiRaw.Results.Probe | Format-Table
