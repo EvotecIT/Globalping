@@ -1,5 +1,8 @@
 namespace Globalping;
 
+/// <summary>
+/// Timing information for an individual ping packet.
+/// </summary>
 public class PingTimingResult {
     public string Target { get; set; } = string.Empty;
     public string? ResolvedAddress { get; set; }

@@ -44,10 +44,13 @@ public class StartGlobalpingHttpCommand : StartGlobalpingBaseCommand
     [Parameter]
     public HttpOptions? Options { get; set; }
 
+    /// <inheritdoc/>
     protected override MeasurementType Type => MeasurementType.Http;
 
+    /// <inheritdoc/>
     protected override IMeasurementOptions? MeasurementOptions => Options;
 
+    /// <inheritdoc/>
     protected override void HandleOutput(MeasurementResponse? result)
     {
         if (Classic.IsPresent && result?.Results != null)

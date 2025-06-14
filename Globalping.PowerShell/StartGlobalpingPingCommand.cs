@@ -46,10 +46,13 @@ public class StartGlobalpingPingCommand : StartGlobalpingBaseCommand
     [Parameter]
     public PingOptions? Options { get; set; }
 
+    /// <inheritdoc/>
     protected override MeasurementType Type => MeasurementType.Ping;
 
+    /// <inheritdoc/>
     protected override IMeasurementOptions? MeasurementOptions => Options;
 
+    /// <inheritdoc/>
     protected override void HandleOutput(MeasurementResponse? result)
     {
         if (Classic.IsPresent && result?.Results != null)
