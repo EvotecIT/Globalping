@@ -1,4 +1,4 @@
-﻿<p align="center">
+<p align="center">
   <a href="https://github.com/EvotecIT/Globalping/actions/workflows/dotnet-tests.yml"><img src="https://github.com/EvotecIT/Globalping/actions/workflows/dotnet-tests.yml/badge.svg"></a>
   <a href="https://www.powershellgallery.com/packages/Globalping"><img src="https://img.shields.io/powershellgallery/p/Globalping.svg"></a>
   <a href="https://github.com/EvotecIT/Globalping"><img src="https://img.shields.io/github/languages/top/evotecit/Globalping.svg"></a>
@@ -19,3 +19,47 @@
 </p>
 
 # Globalping
+
+This project contains a .NET client library and PowerShell module for the [Globalping API](https://api.globalping.io/).
+
+## PowerShell usage
+
+Build the project and import the module:
+
+```powershell
+# After `dotnet build` the module can be loaded
+Import-Module ./Module/Globalping.psd1 -Force
+```
+
+Run a simple measurement:
+
+```powershell
+Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE" | Format-Table
+```
+
+To use the `Locations` parameter provide `LocationRequest` objects. The cmdlet will automatically run one probe for each location when `Limit` is not specified:
+
+```powershell
+$locations = @(
+    [Globalping.LocationRequest]@{ Country = "DE"; Limit = 1 },
+    [Globalping.LocationRequest]@{ Country = "US"; Limit = 1 }
+)
+Start-Globalping -Type Ping -Target "example.com" -Locations $locations | Format-Table
+```
+
+```powershell
+# request three probes from specific countries
+$result = Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE", "US", "GB"
+$result.GetSummaries() | Format-Table
+```
+
+Use ISO 3166-1 alpha-2 country codes (e.g. `GB` for United Kingdom).
+
+To easily access key data from the API response use the `GetSummaries()` extension method:
+
+```powershell
+$result = Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE"
+$result.GetSummaries() | Format-Table
+```
+
+The API specification is available at [api.globalping.io/v1/spec.yaml](https://api.globalping.io/v1/spec.yaml).

@@ -21,6 +21,9 @@ public class StartGlobalpingCommand : PSCmdlet
     public string[]? SimpleLocations { get; set; }
 
     [Parameter]
+    public int? Limit { get; set; }
+
+    [Parameter]
     public IMeasurementOptions? MeasurementOptions { get; set; }
 
     [Parameter]
@@ -31,9 +34,31 @@ public class StartGlobalpingCommand : PSCmdlet
         using var httpClient = new HttpClient();
         var service = new ProbeService(httpClient);
 
+        var limit = Limit ?? 0;
+        if (!MyInvocation.BoundParameters.ContainsKey(nameof(Limit)))
+        {
+            if (SimpleLocations is not null)
+            {
+                limit += SimpleLocations.Length;
+            }
+
+            if (Locations is not null)
+            {
+                foreach (var loc in Locations)
+                {
+                    limit += loc.Limit ?? 1;
+                }
+            }
+
+            if (limit == 0)
+            {
+                limit = 1;
+            }
+        }
         var builder = new MeasurementRequestBuilder()
             .WithType(Type)
-            .WithTarget(Target);
+            .WithTarget(Target)
+            .WithLimit(limit);
 
         if (SimpleLocations is not null)
         {
