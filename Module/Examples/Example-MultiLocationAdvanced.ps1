@@ -14,3 +14,5 @@ $loc = @(
 )
 $locResult = Start-Globalping -Type Ping -Target "evotec.xyz" -Verbose -Locations $loc -ApiKey $env:GLOBALPING_TOKEN
 $locResult | Format-Table
+$locResult.Results | Format-Table
+$locResult.Results.Data | Select-Object -ExcludeProperty RawOutput | Format-Table
