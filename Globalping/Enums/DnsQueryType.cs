@@ -1,7 +1,5 @@
-﻿using System.Text.Json.Serialization;
 namespace Globalping;
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum DnsQueryType
 {
     A,
@@ -18,5 +16,6 @@ public enum DnsQueryType
     RRSIG,
     SOA,
     TXT,
-    SRV
+    SRV,
+    SVCB
 }
