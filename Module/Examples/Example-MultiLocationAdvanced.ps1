@@ -12,5 +12,5 @@ $loc = @(
     [Globalping.LocationRequest]@{ Country = "SE"; Limit = 1 },
     [Globalping.LocationRequest]@{ Country = "CH"; Limit = 1 }
 )
-$locResult = Start-Globalping -Type Ping -Target "evotec.xyz" -Verbose -Locations $loc
+$locResult = Start-Globalping -Type Ping -Target "evotec.xyz" -Verbose -Locations $loc -ApiKey $env:GLOBALPING_TOKEN
 $locResult | Format-Table

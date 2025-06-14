@@ -31,10 +31,14 @@ public class StartGlobalpingCommand : PSCmdlet
     [Parameter]
     public SwitchParameter InProgressUpdates { get; set; }
 
+    [Parameter]
+    [Alias("Token")]
+    public string? ApiKey { get; set; }
+
     protected override void ProcessRecord()
     {
         using var httpClient = new HttpClient();
-        var service = new ProbeService(httpClient);
+        var service = new ProbeService(httpClient, ApiKey);
 
         var limit = Limit ?? 0;
         if (!MyInvocation.BoundParameters.ContainsKey(nameof(Limit)))
@@ -116,7 +120,7 @@ public class StartGlobalpingCommand : PSCmdlet
             return;
         }
 
-        var client = new MeasurementClient(httpClient);
+        var client = new MeasurementClient(httpClient, ApiKey);
         var result = client.GetMeasurementByIdAsync(id).GetAwaiter().GetResult();
         WriteVerbose($"Response: {JsonSerializer.Serialize(result, jsonOptions)}");
         WriteObject(result);
