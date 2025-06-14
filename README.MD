@@ -95,3 +95,8 @@ Start-GlobalpingHttp -Target "https://example.com" -HeadersOnly
 ```
 
 The API specification is available at [api.globalping.io/v1/spec.yaml](https://api.globalping.io/v1/spec.yaml).
+
+By default both the .NET client and PowerShell module set helpful HTTP headers.
+When no `User-Agent` is specified, `Globalping.Net/1.0` is used. If Brotli
+compression is available the client sends `Accept-Encoding: br`, otherwise it
+falls back to `gzip`.
