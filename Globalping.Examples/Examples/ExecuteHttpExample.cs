@@ -40,14 +40,18 @@ public static class ExecuteHttpExample
         var result = await client.GetMeasurementByIdAsync(measurementId);
 
         ConsoleHelpers.WriteJson(request, $"Request sent (HTTP ID: {measurementId})");
-        ConsoleHelpers.WriteJson(result, "Measurement result");
 
-        if (result.Results != null)
+        if (result != null)
         {
-            foreach (var item in result.Results)
+            ConsoleHelpers.WriteJson(result, "Measurement result");
+
+            if (result.Results != null)
             {
-                ConsoleHelpers.WriteTable(item.Probe, "Probe");
-                ConsoleHelpers.WriteTable(item.Data, "Result details");
+                foreach (var item in result.Results)
+                {
+                    ConsoleHelpers.WriteTable(item.Probe, "Probe");
+                    ConsoleHelpers.WriteTable(item.Data, "Result details");
+                }
             }
         }
     }
