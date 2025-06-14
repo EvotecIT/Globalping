@@ -63,7 +63,7 @@ public class StartGlobalpingCommand : PSCmdlet
         var request = builder.Build();
         request.InProgressUpdates = InProgressUpdates.IsPresent;
 
-        var id = service.CreateMeasurementAsync(request, InProgressUpdates.IsPresent).GetAwaiter().GetResult();
+        var id = service.CreateMeasurementAsync(request).GetAwaiter().GetResult();
         if (string.IsNullOrEmpty(id))
         {
             WriteError(new ErrorRecord(new InvalidOperationException("Measurement creation failed"), "CreateFailed", ErrorCategory.InvalidOperation, Target));

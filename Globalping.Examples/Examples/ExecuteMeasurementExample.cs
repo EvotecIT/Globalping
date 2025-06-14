@@ -16,12 +16,14 @@ public static class ExecuteMeasurementExample
             .WithMeasurementOptions(new PingOptions { Packets = 2 });
 
         var request = builder.Build();
+        request.InProgressUpdates = false;
 
         using var httpClient = new HttpClient();
-        var probeService = new ProbeService(httpClient);
+        var apiKey = Environment.GetEnvironmentVariable("GLOBALPING_TOKEN");
+        var probeService = new ProbeService(httpClient, apiKey);
         var measurementId = await probeService.CreateMeasurementAsync(request);
 
-        var client = new MeasurementClient(httpClient);
+        var client = new MeasurementClient(httpClient, apiKey);
         var result = await client.GetMeasurementByIdAsync(measurementId);
 
         var options = new JsonSerializerOptions { WriteIndented = true };
