@@ -74,6 +74,13 @@ Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE" | Format
 Start-Globalping -Type Ping -Target "example.com" -SimpleLocations "DE" -Raw
 ```
 
+Convert a single result to structured objects:
+
+```powershell
+$mtr = Start-GlobalpingMtr -Target "example.com" -Raw
+$mtr.Results[0].ToMtrHops($mtr.Target) | Format-Table
+```
+
 Use `-Classic` to output the raw ping text similar to the traditional `ping` command:
 
 ```powershell
