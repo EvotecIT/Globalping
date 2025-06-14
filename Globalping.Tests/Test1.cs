@@ -1,7 +1,8 @@
-﻿namespace Globalping.Tests {
-    [TestClass]
+using Xunit;
+
+namespace Globalping.Tests {
     public sealed class Test1 {
-        [TestMethod]
+        [Fact]
         public void TestMethod1() {
         }
     }
