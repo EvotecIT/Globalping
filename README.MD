@@ -101,3 +101,7 @@ By default both the .NET client and PowerShell module set helpful HTTP headers.
 When no `User-Agent` is specified, `Globalping.Net/1.0` is used. If Brotli
 compression is available the client sends `Accept-Encoding: br`, otherwise it
 falls back to `gzip`.
+
+All API clients expose the most recent usage headers via the `LastResponseInfo`
+property. When the service returns values such as `X-RateLimit-Limit` or
+`X-Credits-Remaining` they will be parsed into this object for easy inspection.

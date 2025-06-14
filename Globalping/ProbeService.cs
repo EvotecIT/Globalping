@@ -24,6 +24,8 @@ public class ProbeService {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     };
 
+    public ApiUsageInfo LastResponseInfo { get; private set; } = new();
+
     public ProbeService(HttpClient httpClient, string? apiKey = null)
     {
         _httpClient = httpClient;
@@ -52,12 +54,46 @@ public class ProbeService {
         }
     }
 
+    private void UpdateUsageInfo(HttpResponseMessage response)
+    {
+        var headers = response.Headers;
+        LastResponseInfo = new ApiUsageInfo
+        {
+            RateLimitLimit = TryGetInt(headers, "X-RateLimit-Limit"),
+            RateLimitConsumed = TryGetInt(headers, "X-RateLimit-Consumed"),
+            RateLimitRemaining = TryGetInt(headers, "X-RateLimit-Remaining"),
+            RateLimitReset = TryGetLong(headers, "X-RateLimit-Reset"),
+            CreditsConsumed = TryGetInt(headers, "X-Credits-Consumed"),
+            CreditsRemaining = TryGetInt(headers, "X-Credits-Remaining"),
+            RequestCost = TryGetInt(headers, "X-Request-Cost")
+        };
+    }
+
+    private static int? TryGetInt(HttpResponseHeaders headers, string name)
+    {
+        if (headers.TryGetValues(name, out var values) && int.TryParse(values.FirstOrDefault(), out var v))
+        {
+            return v;
+        }
+        return null;
+    }
+
+    private static long? TryGetLong(HttpResponseHeaders headers, string name)
+    {
+        if (headers.TryGetValues(name, out var values) && long.TryParse(values.FirstOrDefault(), out var v))
+        {
+            return v;
+        }
+        return null;
+    }
+
     /// <summary>
     /// Retrieves the list of currently online probes.
     /// </summary>
     /// <returns>Collection of available probes.</returns>
     public async Task<List<Probes>> GetOnlineProbesAsync() {
         var response = await _httpClient.GetAsync("https://api.globalping.io/v1/probes").ConfigureAwait(false);
+        UpdateUsageInfo(response);
         response.EnsureSuccessStatusCode();
         var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
         return await JsonSerializer.DeserializeAsync<List<Probes>>(stream, _jsonOptions).ConfigureAwait(false) ?? new List<Probes>();
@@ -76,6 +112,7 @@ public class ProbeService {
     public async Task<Limits?> GetLimitsAsync()
     {
         var response = await _httpClient.GetAsync("https://api.globalping.io/v1/limits").ConfigureAwait(false);
+        UpdateUsageInfo(response);
         response.EnsureSuccessStatusCode();
         var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
         return await JsonSerializer.DeserializeAsync<Limits>(stream, _jsonOptions).ConfigureAwait(false);
@@ -102,6 +139,7 @@ public class ProbeService {
         }
 
         var response = await _httpClient.PostAsync(requestUri, requestContent).ConfigureAwait(false);
+        UpdateUsageInfo(response);
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<MeasurementResponse>(_jsonOptions).ConfigureAwait(false);
         return result?.Id ?? string.Empty;
