@@ -27,10 +27,12 @@ public static class ExecuteDnsExample
         var probeService = new ProbeService(httpClient, apiKey);
         var measurementId = await probeService.CreateMeasurementAsync(request);
 
+        ConsoleHelpers.WriteHeading($"DNS example (ID: {measurementId})");
+
         var client = new MeasurementClient(httpClient, apiKey);
         var result = await client.GetMeasurementByIdAsync(measurementId);
 
-        ConsoleHelpers.WriteJson(request, "Request sent (DNS)");
+        ConsoleHelpers.WriteJson(request, $"Request sent (DNS ID: {measurementId})");
         ConsoleHelpers.WriteJson(result, "Measurement result");
 
         if (result.Results != null)

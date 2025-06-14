@@ -122,4 +122,12 @@ public static class ConsoleHelpers
         AnsiConsole.Write(new JsonText(json));
         AnsiConsole.WriteLine();
     }
+
+    public static void WriteHeading(string title)
+    {
+        var rule = new Rule($"[blue]{Markup.Escape(title)}[/]") { Justification = Justify.Left };
+        AnsiConsole.WriteLine();
+        AnsiConsole.Write(rule);
+        AnsiConsole.WriteLine();
+    }
 }

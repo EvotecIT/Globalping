@@ -1,6 +1,5 @@
 using System;
 using Globalping;
-using Spectre.Console;
 
 namespace Globalping.Examples;
 
@@ -8,6 +7,7 @@ public static class BuildRequestExample
 {
     public static void Run()
     {
+        ConsoleHelpers.WriteHeading("Build request examples");
         var builder = new MeasurementRequestBuilder()
             .WithType(MeasurementType.Ping)
             .WithTarget("cdn.jsdelivr.net")
