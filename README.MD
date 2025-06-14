@@ -78,7 +78,8 @@ Convert a single result to structured objects:
 
 ```powershell
 $mtr = Start-GlobalpingMtr -Target "example.com" -Raw
-$mtr.Results[0].ToMtrHops($mtr.Target) | Format-Table
+$hops = $mtr.Results[0].ToMtrHops()
+$hops[0] | Format-Table
 ```
 
 Use `-Classic` to output the raw ping text similar to the traditional `ping` command:

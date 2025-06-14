@@ -7,9 +7,9 @@ using System.Globalization;
 namespace Globalping;
 
 public static class MeasurementResponseExtensions {
-    public static IEnumerable<ResultSummary> GetSummaries(this MeasurementResponse response) {
+    public static List<ResultSummary> GetSummaries(this MeasurementResponse response) {
         if (response.Results == null) {
-            return Enumerable.Empty<ResultSummary>();
+            return new List<ResultSummary>();
         }
 
         return response.Results.Select(r => new ResultSummary {
@@ -24,12 +24,12 @@ public static class MeasurementResponseExtensions {
             Status = r.Data?.Status,
             Timings = r.Data?.Timings,
             Stats = r.Data?.Stats
-        });
+        }).ToList();
     }
 
-    public static IEnumerable<PingTimingResult> GetPingTimings(this MeasurementResponse response) {
+    public static List<PingTimingResult> GetPingTimings(this MeasurementResponse response) {
         if (response.Results == null) {
-            return Enumerable.Empty<PingTimingResult>();
+            return new List<PingTimingResult>();
         }
 
         return response.Results.SelectMany(r =>
@@ -55,16 +55,16 @@ public static class MeasurementResponseExtensions {
                         ResolvedHostname = r.Data?.ResolvedHostname,
                         Status = r.Data?.Status,
                     };
-                });
+                }).ToList();
             }
 
-            return Enumerable.Empty<PingTimingResult>();
-        });
+            return new List<PingTimingResult>();
+        }).ToList();
     }
 
-    public static IEnumerable<TracerouteHopResult> GetTracerouteHops(this MeasurementResponse response) {
+    public static List<TracerouteHopResult> GetTracerouteHops(this MeasurementResponse response) {
         if (response.Results == null) {
-            return Enumerable.Empty<TracerouteHopResult>();
+            return new List<TracerouteHopResult>();
         }
 
         return response.Results.SelectMany(r => ParseTraceroute(r.Data?.RawOutput).Select(h =>
@@ -80,12 +80,12 @@ public static class MeasurementResponseExtensions {
             h.ResolvedHostname = r.Data?.ResolvedHostname;
             h.Status = r.Data?.Status;
             return h;
-        }));
+        })).ToList();
     }
 
-    public static IEnumerable<MtrHopResult> GetMtrHops(this MeasurementResponse response) {
+    public static List<MtrHopResult> GetMtrHops(this MeasurementResponse response) {
         if (response.Results == null) {
-            return Enumerable.Empty<MtrHopResult>();
+            return new List<MtrHopResult>();
         }
 
         return response.Results.SelectMany(r => ParseMtr(r.Data?.RawOutput).Select(h =>
@@ -101,12 +101,12 @@ public static class MeasurementResponseExtensions {
             h.ResolvedHostname = r.Data?.ResolvedHostname;
             h.Status = r.Data?.Status;
             return h;
-        }));
+        })).ToList();
     }
 
-    public static IEnumerable<DnsRecordResult> GetDnsRecords(this MeasurementResponse response) {
+    public static List<DnsRecordResult> GetDnsRecords(this MeasurementResponse response) {
         if (response.Results == null) {
-            return Enumerable.Empty<DnsRecordResult>();
+            return new List<DnsRecordResult>();
         }
 
         return response.Results.SelectMany(r => ParseDns(r.Data?.RawOutput).Select(h =>
@@ -120,12 +120,12 @@ public static class MeasurementResponseExtensions {
             h.Network = r.Probe.Network;
             h.Status = r.Data?.Status;
             return h;
-        }));
+        })).ToList();
     }
 
-    internal static IEnumerable<TracerouteHopResult> ParseTraceroute(string? raw) {
+    internal static List<TracerouteHopResult> ParseTraceroute(string? raw) {
         if (string.IsNullOrWhiteSpace(raw)) {
-            return Enumerable.Empty<TracerouteHopResult>();
+            return new List<TracerouteHopResult>();
         }
 
         var list = new List<TracerouteHopResult>();
@@ -157,9 +157,9 @@ public static class MeasurementResponseExtensions {
         return list;
     }
 
-    internal static IEnumerable<MtrHopResult> ParseMtr(string? raw) {
+    internal static List<MtrHopResult> ParseMtr(string? raw) {
         if (string.IsNullOrWhiteSpace(raw)) {
-            return Enumerable.Empty<MtrHopResult>();
+            return new List<MtrHopResult>();
         }
 
         var list = new List<MtrHopResult>();
@@ -217,9 +217,9 @@ public static class MeasurementResponseExtensions {
         return list;
     }
 
-    internal static IEnumerable<DnsRecordResult> ParseDns(string? raw) {
+    internal static List<DnsRecordResult> ParseDns(string? raw) {
         if (string.IsNullOrWhiteSpace(raw)) {
-            return Enumerable.Empty<DnsRecordResult>();
+            return new List<DnsRecordResult>();
         }
 
         var list = new List<DnsRecordResult>();
@@ -299,9 +299,9 @@ public static class MeasurementResponseExtensions {
         return list;
     }
 
-    public static IEnumerable<HttpResponseResult> GetHttpResponses(this MeasurementResponse response) {
+    public static List<HttpResponseResult> GetHttpResponses(this MeasurementResponse response) {
         if (response.Results == null) {
-            return Enumerable.Empty<HttpResponseResult>();
+            return new List<HttpResponseResult>();
         }
 
         return response.Results.SelectMany(r => ParseHttp(r.Data?.RawOutput).Select(h =>
@@ -317,12 +317,12 @@ public static class MeasurementResponseExtensions {
             h.ResolvedHostname = r.Data?.ResolvedHostname;
             h.Status = r.Data?.Status;
             return h;
-        }));
+        })).ToList();
     }
 
-    internal static IEnumerable<HttpResponseResult> ParseHttp(string? raw) {
+    internal static List<HttpResponseResult> ParseHttp(string? raw) {
         if (string.IsNullOrWhiteSpace(raw)) {
-            return Enumerable.Empty<HttpResponseResult>();
+            return new List<HttpResponseResult>();
         }
 
         var result = new HttpResponseResult();
@@ -358,6 +358,6 @@ public static class MeasurementResponseExtensions {
             result.Body = string.Join("\n", lines.Skip(index));
         }
 
-        return new[] { result };
+        return new List<HttpResponseResult> { result };
     }
 }
