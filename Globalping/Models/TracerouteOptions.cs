@@ -6,7 +6,7 @@ public class TracerouteOptions : IMeasurementOptions {
     public int Port { get; set; } = 80;
 
     [JsonPropertyName("protocol")]
-    public TracerouteProtocol Protocol { get; set; } = TracerouteProtocol.Icmp;
+    public TracerouteProtocol Protocol { get; set; } = TracerouteProtocol.ICMP;
 
     [JsonPropertyName("ipVersion")]
     public IpVersion IpVersion { get; set; } = IpVersion.Four;

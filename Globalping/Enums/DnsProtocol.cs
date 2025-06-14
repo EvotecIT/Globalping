@@ -5,6 +5,6 @@ namespace Globalping;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum DnsProtocol
 {
-    Tcp,
-    Udp
+    TCP,
+    UDP
 }

@@ -12,7 +12,7 @@ public class DnsOptions : IMeasurementOptions {
     public int Port { get; set; } = 53;
 
     [JsonPropertyName("protocol")]
-    public DnsProtocol Protocol { get; set; } = DnsProtocol.Udp;
+    public DnsProtocol Protocol { get; set; } = DnsProtocol.UDP;
 
     [JsonPropertyName("ipVersion")]
     public IpVersion IpVersion { get; set; } = IpVersion.Four;

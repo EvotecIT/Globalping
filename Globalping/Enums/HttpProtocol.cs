@@ -5,7 +5,7 @@ namespace Globalping;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum HttpProtocol
 {
-    Http,
-    Https,
-    Http2
+    HTTP,
+    HTTPS,
+    HTTP2
 }

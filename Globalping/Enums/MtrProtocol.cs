@@ -5,7 +5,7 @@ namespace Globalping;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum MtrProtocol
 {
-    Icmp,
-    Tcp,
-    Udp
+    ICMP,
+    TCP,
+    UDP
 }

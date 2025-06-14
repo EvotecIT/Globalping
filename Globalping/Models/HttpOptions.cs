@@ -14,7 +14,7 @@ public class HttpOptions : IMeasurementOptions {
     public int Port { get; set; } = 80;
 
     [JsonPropertyName("protocol")]
-    public HttpProtocol Protocol { get; set; } = HttpProtocol.Https;
+    public HttpProtocol Protocol { get; set; } = HttpProtocol.HTTPS;
 
     [JsonPropertyName("ipVersion")]
     public IpVersion IpVersion { get; set; } = IpVersion.Four;

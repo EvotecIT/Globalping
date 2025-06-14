@@ -7,7 +7,7 @@ public class MtrOptions : IMeasurementOptions
     public int Port { get; set; } = 80;
 
     [JsonPropertyName("protocol")]
-    public MtrProtocol Protocol { get; set; } = MtrProtocol.Icmp;
+    public MtrProtocol Protocol { get; set; } = MtrProtocol.ICMP;
 
     [JsonPropertyName("ipVersion")]
     public IpVersion IpVersion { get; set; } = IpVersion.Four;

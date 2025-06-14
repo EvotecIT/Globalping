@@ -5,7 +5,7 @@ namespace Globalping;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum HttpRequestMethod
 {
-    Head,
-    Get,
-    Options
+    HEAD,
+    GET,
+    OPTIONS
 }

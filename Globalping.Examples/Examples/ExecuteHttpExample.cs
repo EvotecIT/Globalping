@@ -1,6 +1,6 @@
 using System;
 using Globalping;
-using System.Net;
+                    Method = HttpRequestMethod.GET,
 using System.Net.Http;
 using System.Threading.Tasks;
 
