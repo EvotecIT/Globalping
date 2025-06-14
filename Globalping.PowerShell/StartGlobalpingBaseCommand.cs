@@ -7,25 +7,60 @@ using Globalping;
 
 namespace Globalping.PowerShell;
 
+/// <summary>Base class for Globalping measurement cmdlets.</summary>
+/// <para>Derived cmdlets send measurement requests to the Globalping service
+/// and return structured results.</para>
+/// <para>The common parameters defined here control target host, probe
+/// selection and authentication.</para>
+/// <seealso href="https://github.com/EvotecIT/Globalping/tree/main/Globalping.Examples">Repository examples</seealso>
+/// <example>
+///   <summary>Ping from Germany</summary>
+///   <prefix>PS> </prefix>
+///   <code>Start-GlobalpingPing -Target "example.com" -SimpleLocations "DE"</code>
+///   <para>Runs a ping measurement from German probes.</para>
+/// </example>
+/// <example>
+///   <summary>HTTP request with live updates</summary>
+///   <prefix>PS> </prefix>
+///   <code>Start-GlobalpingHttp -Target "https://example.com" -Limit 3 -InProgressUpdates</code>
+///   <para>Requests three probes and streams intermediate results.</para>
+/// </example>
 public abstract class StartGlobalpingBaseCommand : PSCmdlet
 {
     protected abstract MeasurementType Type { get; }
 
+    /// <para>Target host name, IP address or URL to test.</para>
+    /// <para>The target string is passed verbatim to the underlying
+    /// measurement API.</para>
     [Parameter(Mandatory = true)]
     public string Target { get; set; } = string.Empty;
 
+    /// <para>Detailed location definitions for probes.</para>
+    /// <para>Each <see cref="LocationRequest"/> may specify city, country,
+    /// ASN or provider details.</para>
     [Parameter]
     public LocationRequest[]? Locations { get; set; }
 
+    /// <para>Short location identifiers such as city or country codes.</para>
+    /// <para>Two-letter strings are treated as ISO country codes. Longer
+    /// values map to the "magic" location syntax used by the API.</para>
     [Parameter]
     public string[]? SimpleLocations { get; set; }
 
+    /// <para>Maximum number of probes to use.</para>
+    /// <para>If omitted the cmdlet estimates a value based on provided
+    /// locations.</para>
     [Parameter]
     public int? Limit { get; set; }
 
+    /// <para>Request progress updates while the measurement runs.</para>
+    /// <para>When set the API streams partial results that are written as they
+    /// arrive.</para>
     [Parameter]
     public SwitchParameter InProgressUpdates { get; set; }
 
+    /// <para>API key used to authenticate with Globalping.</para>
+    /// <para>Anonymous requests may be rate limited.</para>
     [Parameter]
     [Alias("Token")]
     public string? ApiKey { get; set; }
