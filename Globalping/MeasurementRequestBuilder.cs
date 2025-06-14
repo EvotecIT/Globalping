@@ -21,6 +21,13 @@ public class MeasurementRequestBuilder
         return this;
     }
 
+    public MeasurementRequestBuilder ReuseLocationsFromId(string measurementId)
+    {
+        _request.ReuseLocationsFromId = measurementId;
+        _request.Locations = null;
+        return this;
+    }
+
     public MeasurementRequestBuilder AddCountry(string country, int? limit = null)
     {
         var loc = new LocationRequest { Country = country, Limit = limit };
@@ -78,12 +85,14 @@ public class MeasurementRequestBuilder
     public MeasurementRequestBuilder WithLocations(IEnumerable<LocationRequest> locations)
     {
         _request.Locations = new List<LocationRequest>(locations);
+        _request.ReuseLocationsFromId = null;
         return this;
     }
 
     public MeasurementRequestBuilder AddLocation(LocationRequest location)
     {
         _request.Locations ??= new List<LocationRequest>();
+        _request.ReuseLocationsFromId = null;
         _request.Locations.Add(location);
         return this;
     }
