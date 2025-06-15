@@ -50,7 +50,7 @@ Import-Module $PSScriptRoot\*.psd1 -Force
 Import-Module Pester -Force
 $Configuration = [PesterConfiguration]::Default
 $Configuration.Run.Path = "$PSScriptRoot\Tests"
-$TestFiles = Get-ChildItem -Path $Configuration.Run.Path -Filter '*.Tests.ps1' -Recurse -ErrorAction SilentlyContinue | Where-Object { -not $_.PSIsContainer }
+$TestFiles = Get-ChildItem -Path $Configuration.Run.Path.Value -Filter '*.Tests.ps1' -Recurse -ErrorAction SilentlyContinue | Where-Object { -not $_.PSIsContainer }
 if (-not $TestFiles) {
     Write-Warning 'No Pester tests found. Skipping.'
     return
