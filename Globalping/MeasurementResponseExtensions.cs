@@ -542,11 +542,13 @@ public static class MeasurementResponseExtensions {
                 {
                     if (kv.Value.ValueKind == JsonValueKind.Array)
                     {
-                        resp.Headers[kv.Key] = string.Join(",", kv.Value.EnumerateArray().Select(e => e.GetString()));
+                        resp.Headers[kv.Key] = kv.Value.EnumerateArray()
+                            .Select(e => e.GetString() ?? string.Empty)
+                            .ToList();
                     }
                     else
                     {
-                        resp.Headers[kv.Key] = kv.Value.GetString() ?? string.Empty;
+                        resp.Headers[kv.Key] = new List<string> { kv.Value.GetString() ?? string.Empty };
                     }
                 }
             }
@@ -583,7 +585,12 @@ public static class MeasurementResponseExtensions {
             if (sep > 0) {
                 var key = line.Substring(0, sep).Trim();
                 var value = line.Substring(sep + 1).Trim();
-                result.Headers[key] = value;
+                if (!result.Headers.TryGetValue(key, out var list))
+                {
+                    list = new List<string>();
+                    result.Headers[key] = list;
+                }
+                list.Add(value);
             }
         }
 

@@ -3,8 +3,8 @@
 $Output = Start-GlobalpingHttp -Target "evotec.xyz" -Verbose -SimpleLocations "Krakow+PL"
 $Output | Format-Table
 $Output.Headers | Format-Table
-$Output.Headers['expires']
-$Output.Headers['cache-control']
+$Output.Headers['expires'][0]
+$Output.Headers['cache-control'][0]
 
 Start-GlobalpingHttp -Target "evotec.xyz" -Verbose -Classic | Format-Table
 

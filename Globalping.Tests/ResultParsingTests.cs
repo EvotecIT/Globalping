@@ -1,11 +1,23 @@
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Xunit;
 
 namespace Globalping.Tests;
 
 public class ResultParsingTests
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+    };
+
+    static ResultParsingTests()
+    {
+        JsonOptions.Converters.Add(new JsonStringEnumConverter<MeasurementStatus>(JsonNamingPolicy.KebabCaseLower));
+        JsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+    }
     [Fact]
     public void ParsesTracerouteHopsFromJson()
     {
@@ -45,7 +57,7 @@ public class ResultParsingTests
             }
             """;
 
-        var resp = JsonSerializer.Deserialize<MeasurementResponse>(json);
+        var resp = JsonSerializer.Deserialize<MeasurementResponse>(json, JsonOptions);
         Assert.NotNull(resp);
         var hops = resp!.GetTracerouteHops();
         Assert.Equal(2, hops.Count);
@@ -90,7 +102,7 @@ public class ResultParsingTests
             }
             """;
 
-        var resp = JsonSerializer.Deserialize<MeasurementResponse>(json);
+        var resp = JsonSerializer.Deserialize<MeasurementResponse>(json, JsonOptions);
         Assert.NotNull(resp);
         var records = resp!.GetDnsRecords();
         Assert.Single(records);
@@ -137,12 +149,15 @@ public class ResultParsingTests
             }
             """;
 
-        var resp = JsonSerializer.Deserialize<MeasurementResponse>(json);
+        var resp = JsonSerializer.Deserialize<MeasurementResponse>(json, JsonOptions);
         Assert.NotNull(resp);
         var http = resp!.GetHttpResponses();
         Assert.Single(http);
         Assert.Equal(200, http[0].StatusCode);
         Assert.Equal("hello", http[0].Body);
+        Assert.True(http[0].Headers.ContainsKey("content-type"));
+        Assert.Single(http[0].Headers["content-type"]);
+        Assert.Equal("text/plain", http[0].Headers["content-type"][0]);
     }
 
     [Fact]
