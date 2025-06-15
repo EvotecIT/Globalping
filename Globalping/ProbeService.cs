@@ -136,8 +136,8 @@ public class ProbeService {
         var requestUri = "https://api.globalping.io/v1/measurements";
         var requestContent = new StringContent(JsonSerializer.Serialize(measurementRequest, _jsonOptions), Encoding.UTF8, "application/json");
 
+        _httpClient.DefaultRequestHeaders.Remove("Prefer");
         if (measurementRequest.InProgressUpdates) {
-            _httpClient.DefaultRequestHeaders.Remove("Prefer");
             _httpClient.DefaultRequestHeaders.Add("Prefer", $"respond-async, wait={waitTime}");
         }
 
