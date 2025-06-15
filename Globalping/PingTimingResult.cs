@@ -16,5 +16,5 @@ public class PingTimingResult {
     public string State { get; set; } = string.Empty;
     public string Continent { get; set; } = string.Empty;
     public string? ResolvedHostname { get; set; }
-    public string? Status { get; set; }
+    public TestStatus Status { get; set; }
 }

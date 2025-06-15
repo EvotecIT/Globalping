@@ -6,7 +6,7 @@ namespace Globalping;
 
 public class ResultDetails {
     [JsonPropertyName("status")]
-    public string? Status { get; set; }
+    public TestStatus Status { get; set; }
 
     [JsonPropertyName("rawOutput")]
     public string? RawOutput { get; set; }
