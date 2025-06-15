@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Globalping;
 
+[JsonConverter(typeof(MeasurementResponseConverter))]
 public class MeasurementResponse {
     [JsonPropertyName("id")]
     public string Id { get; set; } = string.Empty;
@@ -27,7 +28,7 @@ public class MeasurementResponse {
     public int ProbesCount { get; set; }
 
     [JsonPropertyName("measurementOptions")]
-    public MeasurementOptions? MeasurementOptions { get; set; }
+    public IMeasurementOptions? MeasurementOptions { get; set; }
 
     [JsonPropertyName("locations")]
     public List<LocationRequest>? Locations { get; set; }
