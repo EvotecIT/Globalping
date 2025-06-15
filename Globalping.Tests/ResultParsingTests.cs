@@ -202,8 +202,8 @@ public class ResultParsingTests
         Assert.NotNull(resp);
         var hops = resp!.GetMtrHops();
         Assert.Equal(2, hops.Count);
-        Assert.Equal(new List<int> { 64500, 64501 }, hops[0].Asn);
-        Assert.Equal(new List<int> { 64502 }, hops[1].Asn);
+        Assert.Equal(new List<int> { 64500, 64501 }, Assert.IsType<List<int>>(hops[0].Asn));
+        Assert.Equal(64502, Assert.IsType<int>(hops[1].Asn));
     }
 
     [Fact]
@@ -246,6 +246,6 @@ public class ResultParsingTests
         Assert.NotNull(resp);
         var hops = resp!.GetMtrHops();
         Assert.Single(hops);
-        Assert.Equal(new List<int> { 64500 }, hops[0].Asn);
+        Assert.Equal(64500, Assert.IsType<int>(hops[0].Asn));
     }
 }
