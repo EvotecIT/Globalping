@@ -83,6 +83,28 @@ public class MeasurementClient {
         return null;
     }
 
+    private async Task EnsureSuccessOrThrow(HttpResponseMessage response)
+    {
+        UpdateUsageInfo(response);
+        if (response.IsSuccessStatusCode)
+        {
+            return;
+        }
+
+        ErrorResponse? error = null;
+        try
+        {
+            var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            error = await JsonSerializer.DeserializeAsync<ErrorResponse>(stream, _jsonOptions).ConfigureAwait(false);
+        }
+        catch
+        {
+            // Ignore parse failures
+        }
+
+        throw new GlobalpingApiException((int)response.StatusCode, error?.Error ?? new ErrorDetails(), LastResponseInfo);
+    }
+
     /// <summary>
     /// Retrieves a measurement result by its identifier.
     /// </summary>
@@ -98,8 +120,7 @@ public class MeasurementClient {
 
         do {
             var response = await _httpClient.GetAsync(url).ConfigureAwait(false);
-            UpdateUsageInfo(response);
-            response.EnsureSuccessStatusCode();
+            await EnsureSuccessOrThrow(response).ConfigureAwait(false);
             var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
             measurementResponse = await JsonSerializer.DeserializeAsync<MeasurementResponse>(stream, _jsonOptions).ConfigureAwait(false);
             if (measurementResponse?.Results != null)
