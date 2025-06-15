@@ -539,6 +539,14 @@ public static class MeasurementResponseExtensions {
         if (data == null) {
             return new List<HttpResponseResult>();
         }
+        HttpTimings? timings = null;
+        if (data.Timings is JsonElement timingsEl &&
+            timingsEl.ValueKind != JsonValueKind.Undefined &&
+            timingsEl.ValueKind != JsonValueKind.Null)
+        {
+            timings = JsonSerializer.Deserialize<HttpTimings>(timingsEl.GetRawText());
+        }
+
         if (data.RawHeaders != null) {
             var resp = new HttpResponseResult
             {
@@ -546,6 +554,8 @@ public static class MeasurementResponseExtensions {
                 StatusCode = data.StatusCode ?? 0,
                 StatusDescription = data.StatusCodeName ?? string.Empty,
                 Body = data.RawBody,
+                Timings = timings,
+                Tls = data.Tls,
             };
             if (data.Headers != null)
             {
@@ -608,6 +618,9 @@ public static class MeasurementResponseExtensions {
         if (index < lines.Length) {
             result.Body = string.Join("\n", lines.Skip(index));
         }
+
+        result.Timings = timings;
+        result.Tls = data.Tls;
 
         return new List<HttpResponseResult> { result };
     }
