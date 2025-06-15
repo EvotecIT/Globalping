@@ -149,8 +149,8 @@ public class ProbeService {
     /// Creates a measurement request on the Globalping service.
     /// </summary>
     /// <param name="measurementRequest">Request payload describing the measurement.</param>
-    /// <returns>Identifier of the created measurement.</returns>
-    public async Task<string> CreateMeasurementAsync(
+    /// <returns>Information about the created measurement.</returns>
+    public async Task<CreateMeasurementResponse> CreateMeasurementAsync(
         MeasurementRequest measurementRequest,
         int waitTime = 150) {
         var requestUri = "https://api.globalping.io/v1/measurements";
@@ -163,14 +163,14 @@ public class ProbeService {
 
         var response = await _httpClient.PostAsync(requestUri, requestContent).ConfigureAwait(false);
         await EnsureSuccessOrThrow(response).ConfigureAwait(false);
-        var result = await response.Content.ReadFromJsonAsync<MeasurementResponse>(_jsonOptions).ConfigureAwait(false);
-        return result?.Id ?? string.Empty;
+        var result = await response.Content.ReadFromJsonAsync<CreateMeasurementResponse>(_jsonOptions).ConfigureAwait(false);
+        return result ?? new CreateMeasurementResponse();
     }
 
     /// <summary>
     /// Synchronous wrapper for <see cref="CreateMeasurementAsync"/>.
     /// </summary>
-    public string CreateMeasurement(
+    public CreateMeasurementResponse CreateMeasurement(
         MeasurementRequest measurementRequest,
         int waitTime = 150) =>
         CreateMeasurementAsync(measurementRequest, waitTime).GetAwaiter().GetResult();
