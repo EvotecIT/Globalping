@@ -1,4 +1,4 @@
-name: Test PowerShell Module (All)
+name: Test PowerShell
 
 # Workflow triggers
 on:
