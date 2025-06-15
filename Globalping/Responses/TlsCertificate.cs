@@ -28,7 +28,7 @@ public class TlsCertificate
     public TlsCertificateIssuer Issuer { get; set; } = new();
 
     [JsonPropertyName("keyType")]
-    public string? KeyType { get; set; }
+    public TlsKeyType? KeyType { get; set; }
 
     [JsonPropertyName("keyBits")]
     public double? KeyBits { get; set; }
