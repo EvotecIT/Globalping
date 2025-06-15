@@ -5,10 +5,10 @@ namespace Globalping;
 
 public class LocationRequest {
     [JsonPropertyName("continent")]
-    public string? Continent { get; set; }
+    public ContinentCode? Continent { get; set; }
 
     [JsonPropertyName("region")]
-    public string? Region { get; set; }
+    public RegionName? Region { get; set; }
 
     [JsonPropertyName("country")]
     public string? Country { get; set; }
