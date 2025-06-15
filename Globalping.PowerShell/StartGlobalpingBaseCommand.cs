@@ -59,6 +59,7 @@ public abstract class StartGlobalpingBaseCommand : PSCmdlet
     /// <para>If omitted the cmdlet estimates a value based on provided
     /// locations.</para>
     [Parameter]
+    [ValidateRange(1, 500)]
     public int? Limit { get; set; }
 
     /// <para>Request progress updates while the measurement runs.</para>
