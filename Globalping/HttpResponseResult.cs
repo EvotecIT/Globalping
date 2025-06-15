@@ -19,5 +19,7 @@ public class HttpResponseResult
     public string Version { get; set; } = string.Empty;
     public string? ResolvedAddress { get; set; }
     public string? ResolvedHostname { get; set; }
+    public HttpTimings? Timings { get; set; }
+    public TlsCertificate? Tls { get; set; }
     public TestStatus Status { get; set; }
 }
