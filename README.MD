@@ -33,7 +33,7 @@ The repository contains a cross platform .NET library and a PowerShell module bu
 
 ## Requirements
 
-* **.NET** 6 or newer to build and run the library and example projects.
+* **.NET** 8 or newer to build and run the library and example projects.
 * **PowerShell** 5.1 or newer when using the module. PowerShell 7+ is recommended on non‑Windows platforms.
 
 ## PowerShell usage
