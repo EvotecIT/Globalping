@@ -16,6 +16,10 @@ public class DnsRecordResult
     public int Ttl { get; set; }
     public string Type { get; set; } = string.Empty;
     public string Data { get; set; } = string.Empty;
+    public string Resolver { get; set; } = string.Empty;
+    public int StatusCode { get; set; }
+    public string StatusCodeName { get; set; } = string.Empty;
+    public DnsTimings? Timings { get; set; }
     public string Country { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
     public string Network { get; set; } = string.Empty;

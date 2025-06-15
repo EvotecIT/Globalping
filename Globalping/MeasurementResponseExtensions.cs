@@ -26,7 +26,7 @@ public static class MeasurementResponseExtensions {
             return info;
         }
 
-        var lines = raw.Split('\n');
+        var lines = raw!.Split('\n');
         for (var i = 0; i < lines.Length; i++) {
             var t = lines[i].Trim();
             if (t.StartsWith(";; ->>HEADER<<-")) {
@@ -70,7 +70,7 @@ public static class MeasurementResponseExtensions {
             return dict;
         }
 
-        var lines = raw.Split('\n');
+        var lines = raw!.Split('\n');
         var start = false;
         foreach (var line in lines) {
             var t = line.Trim();
@@ -395,6 +395,14 @@ public static class MeasurementResponseExtensions {
     }
 
     internal static List<DnsRecordResult> ParseDns(ResultDetails? data) {
+        var resolver = data?.Resolver ?? string.Empty;
+        var statusCode = data?.StatusCode ?? 0;
+        var statusCodeName = data?.StatusCodeName ?? string.Empty;
+        DnsTimings? timings = null;
+        if (data?.Timings is JsonElement tEl && tEl.ValueKind == JsonValueKind.Object) {
+            timings = JsonSerializer.Deserialize<DnsTimings>(tEl.GetRawText());
+        }
+
         if (data?.Answers != null && data.Answers.Count > 0) {
             var header = ParseDnsHeaderInfo(data.RawOutput);
             return data.Answers.Select(a => new DnsRecordResult {
@@ -410,7 +418,11 @@ public static class MeasurementResponseExtensions {
                 QueryCount = header.QueryCount,
                 AnswerCount = header.AnswerCount,
                 AuthorityCount = header.AuthorityCount,
-                AdditionalCount = header.AdditionalCount
+                AdditionalCount = header.AdditionalCount,
+                Resolver = resolver,
+                StatusCode = statusCode,
+                StatusCodeName = statusCodeName,
+                Timings = timings
             }).ToList();
         }
         if (data?.Hops is JsonElement hops && hops.ValueKind == JsonValueKind.Array) {
@@ -419,11 +431,22 @@ public static class MeasurementResponseExtensions {
                 if (hop.TryGetProperty("answers", out var ansEl) && ansEl.ValueKind == JsonValueKind.Array) {
                     var ans = JsonSerializer.Deserialize<List<DnsAnswer>>(ansEl.GetRawText());
                     if (ans != null) {
+                        var hopResolver = hop.TryGetProperty("resolver", out var resEl) ? resEl.GetString() ?? resolver : resolver;
+                        var hopStatusCode = hop.TryGetProperty("statusCode", out var scEl) && scEl.ValueKind == JsonValueKind.Number ? scEl.GetInt32() : statusCode;
+                        var hopStatusName = hop.TryGetProperty("statusCodeName", out var scnEl) ? scnEl.GetString() ?? statusCodeName : statusCodeName;
+                        DnsTimings? hopTimings = timings;
+                        if (hop.TryGetProperty("timings", out var tEl2) && tEl2.ValueKind == JsonValueKind.Object) {
+                            hopTimings = JsonSerializer.Deserialize<DnsTimings>(tEl2.GetRawText());
+                        }
                         records.AddRange(ans.Select(a => new DnsRecordResult {
                             Name = a.Name,
                             Ttl = a.Ttl,
                             Type = a.Type,
-                            Data = a.Value
+                            Data = a.Value,
+                            Resolver = hopResolver,
+                            StatusCode = hopStatusCode,
+                            StatusCodeName = hopStatusName,
+                            Timings = hopTimings
                         }));
                     }
                 }
@@ -504,7 +527,11 @@ public static class MeasurementResponseExtensions {
                         Name = m.Groups[1].Value,
                         Ttl = int.Parse(m.Groups[2].Value),
                         Type = m.Groups[3].Value,
-                        Data = m.Groups[4].Value
+                        Data = m.Groups[4].Value,
+                        Resolver = resolver,
+                        StatusCode = statusCode,
+                        StatusCodeName = statusCodeName,
+                        Timings = timings
                     };
                     list.Add(rec);
                 }
@@ -539,6 +566,14 @@ public static class MeasurementResponseExtensions {
         if (data == null) {
             return new List<HttpResponseResult>();
         }
+        HttpTimings? timings = null;
+        if (data.Timings is JsonElement timingsEl &&
+            timingsEl.ValueKind != JsonValueKind.Undefined &&
+            timingsEl.ValueKind != JsonValueKind.Null)
+        {
+            timings = JsonSerializer.Deserialize<HttpTimings>(timingsEl.GetRawText());
+        }
+
         if (data.RawHeaders != null) {
             var resp = new HttpResponseResult
             {
@@ -546,6 +581,8 @@ public static class MeasurementResponseExtensions {
                 StatusCode = data.StatusCode ?? 0,
                 StatusDescription = data.StatusCodeName ?? string.Empty,
                 Body = data.RawBody,
+                Timings = timings,
+                Tls = data.Tls,
             };
             if (data.Headers != null)
             {
@@ -608,6 +645,9 @@ public static class MeasurementResponseExtensions {
         if (index < lines.Length) {
             result.Body = string.Join("\n", lines.Skip(index));
         }
+
+        result.Timings = timings;
+        result.Tls = data.Tls;
 
         return new List<HttpResponseResult> { result };
     }

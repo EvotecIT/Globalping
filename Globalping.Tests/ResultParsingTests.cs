@@ -144,7 +144,9 @@ public class ResultParsingTests
                             "truncated": false,
                             "headers": { "content-type": "text/plain" },
                             "statusCode": 200,
-                            "statusCodeName": "OK"
+                            "statusCodeName": "OK",
+                            "timings": { "dns": 10 },
+                            "tls": { "keyType": "RSA" }
                         }
                     }
                 ]
@@ -160,6 +162,10 @@ public class ResultParsingTests
         Assert.True(http[0].Headers.ContainsKey("content-type"));
         Assert.Single(http[0].Headers["content-type"]);
         Assert.Equal("text/plain", http[0].Headers["content-type"][0]);
+        Assert.NotNull(http[0].Timings);
+        Assert.Equal(10, http[0].Timings!.Dns);
+        Assert.NotNull(http[0].Tls);
+        Assert.Equal(TlsKeyType.RSA, http[0].Tls!.KeyType);
     }
 
     [Fact]

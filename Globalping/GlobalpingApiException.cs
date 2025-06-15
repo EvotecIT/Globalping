@@ -22,11 +22,11 @@ public class GlobalpingApiException : Exception
     /// <param name="statusCode">HTTP status code.</param>
     /// <param name="error">Error details returned by the API.</param>
     /// <param name="usageInfo">Captured usage information.</param>
-    public GlobalpingApiException(int statusCode, ErrorDetails error, ApiUsageInfo usageInfo)
+    public GlobalpingApiException(int statusCode, ErrorDetails? error, ApiUsageInfo? usageInfo)
         : base(error?.Message)
     {
         StatusCode = statusCode;
-        Error = error;
-        UsageInfo = usageInfo;
+        Error = error ?? new ErrorDetails();
+        UsageInfo = usageInfo ?? new ApiUsageInfo();
     }
 }

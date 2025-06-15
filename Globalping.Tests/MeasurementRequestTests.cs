@@ -101,4 +101,32 @@ public sealed class MeasurementRequestTests
         Assert.True(root.TryGetProperty("inProgressUpdates", out var prop));
         Assert.True(prop.GetBoolean());
     }
+
+    [Fact]
+    public void AddMagicWithLimitSetsLimit()
+    {
+        var request = new MeasurementRequestBuilder()
+            .WithType(MeasurementType.Ping)
+            .WithTarget("example.com")
+            .AddMagic("Europe", 5)
+            .Build();
+
+        var loc = Assert.Single(request.Locations);
+        Assert.Equal("Europe", loc.Magic);
+        Assert.Equal(5, loc.Limit);
+    }
+
+    [Fact]
+    public void AddMagicWithoutLimitLeavesLimitNull()
+    {
+        var request = new MeasurementRequestBuilder()
+            .WithType(MeasurementType.Ping)
+            .WithTarget("example.com")
+            .AddMagic("Europe")
+            .Build();
+
+        var loc = Assert.Single(request.Locations);
+        Assert.Equal("Europe", loc.Magic);
+        Assert.Null(loc.Limit);
+    }
 }

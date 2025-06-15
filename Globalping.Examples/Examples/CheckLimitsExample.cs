@@ -14,6 +14,6 @@ public static class CheckLimitsExample
         var limits = await service.GetLimitsAsync();
 
         ConsoleHelpers.WriteHeading("API limits");
-        ConsoleHelpers.WriteJson(limits);
+        ConsoleHelpers.WriteJson(limits!);
     }
 }

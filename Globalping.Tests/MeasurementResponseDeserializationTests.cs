@@ -235,4 +235,53 @@ public sealed class MeasurementResponseDeserializationTests
         Assert.Single(timings);
         Assert.Equal("1.2.3", timings[0].Version);
     }
+
+    [Fact]
+    public void DeserializesDnsResolverAndTimings()
+    {
+        var json = """
+        {
+            "id": "1",
+            "type": "dns",
+            "status": "finished",
+            "target": "example.com",
+            "probesCount": 1,
+            "results": [
+                {
+                    "probe": {
+                        "continent": "OC",
+                        "country": "AU",
+                        "city": "Melbourne",
+                        "asn": 1,
+                        "longitude": 0,
+                        "latitude": 0,
+                        "network": "test",
+                        "tags": [],
+                        "resolvers": []
+                    },
+                    "result": {
+                        "status": "finished",
+                        "resolver": "8.8.8.8",
+                        "statusCode": 0,
+                        "statusCodeName": "NOERROR",
+                        "timings": { "total": 42.0 },
+                        "answers": [
+                            { "name": "example.com", "type": "A", "ttl": 60, "class": "IN", "value": "1.1.1.1" }
+                        ]
+                    }
+                }
+            ]
+        }
+        """;
+
+        var response = JsonSerializer.Deserialize<MeasurementResponse>(json, JsonOptions);
+        Assert.NotNull(response);
+        var records = response!.GetDnsRecords();
+        Assert.Single(records);
+        Assert.Equal("8.8.8.8", records[0].Resolver);
+        Assert.Equal(0, records[0].StatusCode);
+        Assert.Equal("NOERROR", records[0].StatusCodeName);
+        Assert.NotNull(records[0].Timings);
+        Assert.Equal(42.0, records[0].Timings!.Total);
+    }
 }
