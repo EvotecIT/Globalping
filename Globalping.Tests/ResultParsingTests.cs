@@ -249,4 +249,45 @@ public class ResultParsingTests
         Assert.Single(hops);
         Assert.Equal(64500, Assert.IsType<int>(hops[0].Asn));
     }
+
+    [Fact]
+    public void SummaryIncludesProbeVersion()
+    {
+        var json = """
+            {
+                "id": "1",
+                "type": "ping",
+                "status": "finished",
+                "target": "example.com",
+                "probesCount": 1,
+                "results": [
+                    {
+                        "probe": {
+                            "continent": "EU",
+                            "region": "EU",
+                            "country": "DE",
+                            "state": null,
+                            "city": "Berlin",
+                            "asn": 1,
+                            "longitude": 0,
+                            "latitude": 0,
+                            "network": "test",
+                            "tags": [],
+                            "resolvers": [],
+                            "version": "2.0.0"
+                        },
+                        "result": {
+                            "status": "finished"
+                        }
+                    }
+                ]
+            }
+            """;
+
+        var resp = JsonSerializer.Deserialize<MeasurementResponse>(json, JsonOptions);
+        Assert.NotNull(resp);
+        var summaries = resp!.GetSummaries();
+        Assert.Single(summaries);
+        Assert.Equal("2.0.0", summaries[0].Version);
+    }
 }

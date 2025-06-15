@@ -15,6 +15,7 @@ public class TracerouteHopResult
     public int Asn { get; set; }
     public string State { get; set; } = string.Empty;
     public string Continent { get; set; } = string.Empty;
+    public string Version { get; set; } = string.Empty;
     public string? ResolvedAddress { get; set; }
     public string? ResolvedHostname { get; set; }
     public TestStatus Status { get; set; }

@@ -114,6 +114,7 @@ public static class MeasurementResponseExtensions {
             Continent = r.Probe.Continent,
             Asn = r.Probe.Asn,
             Network = r.Probe.Network,
+            Version = r.Probe.Version,
             ResolvedAddress = r.Data?.ResolvedAddress,
             ResolvedHostname = r.Data?.ResolvedHostname,
             Status = r.Data != null ? r.Data.Status : default,
@@ -146,6 +147,7 @@ public static class MeasurementResponseExtensions {
                         State = r.Probe.State,
                         Asn = r.Probe.Asn,
                         Network = r.Probe.Network,
+                        Version = r.Probe.Version,
                         ResolvedAddress = r.Data?.ResolvedAddress,
                         ResolvedHostname = r.Data?.ResolvedHostname,
                         Status = r.Data != null ? r.Data.Status : default,
@@ -171,6 +173,7 @@ public static class MeasurementResponseExtensions {
             h.State = r.Probe.State;
             h.Asn = r.Probe.Asn;
             h.Network = r.Probe.Network;
+            h.Version = r.Probe.Version;
             h.ResolvedAddress = r.Data?.ResolvedAddress;
             h.ResolvedHostname = r.Data?.ResolvedHostname;
             h.Status = r.Data != null ? r.Data.Status : default;
@@ -192,6 +195,7 @@ public static class MeasurementResponseExtensions {
             h.State = r.Probe.State;
             h.ProbeAsn = r.Probe.Asn;
             h.Network = r.Probe.Network;
+            h.Version = r.Probe.Version;
             h.ResolvedAddress = r.Data?.ResolvedAddress;
             h.ResolvedHostname = r.Data?.ResolvedHostname;
             h.Status = r.Data != null ? r.Data.Status : default;
@@ -213,6 +217,7 @@ public static class MeasurementResponseExtensions {
             h.State = r.Probe.State;
             h.Asn = r.Probe.Asn;
             h.Network = r.Probe.Network;
+            h.Version = r.Probe.Version;
             h.Status = r.Data != null ? r.Data.Status : default;
             return h;
         })).ToList();
@@ -522,6 +527,7 @@ public static class MeasurementResponseExtensions {
             h.State = r.Probe.State;
             h.Asn = r.Probe.Asn;
             h.Network = r.Probe.Network;
+            h.Version = r.Probe.Version;
             h.ResolvedAddress = r.Data?.ResolvedAddress;
             h.ResolvedHostname = r.Data?.ResolvedHostname;
             h.Status = r.Data != null ? r.Data.Status : default;
