@@ -14,5 +14,6 @@ public class ApiUsageInfo
     public int? CreditsConsumed { get; set; }
     public int? CreditsRemaining { get; set; }
     public int? RequestCost { get; set; }
+    public int? RetryAfter { get; set; }
     public string? ETag { get; set; }
 }

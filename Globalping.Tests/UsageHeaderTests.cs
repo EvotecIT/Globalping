@@ -38,6 +38,7 @@ public class UsageHeaderTests
         response.Headers.Add("X-Credits-Consumed", "2");
         response.Headers.Add("X-Credits-Remaining", "8");
         response.Headers.Add("X-Request-Cost", "2");
+        response.Headers.Add("Retry-After", "15");
         response.Headers.ETag = new EntityTagHeaderValue("\"abc\"");
 
         var client = new HttpClient(new MockHandler(response));
@@ -52,6 +53,7 @@ public class UsageHeaderTests
         Assert.Equal(8, service.LastResponseInfo.CreditsRemaining);
         Assert.Equal(2, service.LastResponseInfo.RequestCost);
         Assert.Equal("\"abc\"", service.LastResponseInfo.ETag);
+        Assert.Equal(15, service.LastResponseInfo.RetryAfter);
     }
 
     [Fact]
@@ -69,6 +71,7 @@ public class UsageHeaderTests
         response.Headers.Add("X-Credits-Consumed", "3");
         response.Headers.Add("X-Credits-Remaining", "7");
         response.Headers.Add("X-Request-Cost", "1");
+        response.Headers.Add("Retry-After", "25");
         response.Headers.ETag = new EntityTagHeaderValue("\"def\"");
 
         var client = new HttpClient(new MockHandler(response));
@@ -83,5 +86,6 @@ public class UsageHeaderTests
         Assert.Equal(7, measurementClient.LastResponseInfo.CreditsRemaining);
         Assert.Equal(1, measurementClient.LastResponseInfo.RequestCost);
         Assert.Equal("\"def\"", measurementClient.LastResponseInfo.ETag);
+        Assert.Equal(25, measurementClient.LastResponseInfo.RetryAfter);
     }
 }
