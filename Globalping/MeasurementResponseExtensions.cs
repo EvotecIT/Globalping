@@ -675,29 +675,56 @@ public static class MeasurementResponseExtensions {
     private static object? ParseJson(string value)
     {
         var trimmed = value.Trim();
+        if (!((trimmed.StartsWith("{") && trimmed.EndsWith("}")) ||
+              (trimmed.StartsWith("[") && trimmed.EndsWith("]"))))
+        {
+            return value;
+        }
+
         try
         {
-            if (trimmed.StartsWith("{") && trimmed.EndsWith("}"))
-            {
-                var dict = JsonSerializer.Deserialize<Dictionary<string, object?>>(trimmed);
-                if (dict != null)
-                {
-                    return dict;
-                }
-            }
-            else if (trimmed.StartsWith("[") && trimmed.EndsWith("]"))
-            {
-                var list = JsonSerializer.Deserialize<List<object?>>(trimmed);
-                if (list != null)
-                {
-                    return list;
-                }
-            }
+            using var doc = JsonDocument.Parse(trimmed);
+            return ConvertElement(doc.RootElement);
         }
         catch (JsonException)
         {
-            // fall back to string
+            return value;
         }
-        return value;
+    }
+
+    private static object? ConvertElement(JsonElement element)
+    {
+        switch (element.ValueKind)
+        {
+            case JsonValueKind.Object:
+                var dict = new Dictionary<string, object?>();
+                foreach (var prop in element.EnumerateObject())
+                {
+                    dict[prop.Name] = ConvertElement(prop.Value);
+                }
+                return dict;
+            case JsonValueKind.Array:
+                var list = new List<object?>();
+                foreach (var item in element.EnumerateArray())
+                {
+                    list.Add(ConvertElement(item));
+                }
+                return list;
+            case JsonValueKind.String:
+                return element.GetString();
+            case JsonValueKind.Number:
+                if (element.TryGetInt64(out var l))
+                {
+                    return l;
+                }
+                return element.GetDouble();
+            case JsonValueKind.True:
+            case JsonValueKind.False:
+                return element.GetBoolean();
+            case JsonValueKind.Null:
+                return null;
+            default:
+                return element.GetRawText();
+        }
     }
 }

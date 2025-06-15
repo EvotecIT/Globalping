@@ -245,6 +245,6 @@ public class AdditionalCoverageMoreTests
         Assert.Single(list);
         var http = list[0];
         var reportTo = Assert.IsType<Dictionary<string, object?>>(http.Headers["report-to"]!);
-        Assert.True(reportTo.TryGetValue("a", out var val) && val is JsonElement el && el.GetInt32() == 1);
+        Assert.True(reportTo.TryGetValue("a", out var val) && val is long l && l == 1);
     }
 }
