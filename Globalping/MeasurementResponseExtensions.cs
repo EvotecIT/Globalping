@@ -709,6 +709,10 @@ public static class MeasurementResponseExtensions {
                 {
                     list.Add(ConvertElement(item));
                 }
+                if (list.Count == 1)
+                {
+                    return list[0];
+                }
                 return list;
             case JsonValueKind.String:
                 return element.GetString();
