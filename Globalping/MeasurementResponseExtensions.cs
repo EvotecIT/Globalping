@@ -116,7 +116,7 @@ public static class MeasurementResponseExtensions {
             Network = r.Probe.Network,
             ResolvedAddress = r.Data?.ResolvedAddress,
             ResolvedHostname = r.Data?.ResolvedHostname,
-            Status = r.Data?.Status,
+            Status = r.Data != null ? r.Data.Status : default,
             Timings = r.Data?.Timings,
             Stats = r.Data?.Stats
         }).ToList();
@@ -148,7 +148,7 @@ public static class MeasurementResponseExtensions {
                         Network = r.Probe.Network,
                         ResolvedAddress = r.Data?.ResolvedAddress,
                         ResolvedHostname = r.Data?.ResolvedHostname,
-                        Status = r.Data?.Status,
+                        Status = r.Data != null ? r.Data.Status : default,
                     };
                 }).ToList();
             }
@@ -173,7 +173,7 @@ public static class MeasurementResponseExtensions {
             h.Network = r.Probe.Network;
             h.ResolvedAddress = r.Data?.ResolvedAddress;
             h.ResolvedHostname = r.Data?.ResolvedHostname;
-            h.Status = r.Data?.Status;
+            h.Status = r.Data != null ? r.Data.Status : default;
             return h;
         })).ToList();
     }
@@ -194,7 +194,7 @@ public static class MeasurementResponseExtensions {
             h.Network = r.Probe.Network;
             h.ResolvedAddress = r.Data?.ResolvedAddress;
             h.ResolvedHostname = r.Data?.ResolvedHostname;
-            h.Status = r.Data?.Status;
+            h.Status = r.Data != null ? r.Data.Status : default;
             return h;
         })).ToList();
     }
@@ -213,7 +213,7 @@ public static class MeasurementResponseExtensions {
             h.State = r.Probe.State;
             h.Asn = r.Probe.Asn;
             h.Network = r.Probe.Network;
-            h.Status = r.Data?.Status;
+            h.Status = r.Data != null ? r.Data.Status : default;
             return h;
         })).ToList();
     }
@@ -524,7 +524,7 @@ public static class MeasurementResponseExtensions {
             h.Network = r.Probe.Network;
             h.ResolvedAddress = r.Data?.ResolvedAddress;
             h.ResolvedHostname = r.Data?.ResolvedHostname;
-            h.Status = r.Data?.Status;
+            h.Status = r.Data != null ? r.Data.Status : default;
             return h;
         })).ToList();
     }

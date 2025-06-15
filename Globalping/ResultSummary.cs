@@ -13,7 +13,7 @@ public class ResultSummary
     public string Network { get; set; } = string.Empty;
     public string? ResolvedAddress { get; set; }
     public string? ResolvedHostname { get; set; }
-    public string? Status { get; set; }
+    public TestStatus Status { get; set; }
     public JsonElement? Timings { get; set; }
     public Stats? Stats { get; set; }
 }

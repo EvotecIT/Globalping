@@ -30,6 +30,7 @@ public class ProbeService {
     {
         _httpClient = httpClient;
         _jsonOptions.Converters.Add(new JsonStringEnumConverter<MeasurementStatus>(JsonNamingPolicy.KebabCaseLower));
+        _jsonOptions.Converters.Add(new JsonStringEnumConverter<TestStatus>(JsonNamingPolicy.KebabCaseLower));
         _jsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 
         if (!_httpClient.DefaultRequestHeaders.UserAgent.Any())
@@ -66,7 +67,8 @@ public class ProbeService {
             RateLimitReset = TryGetLong(headers, "X-RateLimit-Reset"),
             CreditsConsumed = TryGetInt(headers, "X-Credits-Consumed"),
             CreditsRemaining = TryGetInt(headers, "X-Credits-Remaining"),
-            RequestCost = TryGetInt(headers, "X-Request-Cost")
+            RequestCost = TryGetInt(headers, "X-Request-Cost"),
+            ETag = headers.ETag?.Tag
         };
     }
 
