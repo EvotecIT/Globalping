@@ -142,5 +142,8 @@ public class ResultParsingTests
         Assert.Single(http);
         Assert.Equal(200, http[0].StatusCode);
         Assert.Equal("hello", http[0].Body);
+        Assert.True(http[0].Headers.ContainsKey("content-type"));
+        Assert.Single(http[0].Headers["content-type"]);
+        Assert.Equal("text/plain", http[0].Headers["content-type"][0]);
     }
 }
