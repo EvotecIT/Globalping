@@ -1,10 +1,22 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Xunit;
 
 namespace Globalping.Tests;
 
 public class ResultParsingTests
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+    };
+
+    static ResultParsingTests()
+    {
+        JsonOptions.Converters.Add(new JsonStringEnumConverter<MeasurementStatus>(JsonNamingPolicy.KebabCaseLower));
+        JsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+    }
     [Fact]
     public void ParsesTracerouteHopsFromJson()
     {
@@ -44,7 +56,7 @@ public class ResultParsingTests
             }
             """;
 
-        var resp = JsonSerializer.Deserialize<MeasurementResponse>(json);
+        var resp = JsonSerializer.Deserialize<MeasurementResponse>(json, JsonOptions);
         Assert.NotNull(resp);
         var hops = resp!.GetTracerouteHops();
         Assert.Equal(2, hops.Count);
@@ -89,7 +101,7 @@ public class ResultParsingTests
             }
             """;
 
-        var resp = JsonSerializer.Deserialize<MeasurementResponse>(json);
+        var resp = JsonSerializer.Deserialize<MeasurementResponse>(json, JsonOptions);
         Assert.NotNull(resp);
         var records = resp!.GetDnsRecords();
         Assert.Single(records);
@@ -136,7 +148,7 @@ public class ResultParsingTests
             }
             """;
 
-        var resp = JsonSerializer.Deserialize<MeasurementResponse>(json);
+        var resp = JsonSerializer.Deserialize<MeasurementResponse>(json, JsonOptions);
         Assert.NotNull(resp);
         var http = resp!.GetHttpResponses();
         Assert.Single(http);
