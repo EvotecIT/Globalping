@@ -177,25 +177,25 @@ public abstract class StartGlobalpingBaseCommand : PSCmdlet
 
         WriteVerbose($"Request: {JsonSerializer.Serialize(request, jsonOptions)}");
 
-        string id;
+        CreateMeasurementResponse createResponse;
         try
         {
-            id = service.CreateMeasurementAsync(request, WaitTime).GetAwaiter().GetResult();
-            WriteVerbose($"Measurement id: {id}");
+            createResponse = service.CreateMeasurementAsync(request, WaitTime).GetAwaiter().GetResult();
+            WriteVerbose($"Measurement id: {createResponse.Id}");
         }
         catch (HttpRequestException ex)
         {
             WriteVerbose($"Request failed: {ex.Message}");
             throw;
         }
-        if (string.IsNullOrEmpty(id))
+        if (string.IsNullOrEmpty(createResponse.Id))
         {
             WriteError(new ErrorRecord(new InvalidOperationException("Measurement creation failed"), "CreateFailed", ErrorCategory.InvalidOperation, Target));
             return;
         }
 
         var client = new MeasurementClient(httpClient, ApiKey);
-        var result = client.GetMeasurementByIdAsync(id).GetAwaiter().GetResult();
+        var result = client.GetMeasurementByIdAsync(createResponse.Id).GetAwaiter().GetResult();
         WriteVerbose($"Response: {JsonSerializer.Serialize(result, jsonOptions)}");
 
         HandleOutput(result);

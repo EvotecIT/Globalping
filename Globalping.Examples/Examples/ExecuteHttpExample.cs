@@ -25,14 +25,14 @@ public static class ExecuteHttpExample {
         });
         var apiKey = Environment.GetEnvironmentVariable("GLOBALPING_TOKEN");
         var probeService = new ProbeService(httpClient, apiKey);
-        var measurementId = await probeService.CreateMeasurementAsync(request, 60);
+        var measurement = await probeService.CreateMeasurementAsync(request, 60);
 
-        ConsoleHelpers.WriteHeading($"HTTP example (ID: {measurementId})");
+        ConsoleHelpers.WriteHeading($"HTTP example (ID: {measurement.Id})");
 
         var client = new MeasurementClient(httpClient, apiKey);
-        var result = await client.GetMeasurementByIdAsync(measurementId);
+        var result = await client.GetMeasurementByIdAsync(measurement.Id);
 
-        ConsoleHelpers.WriteJson(request, $"Request sent (HTTP ID: {measurementId})");
+        ConsoleHelpers.WriteJson(request, $"Request sent (HTTP ID: {measurement.Id})");
 
         if (result != null) {
             ConsoleHelpers.WriteJson(result, "Measurement result");

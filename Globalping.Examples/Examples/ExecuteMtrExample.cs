@@ -24,14 +24,14 @@ public static class ExecuteMtrExample
         });
         var apiKey = Environment.GetEnvironmentVariable("GLOBALPING_TOKEN");
         var probeService = new ProbeService(httpClient, apiKey);
-        var measurementId = await probeService.CreateMeasurementAsync(request);
+        var measurement = await probeService.CreateMeasurementAsync(request);
 
-        ConsoleHelpers.WriteHeading($"MTR example (ID: {measurementId})");
+        ConsoleHelpers.WriteHeading($"MTR example (ID: {measurement.Id})");
 
         var client = new MeasurementClient(httpClient, apiKey);
-        var result = await client.GetMeasurementByIdAsync(measurementId);
+        var result = await client.GetMeasurementByIdAsync(measurement.Id);
 
-        ConsoleHelpers.WriteJson(request, $"Request sent (MTR ID: {measurementId})");
+        ConsoleHelpers.WriteJson(request, $"Request sent (MTR ID: {measurement.Id})");
 
         if (result != null)
         {

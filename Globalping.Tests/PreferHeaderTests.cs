@@ -20,7 +20,7 @@ public sealed class PreferHeaderTests
             LastRequest = request;
             var response = new HttpResponseMessage(HttpStatusCode.Accepted)
             {
-                Content = new StringContent("{\"id\":\"1\"}", Encoding.UTF8, "application/json")
+                Content = new StringContent("{\"id\":\"1\",\"probesCount\":1}", Encoding.UTF8, "application/json")
             };
             return Task.FromResult(response);
         }

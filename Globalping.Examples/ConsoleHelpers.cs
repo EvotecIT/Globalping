@@ -44,8 +44,12 @@ public static class ConsoleHelpers
         }
         else if (data is IDictionary dict)
         {
-            entries = dict.Cast<DictionaryEntry>()
-                .Select(e => new KeyValuePair<string, object?>(e.Key?.ToString() ?? string.Empty, e.Value));
+            var list = new List<KeyValuePair<string, object?>>();
+            foreach (DictionaryEntry entry in dict)
+            {
+                list.Add(new KeyValuePair<string, object?>(entry.Key?.ToString() ?? string.Empty, entry.Value));
+            }
+            entries = list;
         }
         else
         {
