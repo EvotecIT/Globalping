@@ -24,8 +24,24 @@ public static class ProbeExtensions
             Longitude = loc?.Longitude ?? 0,
             Latitude = loc?.Latitude ?? 0,
             Network = loc?.Network ?? string.Empty,
-            Tags = probe.Tags is null ? string.Empty : string.Join(", ", probe.Tags),
+            Tags = ConvertList(probe.Tags),
+            Resolvers = ConvertList(probe.Resolvers),
             Version = probe.Version
         };
+    }
+
+    private static object? ConvertList(List<string>? items)
+    {
+        if (items is null || items.Count == 0)
+        {
+            return null;
+        }
+
+        if (items.Count == 1)
+        {
+            return items[0];
+        }
+
+        return items.ToArray();
     }
 }

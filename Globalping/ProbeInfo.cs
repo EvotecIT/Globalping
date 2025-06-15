@@ -32,8 +32,11 @@ public class ProbeInfo
     /// <summary>Network provider.</summary>
     public string Network { get; set; } = string.Empty;
 
-    /// <summary>Comma separated list of probe tags.</summary>
-    public string Tags { get; set; } = string.Empty;
+    /// <summary>Tags associated with the probe. Can be a string, array or <c>null</c>.</summary>
+    public object? Tags { get; set; }
+
+    /// <summary>DNS resolvers used by the probe. Can be a string, array or <c>null</c>.</summary>
+    public object? Resolvers { get; set; }
 
     /// <summary>Probe software version.</summary>
     public string Version { get; set; } = string.Empty;
