@@ -82,6 +82,11 @@ Describe "Globalping Cmdlets" {
         $limits | Should -Not -BeNullOrEmpty
     }
 
+    It "Get-GlobalpingProbe returns output" {
+        $probes = Get-GlobalpingProbe -ErrorAction Stop
+        $probes | Should -Not -BeNullOrEmpty
+    }
+    
     It "Rejects limit below valid range" {
         { Start-GlobalpingPing -Target "evotec.xyz" -Limit 0 -ErrorAction Stop } |
             Should -Throw -ErrorId 'ParameterArgumentValidationError,Globalping.PowerShell.StartGlobalpingPingCommand'

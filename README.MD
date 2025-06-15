@@ -115,6 +115,18 @@ Request in-progress updates and customize the wait time:
 Start-GlobalpingHttp -Target "https://example.com" -Limit 3 -InProgressUpdates -WaitTime 60
 ```
 
+List currently available probes:
+
+```powershell
+Get-GlobalpingProbe | Format-Table
+```
+
+Return the raw `Probes` objects:
+
+```powershell
+Get-GlobalpingProbe -Raw | Format-Table
+```
+
 ## C# usage
 
 The .NET library exposes the same functionality for applications. A minimal example to run a ping measurement:
