@@ -10,7 +10,7 @@ Build-Module -ModuleName 'Globalping' {
         # ID used to uniquely identify this module
         GUID                 = 'a587d150-7ab5-47da-ae3a-3bb879e2c07f'
         # Version number of this module.
-        ModuleVersion        = '1.0.0'
+        ModuleVersion        = '1.0.1'
         # Author of this module
         Author               = 'Przemyslaw Klys'
         # Company or vendor of this module
