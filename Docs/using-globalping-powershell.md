@@ -1,8 +1,6 @@
 Are you tired of manually running network diagnostics like Ping, Traceroute, or DNS queries? The **Globalping PowerShell Module** is here to save the day! With its easy-to-use cmdlets, you can automate measurements from probes distributed across the globe.
 
-In this blog, we'll explore the features of the Globalping PowerShell Module, showcase real-world examples, and help you get started with scripting your network tests. If you're a developer working in C#, check out our companion blog on [Globalping.NET](./using-globalping-csharp.md) to see how these tools complement each other.
-
----
+In this blog, we'll explore the features of the Globalping PowerShell Module, showcase real-world examples, and help you get started with scripting your network tests. If you're a developer working in C#, check out our companion blog on [Globalping.NET](https://evotec.xyz/supercharging-your-network-diagnostics-with-globalping-for-net/) to see how these tools complement each other.
 
 ## Free API with Generous Limits
 
@@ -16,8 +14,6 @@ Globalping is a free API that requires no registration to get started. Here are 
   - 500 free tests per hour
 
 Higher limits are available for members, making it ideal for both casual and professional use.
-
----
 
 ## Available Cmdlets
 
@@ -33,8 +29,6 @@ The Globalping PowerShell Module offers a rich set of cmdlets to cover all your 
 
 With these cmdlets, you can script everything from simple pings to advanced HTTP diagnostics, all while monitoring your API usage and probe availability.
 
----
-
 ## Why Globalping PowerShell?
 
 Globalping PowerShell simplifies network diagnostics by bundling the Globalping API into cmdlets. Here's why it's awesome:
@@ -42,8 +36,6 @@ Globalping PowerShell simplifies network diagnostics by bundling the Globalping 
 - **Cmdlet Simplicity**: No need to deal with raw HTTP requests.
 - **Location Control**: Run diagnostics from specific countries, cities, or even cloud providers.
 - **Rich Output**: Retrieve detailed results in table or list formats.
-
----
 
 ## Getting Started
 
@@ -63,8 +55,6 @@ cd Globalping
  dotnet build
 Import-Module ./Module/Globalping.psd1 -Force
 ```
-
----
 
 ## Real-World Examples
 
@@ -90,8 +80,6 @@ For higher limits and more probes, use the `-ApiKey` parameter:
 Start-GlobalpingPing -Target "example.com" -SimpleLocations "DE" -ApiKey "your-api-key"
 ```
 
----
-
 ### DNS Queries
 
 Resolve domain names with ease:
@@ -106,8 +94,6 @@ Retrieve raw DNS results:
 $OutputDns = Start-GlobalpingDns -Target "evotec.xyz" -Verbose -Raw
 $OutputDns.Results[0].ToDnsRecords() | Format-Table *
 ```
-
----
 
 ### HTTP Measurements
 
@@ -125,8 +111,6 @@ $OutputHttp = Start-GlobalpingHttp -Target "evotec.xyz" -Verbose -Raw
 $OutputHttp.Results[0].Data.Headers | Format-Table
 ```
 
----
-
 ### MTR and Traceroute
 
 Perform MTR traces with detailed hop statistics:
@@ -141,8 +125,6 @@ Run a Traceroute:
 ```powershell
 Start-GlobalpingTraceroute -Target "evotec.xyz" -Verbose | Format-Table *
 ```
-
----
 
 ### Probes and Limits
 
@@ -164,13 +146,9 @@ Retrieve raw limit information:
 Get-GlobalpingLimit -ApiKey "your-api-key" -Raw | Format-List
 ```
 
----
-
 ## Cross-Platform Diagnostics
 
 If you're working in both PowerShell and C#, the Globalping ecosystem has you covered. Use the PowerShell module for quick scripting and automation, and leverage [Globalping.NET](./using-globalping-csharp.md) for robust application development. Together, they form a powerful toolkit for network diagnostics.
-
----
 
 ## Conclusion
 
