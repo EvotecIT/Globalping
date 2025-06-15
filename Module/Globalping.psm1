@@ -84,6 +84,11 @@ if ($Development) {
     )
 }
 
+# Ensure dependent libraries are loaded before the module assemblies
+$Assembly = $Assembly | Sort-Object {
+    if ($_.BaseName -like 'Globalping*') { 1 } else { 0 }
+}, Name
+
 $FoundErrors = @(
     if ($Development) {
         foreach ($BinaryModule in $BinaryDev) {

@@ -1,16 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <Company>Evotec</Company>
-        <Authors>Przemyslaw Klys</Authors>
-        <VersionPrefix>1.0.0</VersionPrefix>
-        <TargetFrameworks>net8.0;netstandard2.0;net472</TargetFrameworks>
-        <AssemblyName>Globalping.PowerShell</AssemblyName>
-        <AssemblyTitle>Globalping.PowerShell</AssemblyTitle>
-        <Copyright>(c) 2011 - 2025 Przemyslaw Klys @ Evotec. All rights reserved.</Copyright>
-        <LangVersion>latest</LangVersion>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
+  <PropertyGroup>
+      <Company>Evotec</Company>
+      <Authors>Przemyslaw Klys</Authors>
+      <VersionPrefix>1.0.0</VersionPrefix>
+      <TargetFrameworks>net8.0;netstandard2.0;net472</TargetFrameworks>
+      <AssemblyName>Globalping.PowerShell</AssemblyName>
+      <AssemblyTitle>Globalping.PowerShell</AssemblyTitle>
+      <Copyright>(c) 2011 - 2025 Przemyslaw Klys @ Evotec. All rights reserved.</Copyright>
+      <LangVersion>latest</LangVersion>
+      <Nullable>enable</Nullable>
+      <AppConfig>App.config</AppConfig>
+  </PropertyGroup>
+
+  <ItemGroup>
+      <None Include="App.config">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+  </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Globalping\Globalping.csproj" />
