@@ -68,6 +68,7 @@ public class ProbeService {
             CreditsConsumed = TryGetInt(headers, "X-Credits-Consumed"),
             CreditsRemaining = TryGetInt(headers, "X-Credits-Remaining"),
             RequestCost = TryGetInt(headers, "X-Request-Cost"),
+            RetryAfter = TryGetInt(headers, "Retry-After"),
             ETag = headers.ETag?.Tag
         };
     }
