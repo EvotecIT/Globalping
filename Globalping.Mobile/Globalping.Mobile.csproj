@@ -8,9 +8,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationTitle>Globalping Mobile</ApplicationTitle>
     <ApplicationId>com.evotec.globalpingmobile</ApplicationId>
+    <AndroidManifest>Platforms/Android/AndroidManifest.xml</AndroidManifest>
     <RootNamespace>Globalping.Mobile</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
     <ProjectReference Include="..\Globalping\Globalping.csproj" />
   </ItemGroup>
 </Project>
