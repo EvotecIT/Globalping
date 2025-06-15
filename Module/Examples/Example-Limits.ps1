@@ -5,3 +5,6 @@ Get-GlobalpingLimit | Format-Table
 
 # Retrieve the raw Limits object
 Get-GlobalpingLimit -Raw | Format-List
+
+# Retrieve the limits for a specific API key
+Get-GlobalpingLimit -ApiKey "ApiKey" | Format-Table
