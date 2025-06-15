@@ -7,6 +7,100 @@ using System.Globalization;
 namespace Globalping;
 
 public static class MeasurementResponseExtensions {
+    internal struct DnsHeaderInfo {
+        public string Flags;
+        public string QuestionName;
+        public string QuestionType;
+        public int QueryCount;
+        public int AnswerCount;
+        public int AuthorityCount;
+        public int AdditionalCount;
+        public string Opcode;
+        public string HeaderStatus;
+    }
+
+    private static DnsHeaderInfo ParseDnsHeaderInfo(string? raw) {
+        var info = new DnsHeaderInfo();
+        if (string.IsNullOrWhiteSpace(raw)) {
+            return info;
+        }
+
+        var lines = raw.Split('\n');
+        for (var i = 0; i < lines.Length; i++) {
+            var t = lines[i].Trim();
+            if (t.StartsWith(";; ->>HEADER<<-")) {
+                var m = Regex.Match(t, @"opcode:\s*(\S+),\s*status:\s*(\S+),\s*id:\s*(\d+)");
+                if (m.Success) {
+                    info.Opcode = m.Groups[1].Value;
+                    info.HeaderStatus = m.Groups[2].Value;
+                }
+                continue;
+            }
+            if (t.StartsWith(";; flags:")) {
+                var m = Regex.Match(t, @"flags:\s*([^;]+);\s*QUERY:\s*(\d+),\s*ANSWER:\s*(\d+),\s*AUTHORITY:\s*(\d+),\s*ADDITIONAL:\s*(\d+)");
+                if (m.Success) {
+                    info.Flags = m.Groups[1].Value.Trim();
+                    info.QueryCount = int.Parse(m.Groups[2].Value);
+                    info.AnswerCount = int.Parse(m.Groups[3].Value);
+                    info.AuthorityCount = int.Parse(m.Groups[4].Value);
+                    info.AdditionalCount = int.Parse(m.Groups[5].Value);
+                }
+                continue;
+            }
+            if (t.StartsWith(";; QUESTION SECTION")) {
+                if (i + 1 < lines.Length) {
+                    var q = lines[i + 1].Trim(';').Trim();
+                    var qm = Regex.Match(q, @"^(\S+)\.\s+IN\s+(\S+)");
+                    if (qm.Success) {
+                        info.QuestionName = qm.Groups[1].Value;
+                        info.QuestionType = qm.Groups[2].Value;
+                    }
+                }
+                break;
+            }
+        }
+
+        return info;
+    }
+
+    private static Dictionary<int, string> ParseMtrRawHosts(string? raw) {
+        var dict = new Dictionary<int, string>();
+        if (string.IsNullOrWhiteSpace(raw)) {
+            return dict;
+        }
+
+        var lines = raw.Split('\n');
+        var start = false;
+        foreach (var line in lines) {
+            var t = line.Trim();
+            if (string.IsNullOrEmpty(t)) {
+                continue;
+            }
+            if (!start) {
+                if (t.StartsWith("Host")) {
+                    start = true;
+                }
+                continue;
+            }
+
+            if (t.Contains("waiting for reply")) {
+                var numMatch = Regex.Match(t, "^(\\d+)");
+                if (numMatch.Success) {
+                    dict[int.Parse(numMatch.Value)] = "waiting for reply";
+                }
+                continue;
+            }
+
+            var m = Regex.Match(t, "^(\\d+)\\.\\s+(AS[^\\s]+)\\s+([^\\(]+)\\s+\\(([^\\)]+)\\)");
+            if (m.Success) {
+                var hop = int.Parse(m.Groups[1].Value);
+                var host = m.Groups[3].Value.Trim();
+                dict[hop] = host;
+            }
+        }
+
+        return dict;
+    }
     public static List<ResultSummary> GetSummaries(this MeasurementResponse response) {
         if (response.Results == null) {
             return new List<ResultSummary>();
@@ -183,6 +277,7 @@ public static class MeasurementResponseExtensions {
 
     internal static List<MtrHopResult> ParseMtr(ResultDetails? data) {
         if (data?.Hops is JsonElement hops && hops.ValueKind == JsonValueKind.Array) {
+            var rawHosts = ParseMtrRawHosts(data.RawOutput);
             var jsonList = new List<MtrHopResult>();
             var idx = 1;
             foreach (var hop in hops.EnumerateArray()) {
@@ -191,6 +286,11 @@ public static class MeasurementResponseExtensions {
                     Host = hop.GetProperty("resolvedHostname").GetString() ?? string.Empty,
                     IpAddress = hop.GetProperty("resolvedAddress").GetString() ?? string.Empty,
                 };
+                if (rawHosts.TryGetValue(r.Hop, out var rawHost)) {
+                    if (!string.IsNullOrWhiteSpace(rawHost) && rawHost != r.IpAddress) {
+                        r.Host = rawHost;
+                    }
+                }
                 if (hop.TryGetProperty("asn", out var asnEl) && asnEl.ValueKind == JsonValueKind.Array) {
                     r.Asn = string.Join(",", asnEl.EnumerateArray().Select(a => a.GetInt32().ToString()));
                 }
@@ -272,16 +372,21 @@ public static class MeasurementResponseExtensions {
 
     internal static List<DnsRecordResult> ParseDns(ResultDetails? data) {
         if (data?.Answers != null && data.Answers.Count > 0) {
+            var header = ParseDnsHeaderInfo(data.RawOutput);
             return data.Answers.Select(a => new DnsRecordResult {
                 Name = a.Name,
                 Ttl = a.Ttl,
                 Type = a.Type,
                 Data = a.Value,
-                QuestionName = string.Empty,
-                QuestionType = string.Empty,
-                Flags = string.Empty,
-                Opcode = string.Empty,
-                HeaderStatus = string.Empty
+                QuestionName = header.QuestionName,
+                QuestionType = header.QuestionType,
+                Flags = header.Flags,
+                Opcode = header.Opcode,
+                HeaderStatus = header.HeaderStatus,
+                QueryCount = header.QueryCount,
+                AnswerCount = header.AnswerCount,
+                AuthorityCount = header.AuthorityCount,
+                AdditionalCount = header.AdditionalCount
             }).ToList();
         }
         if (data?.Hops is JsonElement hops && hops.ValueKind == JsonValueKind.Array) {
