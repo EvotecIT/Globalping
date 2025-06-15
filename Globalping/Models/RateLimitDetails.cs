@@ -11,7 +11,7 @@ public class RateLimitDetails
     /// Kind of limit applied by the API, typically <c>ip</c> or <c>user</c>.
     /// </summary>
     [JsonPropertyName("type")]
-    public string Type { get; set; } = string.Empty;
+    public RateLimitType Type { get; set; }
 
     /// <summary>
     /// Maximum number of allowed actions within the window.
