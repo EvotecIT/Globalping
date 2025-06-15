@@ -81,4 +81,14 @@ Describe "Globalping Cmdlets" {
         $limits = Get-GlobalpingLimit -ErrorAction Stop
         $limits | Should -Not -BeNullOrEmpty
     }
+
+    It "Rejects limit below valid range" {
+        { Start-GlobalpingPing -Target "evotec.xyz" -Limit 0 -ErrorAction Stop } |
+            Should -Throw -ErrorId 'ParameterArgumentValidationError,Globalping.PowerShell.StartGlobalpingPingCommand'
+    }
+
+    It "Rejects limit above valid range" {
+        { Start-GlobalpingPing -Target "evotec.xyz" -Limit 501 -ErrorAction Stop } |
+            Should -Throw -ErrorId 'ParameterArgumentValidationError,Globalping.PowerShell.StartGlobalpingPingCommand'
+    }
 }
