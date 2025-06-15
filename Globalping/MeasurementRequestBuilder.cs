@@ -76,9 +76,9 @@ public class MeasurementRequestBuilder
         return AddLocation(loc);
     }
 
-    public MeasurementRequestBuilder AddMagic(string magic)
+    public MeasurementRequestBuilder AddMagic(string magic, int? limit = null)
     {
-        var loc = new LocationRequest { Magic = magic };
+        var loc = new LocationRequest { Magic = magic, Limit = limit };
         return AddLocation(loc);
     }
 
