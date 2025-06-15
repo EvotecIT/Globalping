@@ -150,6 +150,10 @@ Get-GlobalpingLimit -ApiKey "your-api-key" -Raw | Format-List
 
 If you're working in both PowerShell and C#, the Globalping ecosystem has you covered. Use the PowerShell module for quick scripting and automation, and leverage [Globalping.NET](https://evotec.xyz/supercharging-your-network-diagnostics-with-globalping-for-net/) for robust application development. Together, they form a powerful toolkit for network diagnostics.
 
+## Repository
+
+Explore the source code and contribute to the project on GitHub: [Globalping Repository](https://github.com/EvotecIT/Globalping)
+
 ## Conclusion
 
 The Globalping PowerShell Module is a must-have for automating network diagnostics. With its intuitive cmdlets and powerful features, you can run measurements from diverse locations, fetch detailed results, and monitor your API limits effortlessly.
