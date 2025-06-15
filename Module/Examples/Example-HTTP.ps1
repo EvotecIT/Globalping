@@ -7,7 +7,7 @@ $Output.Headers['expires']
 $Output.Headers['cache-control']
 
 # report-to is parsed into a dictionary
-$Output.Headers['report-to'] | ConvertTo-Json -Depth 5
+$Output.Headers['report-to']
 
 Start-GlobalpingHttp -Target "evotec.xyz" -Verbose -Classic | Format-Table
 
