@@ -3,25 +3,25 @@ namespace Globalping;
 
 public class Stats {
     [JsonPropertyName("min")]
-    public double Min { get; set; }
+    public double? Min { get; set; }
 
     [JsonPropertyName("max")]
-    public double Max { get; set; }
+    public double? Max { get; set; }
 
     [JsonPropertyName("avg")]
-    public double Avg { get; set; }
+    public double? Avg { get; set; }
 
     [JsonPropertyName("total")]
-    public int Total { get; set; }
+    public int? Total { get; set; }
 
     [JsonPropertyName("loss")]
-    public double Loss { get; set; }
+    public double? Loss { get; set; }
 
     [JsonPropertyName("rcv")]
-    public int Rcv { get; set; }
+    public int? Rcv { get; set; }
 
     [JsonPropertyName("drop")]
-    public int Drop { get; set; }
+    public int? Drop { get; set; }
 
     [JsonPropertyName("stDev")]
     public double? StDev { get; set; }
