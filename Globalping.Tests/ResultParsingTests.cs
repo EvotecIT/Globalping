@@ -18,8 +18,8 @@ public class ResultParsingTests
         JsonOptions.Converters.Add(new JsonStringEnumConverter<MeasurementStatus>(JsonNamingPolicy.KebabCaseLower));
         JsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
     }
-    [Fact]
-    public void ParsesTracerouteHopsFromJson()
+        """;
+        """;
     {
         var json = """
             {
