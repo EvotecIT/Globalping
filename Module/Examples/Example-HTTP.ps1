@@ -1,10 +1,13 @@
-﻿Import-Module $PSScriptRoot\..\Globalping.psd1 -Force
+Import-Module $PSScriptRoot\..\Globalping.psd1 -Force
 
 $Output = Start-GlobalpingHttp -Target "evotec.xyz" -Verbose -SimpleLocations "Krakow+PL"
 $Output | Format-Table
 $Output.Headers | Format-Table
-$Output.Headers['expires'][0]
-$Output.Headers['cache-control'][0]
+$Output.Headers['expires']
+$Output.Headers['cache-control']
+
+# report-to is parsed into a dictionary
+$Output.Headers['report-to']
 
 Start-GlobalpingHttp -Target "evotec.xyz" -Verbose -Classic | Format-Table
 
