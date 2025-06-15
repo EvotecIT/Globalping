@@ -156,14 +156,22 @@ public class ProbeService {
         MeasurementRequest measurementRequest,
         int waitTime = 150) {
         var requestUri = "https://api.globalping.io/v1/measurements";
-        var requestContent = new StringContent(JsonSerializer.Serialize(measurementRequest, _jsonOptions), Encoding.UTF8, "application/json");
+        var requestContent = new StringContent(
+            JsonSerializer.Serialize(measurementRequest, _jsonOptions),
+            Encoding.UTF8,
+            "application/json");
 
-        _httpClient.DefaultRequestHeaders.Remove("Prefer");
-        if (measurementRequest.InProgressUpdates) {
-            _httpClient.DefaultRequestHeaders.Add("Prefer", $"respond-async, wait={waitTime}");
+        using var request = new HttpRequestMessage(HttpMethod.Post, requestUri)
+        {
+            Content = requestContent
+        };
+
+        if (measurementRequest.InProgressUpdates)
+        {
+            request.Headers.Add("Prefer", $"respond-async, wait={waitTime}");
         }
 
-        var response = await _httpClient.PostAsync(requestUri, requestContent).ConfigureAwait(false);
+        var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
         await EnsureSuccessOrThrow(response).ConfigureAwait(false);
         var result = await response.Content.ReadFromJsonAsync<CreateMeasurementResponse>(_jsonOptions).ConfigureAwait(false);
         return result ?? new CreateMeasurementResponse();
