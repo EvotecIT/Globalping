@@ -66,7 +66,8 @@ public class ProbeService {
             RateLimitReset = TryGetLong(headers, "X-RateLimit-Reset"),
             CreditsConsumed = TryGetInt(headers, "X-Credits-Consumed"),
             CreditsRemaining = TryGetInt(headers, "X-Credits-Remaining"),
-            RequestCost = TryGetInt(headers, "X-Request-Cost")
+            RequestCost = TryGetInt(headers, "X-Request-Cost"),
+            ETag = headers.ETag?.Tag
         };
     }
 

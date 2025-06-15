@@ -22,6 +22,7 @@ public class MeasurementClient {
     };
 
     public ApiUsageInfo LastResponseInfo { get; private set; } = new();
+    public MeasurementResponse? LastMeasurement { get; private set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MeasurementClient"/> class.
@@ -61,7 +62,8 @@ public class MeasurementClient {
             RateLimitReset = TryGetLong(headers, "X-RateLimit-Reset"),
             CreditsConsumed = TryGetInt(headers, "X-Credits-Consumed"),
             CreditsRemaining = TryGetInt(headers, "X-Credits-Remaining"),
-            RequestCost = TryGetInt(headers, "X-Request-Cost")
+            RequestCost = TryGetInt(headers, "X-Request-Cost"),
+            ETag = headers.ETag?.Tag
         };
     }
 
@@ -110,7 +112,7 @@ public class MeasurementClient {
     /// </summary>
     /// <param name="id">Unique measurement identifier.</param>
     /// <returns>The full measurement response or <c>null</c> if not found.</returns>
-    public async Task<MeasurementResponse?> GetMeasurementByIdAsync(string id) {
+    public async Task<MeasurementResponse?> GetMeasurementByIdAsync(string id, string? etag = null) {
         if (string.IsNullOrWhiteSpace(id)) {
             throw new ArgumentException("Measurement id cannot be empty", nameof(id));
         }
@@ -119,7 +121,18 @@ public class MeasurementClient {
         MeasurementResponse? measurementResponse;
 
         do {
-            var response = await _httpClient.GetAsync(url).ConfigureAwait(false);
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+            if (!string.IsNullOrEmpty(etag)) {
+                request.Headers.IfNoneMatch.ParseAdd(etag);
+            }
+
+            var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
+
+            if (response.StatusCode == HttpStatusCode.NotModified) {
+                UpdateUsageInfo(response);
+                return LastMeasurement;
+            }
+
             await EnsureSuccessOrThrow(response).ConfigureAwait(false);
             var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
             measurementResponse = await JsonSerializer.DeserializeAsync<MeasurementResponse>(stream, _jsonOptions).ConfigureAwait(false);
@@ -130,6 +143,8 @@ public class MeasurementClient {
                     r.Target = measurementResponse.Target;
                 }
             }
+
+            LastMeasurement = measurementResponse;
 
             if (measurementResponse?.Status == MeasurementStatus.InProgress) {
                 await Task.Delay(500).ConfigureAwait(false);
@@ -142,6 +157,6 @@ public class MeasurementClient {
     /// <summary>
     /// Synchronous wrapper for <see cref="GetMeasurementByIdAsync"/>.
     /// </summary>
-    public MeasurementResponse? GetMeasurementById(string id) =>
-        GetMeasurementByIdAsync(id).GetAwaiter().GetResult();
+    public MeasurementResponse? GetMeasurementById(string id, string? etag = null) =>
+        GetMeasurementByIdAsync(id, etag).GetAwaiter().GetResult();
 }
