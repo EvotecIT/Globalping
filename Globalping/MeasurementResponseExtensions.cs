@@ -654,11 +654,50 @@ public static class MeasurementResponseExtensions {
 
     private static object? Normalize(List<string> values)
     {
-        return values.Count switch
+        if (values.Count == 0)
         {
-            0 => null,
-            1 => values[0],
-            _ => values
-        };
+            return null;
+        }
+
+        if (values.Count == 1)
+        {
+            return ParseJson(values[0]);
+        }
+
+        var list = new List<object?>();
+        foreach (var v in values)
+        {
+            list.Add(ParseJson(v));
+        }
+        return list;
+    }
+
+    private static object? ParseJson(string value)
+    {
+        var trimmed = value.Trim();
+        try
+        {
+            if (trimmed.StartsWith("{") && trimmed.EndsWith("}"))
+            {
+                var dict = JsonSerializer.Deserialize<Dictionary<string, object?>>(trimmed);
+                if (dict != null)
+                {
+                    return dict;
+                }
+            }
+            else if (trimmed.StartsWith("[") && trimmed.EndsWith("]"))
+            {
+                var list = JsonSerializer.Deserialize<List<object?>>(trimmed);
+                if (list != null)
+                {
+                    return list;
+                }
+            }
+        }
+        catch (JsonException)
+        {
+            // fall back to string
+        }
+        return value;
     }
 }

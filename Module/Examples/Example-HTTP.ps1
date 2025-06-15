@@ -6,6 +6,8 @@ $Output.Headers | Format-Table
 $Output.Headers['expires']
 $Output.Headers['cache-control']
 
+$Output.Headers['report-to'] | ConvertTo-Json -Depth 5
+
 Start-GlobalpingHttp -Target "evotec.xyz" -Verbose -Classic | Format-Table
 
 $OutputHttp = Start-GlobalpingHttp -Target "evotec.xyz" -Verbose -Raw

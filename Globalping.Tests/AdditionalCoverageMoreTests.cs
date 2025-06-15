@@ -210,7 +210,41 @@ public class AdditionalCoverageMoreTests
         Assert.Equal(200, http.StatusCode);
         Assert.Equal("Hello", http.Body);
         Assert.True(http.Headers.ContainsKey("Content-Type"));
-        var xTest = Assert.IsType<List<string>>(http.Headers["X-Test"]!);
+        var xTest = Assert.IsType<List<object?>>(http.Headers["X-Test"]!);
         Assert.Equal(2, xTest.Count);
+        Assert.All(xTest, v => Assert.IsType<string>(v));
+    }
+
+    [Fact]
+    public void ParseHttp_ParsesJsonHeader()
+    {
+        var headers = new Dictionary<string, JsonElement>
+        {
+            ["report-to"] = JsonSerializer.SerializeToElement("{\"a\":1}")
+        };
+        var resp = new MeasurementResponse
+        {
+            Target = "example.com",
+            Results = new List<Result>
+            {
+                new()
+                {
+                    Probe = new Probe(),
+                    Data = new ResultDetails
+                    {
+                        RawHeaders = string.Empty,
+                        Headers = headers,
+                        RawBody = string.Empty,
+                        StatusCode = 200,
+                        StatusCodeName = "OK"
+                    }
+                }
+            }
+        };
+        var list = resp.GetHttpResponses();
+        Assert.Single(list);
+        var http = list[0];
+        var reportTo = Assert.IsType<Dictionary<string, object?>>(http.Headers["report-to"]!);
+        Assert.True(reportTo.TryGetValue("a", out var val) && val is JsonElement el && el.GetInt32() == 1);
     }
 }
