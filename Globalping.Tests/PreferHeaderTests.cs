@@ -45,4 +45,32 @@ public sealed class PreferHeaderTests
         Assert.True(handler.LastRequest!.Headers.TryGetValues("Prefer", out var values));
         Assert.Contains("respond-async, wait=42", values);
     }
+
+    [Fact]
+    public async Task CreateMeasurementAsync_ClearsPreferHeader()
+    {
+        var handler = new CaptureHandler();
+        var client = new HttpClient(handler);
+        var service = new ProbeService(client);
+
+        var request1 = new MeasurementRequestBuilder()
+            .WithType(MeasurementType.Ping)
+            .WithTarget("example.com")
+            .Build();
+        request1.InProgressUpdates = true;
+
+        await service.CreateMeasurementAsync(request1, 10);
+        Assert.NotNull(handler.LastRequest);
+        Assert.True(handler.LastRequest!.Headers.Contains("Prefer"));
+
+        var request2 = new MeasurementRequestBuilder()
+            .WithType(MeasurementType.Ping)
+            .WithTarget("example.com")
+            .Build();
+
+        await service.CreateMeasurementAsync(request2, 10);
+
+        Assert.NotNull(handler.LastRequest);
+        Assert.False(handler.LastRequest!.Headers.Contains("Prefer"));
+    }
 }
