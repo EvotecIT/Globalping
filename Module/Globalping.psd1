@@ -1,7 +1,7 @@
 ﻿@{
     AliasesToExport      = @()
     Author               = 'Przemyslaw Klys'
-    CmdletsToExport      = @('Get-GlobalpingLimit', 'Start-GlobalpingDns', 'Start-GlobalpingHttp', 'Start-GlobalpingMtr', 'Start-GlobalpingPing', 'Start-GlobalpingTraceroute')
+    CmdletsToExport      = @('Get-GlobalpingLimit', 'Get-GlobalpingProbe', 'Start-GlobalpingDns', 'Start-GlobalpingHttp', 'Start-GlobalpingMtr', 'Start-GlobalpingPing', 'Start-GlobalpingTraceroute')
     CompanyName          = 'Evotec'
     CompatiblePSEditions = @('Desktop', 'Core')
     Copyright            = '(c) 2011 - 2025 Przemyslaw Klys @ Evotec. All rights reserved.'

@@ -44,4 +44,9 @@ Describe "Globalping Cmdlets" {
         $limits = Get-GlobalpingLimit -ErrorAction Stop
         $limits | Should -Not -BeNullOrEmpty
     }
+
+    It "Get-GlobalpingProbe returns output" {
+        $probes = Get-GlobalpingProbe -ErrorAction Stop
+        $probes | Should -Not -BeNullOrEmpty
+    }
 }
