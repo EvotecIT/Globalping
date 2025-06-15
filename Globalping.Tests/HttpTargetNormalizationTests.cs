@@ -102,4 +102,42 @@ public sealed class HttpTargetNormalizationTests
         Assert.Equal("https://example.com/test", root.GetProperty("target").GetString());
         Assert.False(root.TryGetProperty("measurementOptions", out _));
     }
+
+    [Fact]
+    public async Task CreateMeasurementAsync_AdjustsProtocolAndPortOnHttpUrl()
+    {
+        var handler = new CaptureHandler();
+        var client = new HttpClient(handler);
+        var service = new ProbeService(client);
+
+        var request = new MeasurementRequestBuilder()
+            .WithType(MeasurementType.Http)
+            .WithTarget("http://example.com")
+            .Build();
+
+        await service.CreateMeasurementAsync(request);
+
+        var opts = Assert.IsType<HttpOptions>(request.MeasurementOptions);
+        Assert.Equal(HttpProtocol.HTTP, opts.Protocol);
+        Assert.Equal(80, opts.Port);
+    }
+
+    [Fact]
+    public async Task CreateMeasurementAsync_SetsDefaultHttpsPort()
+    {
+        var handler = new CaptureHandler();
+        var client = new HttpClient(handler);
+        var service = new ProbeService(client);
+
+        var request = new MeasurementRequestBuilder()
+            .WithType(MeasurementType.Http)
+            .WithTarget("https://example.com")
+            .Build();
+
+        await service.CreateMeasurementAsync(request);
+
+        var opts = Assert.IsType<HttpOptions>(request.MeasurementOptions);
+        Assert.Equal(HttpProtocol.HTTPS, opts.Protocol);
+        Assert.Equal(443, opts.Port);
+    }
 }
