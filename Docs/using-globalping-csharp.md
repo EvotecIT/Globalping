@@ -1,8 +1,7 @@
 Ever wondered how to run network diagnostics like Ping, Traceroute, or DNS queries from probes scattered across the globe? Enter **Globalping.NET**, a powerful library that makes it effortless to interact with the Globalping API using C#. Whether you're debugging latency issues or exploring packet routes, this library has you covered.
 
-In this blog, we'll dive into the features of Globalping.NET, explore real-world examples, and show you how to get started with this amazing tool. If you're a PowerShell enthusiast, check out our companion blog on [Globalping PowerShell Module](./using-globalping-powershell.md) to see how these tools complement each other.
+In this blog, we'll dive into the features of Globalping.NET, explore real-world examples, and show you how to get started with this amazing tool. If you're a PowerShell enthusiast, check out our companion blog on [Globalping PowerShell Module](https://evotec.xyz/automating-network-diagnostics-with-globalping-powershell-module/) to see how these tools complement each other.
 
----
 
 ## Free API with Generous Limits
 
@@ -17,7 +16,6 @@ Globalping is a free API that requires no registration to get started. Here are 
 
 Higher limits are available for members, making it ideal for both casual and professional use.
 
----
 
 ## Available Methods
 
@@ -33,7 +31,6 @@ Globalping.NET provides a rich set of methods to interact with the Globalping AP
 
 With these methods, you can create, execute, and analyze network diagnostics with ease, all while leveraging advanced features like Brotli compression and ETag caching.
 
----
 
 ## Why Globalping.NET?
 
@@ -43,7 +40,6 @@ Globalping.NET is your gateway to running network diagnostics from hundreds of p
 - **Flexibility**: Control probe locations, limits, and measurement options.
 - **Rich Features**: Built-in caching, Brotli compression, and ETag support.
 
----
 
 ## Getting Started
 
@@ -57,7 +53,6 @@ Add the package from NuGet:
 
 Alternatively, reference the project directly if you're working within the repository.
 
----
 
 ## Real-World Examples
 
@@ -95,7 +90,6 @@ var measurement = await probeService.CreateMeasurementAsync(builder);
 Console.WriteLine($"Measurement ID: {measurement.Id}");
 ```
 
----
 
 ## Advanced HTTP Options
 
@@ -125,7 +119,6 @@ var measurement = await probeService.CreateMeasurementAsync(request);
 Console.WriteLine($"HTTP Measurement ID: {measurement.Id}");
 ```
 
----
 
 ## Monitoring Limits
 
@@ -139,17 +132,14 @@ var limits = await probeService.GetLimitsAsync();
 Console.WriteLine($"Credits Remaining: {limits.CreditsRemaining}");
 ```
 
----
 
 ## Cross-Platform Diagnostics
 
 If you're working in both C# and PowerShell, the Globalping ecosystem has you covered. Use [Globalping PowerShell Module](./using-globalping-powershell.md) for quick scripting and automation, and leverage Globalping.NET for robust application development. Together, they form a powerful toolkit for network diagnostics.
 
----
 
 ## Conclusion
 
 Globalping.NET is a game-changer for network diagnostics. With its intuitive API and powerful features, you can run measurements from diverse locations, control probe behavior, and handle caching with ease. Explore the example project in this repository for more scenarios and advanced usages.
 
 Ready to supercharge your diagnostics? Install Globalping.NET today and start exploring the world of network measurements!
-
