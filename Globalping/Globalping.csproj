@@ -10,6 +10,8 @@
         <Copyright>(c) 2011 - 2025 Przemyslaw Klys @ Evotec. All rights reserved.</Copyright>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
+        <PackageReadmeFile>../README.MD</PackageReadmeFile>
+        <IncludePackageReadmeFile>true</IncludePackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
