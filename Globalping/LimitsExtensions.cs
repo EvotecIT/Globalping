@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.Json;
 
 namespace Globalping;
 
@@ -24,7 +25,7 @@ public static class LimitsExtensions
                 {
                     Category = category.Key,
                     Action = action.Key,
-                    Type = detail.Type,
+                    Type = JsonNamingPolicy.CamelCase.ConvertName(detail.Type.ToString()),
                     Limit = detail.Limit,
                     Remaining = detail.Remaining,
                     Reset = detail.Reset,

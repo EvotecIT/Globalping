@@ -24,7 +24,7 @@ public sealed class LimitsDeserializationTests
         var measurements = limits.RateLimit["measurements"];
         Assert.True(measurements.ContainsKey("create"));
         var create = measurements["create"];
-        Assert.Equal("ip", create.Type);
+        Assert.Equal(RateLimitType.Ip, create.Type);
         Assert.Equal(10, create.Limit);
         Assert.Equal(8, create.Remaining);
         Assert.Equal(1000, create.Reset);

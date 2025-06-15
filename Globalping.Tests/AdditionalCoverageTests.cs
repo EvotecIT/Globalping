@@ -215,11 +215,11 @@ public class AdditionalCoverageTests
             {
                 ["measurements"] = new Dictionary<string, RateLimitDetails>
                 {
-                    ["create"] = new RateLimitDetails { Type = "ip", Limit = 10, Remaining = 9, Reset = 100 }
+                    ["create"] = new RateLimitDetails { Type = RateLimitType.Ip, Limit = 10, Remaining = 9, Reset = 100 }
                 },
                 ["probes"] = new Dictionary<string, RateLimitDetails>
                 {
-                    ["list"] = new RateLimitDetails { Type = "ip", Limit = 5, Remaining = 4, Reset = 200 }
+                    ["list"] = new RateLimitDetails { Type = RateLimitType.Ip, Limit = 5, Remaining = 4, Reset = 200 }
                 }
             }
         };
