@@ -1,86 +1,110 @@
-# Using Globalping.NET Library in C#
+Ever wondered how to run network diagnostics like Ping, Traceroute, or DNS queries from probes scattered across the globe? Enter **Globalping.NET**, a powerful library that makes it effortless to interact with the Globalping API using C#. Whether you're debugging latency issues or exploring packet routes, this library has you covered.
 
-Globalping is a public service that lets you run classic network commands from hundreds of probes distributed around the world. Through a simple HTTP API you can measure latency, trace packet routes or resolve DNS records from almost any region.
+In this blog, we'll dive into the features of Globalping.NET, explore real-world examples, and show you how to get started with this amazing tool. If you're a PowerShell enthusiast, check out our companion blog on [Globalping PowerShell Module](./using-globalping-powershell.md) to see how these tools complement each other.
 
-This article shows how to use the Globalping.NET client library in your C# projects. Before diving into code, let's briefly look at the available measurement types.
+---
 
-## Measurement Types
+## Free API with Generous Limits
 
-Globalping exposes five kinds of diagnostics:
-- **Ping** – measure round-trip time with ICMP echo requests.
-- **Traceroute** – display each hop packets take to the target host.
-- **MTR** – run a continuous traceroute that also collects per-hop statistics.
-- **DNS** – resolve domain names using remote resolvers.
-- **HTTP** – perform HTTP requests or header checks from remote probes.
+Globalping is a free API that requires no registration to get started. Here are the limits:
 
-## Installation
+- **Unregistered Users**:
+  - 50 probes per measurement
+  - 250 free tests per hour
+- **Registered Users**:
+  - 500 probes per measurement
+  - 500 free tests per hour
+
+Higher limits are available for members, making it ideal for both casual and professional use.
+
+---
+
+## Available Methods
+
+Globalping.NET provides a rich set of methods to interact with the Globalping API:
+
+- **MeasurementRequestBuilder**: Fluent API for building measurement requests.
+- **ProbeService**: Submit measurements and retrieve probe information.
+- **MeasurementClient**: Poll for results and handle caching.
+- **GetPingTimings**: Extract timing results from Ping measurements.
+- **GetTracerouteHops**: Retrieve hop details from Traceroute measurements.
+- **GetDnsRecords**: Parse DNS results into structured records.
+- **HttpOptions**: Customize HTTP requests with headers, methods, and query strings.
+
+With these methods, you can create, execute, and analyze network diagnostics with ease, all while leveraging advanced features like Brotli compression and ETag caching.
+
+---
+
+## Why Globalping.NET?
+
+Globalping.NET is your gateway to running network diagnostics from hundreds of probes worldwide. With support for Ping, Traceroute, MTR, DNS, and HTTP measurements, it simplifies complex tasks into a few lines of code. Here's why you should consider it:
+
+- **Ease of Use**: Fluent APIs for building requests.
+- **Flexibility**: Control probe locations, limits, and measurement options.
+- **Rich Features**: Built-in caching, Brotli compression, and ETag support.
+
+---
+
+## Getting Started
+
+### Installation
 
 Add the package from NuGet:
 
 ```shell
-dotnet add package Globalping
+> dotnet add package Globalping
 ```
 
-Alternatively, reference the project directly if you are working within the repository.
+Alternatively, reference the project directly if you're working within the repository.
 
-## Creating Measurements
+---
 
-The main entry point for measurements is `MeasurementRequestBuilder`. This fluent class allows you to define probe locations, select the measurement type and specify additional options. A simple ping request to run from Germany might look like this:
+## Real-World Examples
+
+### Running Measurements Without API Key
+
+You can start using Globalping without an API key. Here's how to run a Ping from Germany:
 
 ```csharp
 using var httpClient = new HttpClient();
-var request = new MeasurementRequestBuilder()
+var builder = new MeasurementRequestBuilder()
     .WithType(MeasurementType.Ping)
-    .WithTarget("example.com")
+    .WithTarget("cdn.jsdelivr.net")
     .AddCountry("DE")
     .Build();
 
-var service = new ProbeService(httpClient);
-var create = await service.CreateMeasurementAsync(request);
+var probeService = new ProbeService(httpClient);
+var measurement = await probeService.CreateMeasurementAsync(builder);
+Console.WriteLine($"Measurement ID: {measurement.Id}");
 ```
 
-`CreateMeasurementAsync` submits the job to Globalping and returns the newly created measurement identifier.
+### Running Measurements With API Key
 
-## Polling for Results
-
-After creating a measurement, poll the API to retrieve the final results. `MeasurementClient` can be reused across measurements and caches the most recent response headers.
+For higher limits and more probes, use the `apiKey` parameter:
 
 ```csharp
-var client = new MeasurementClient(httpClient);
-var result = await client.GetMeasurementByIdAsync(create.Id);
-foreach (var ping in result!.GetPingTimings())
-{
-    Console.WriteLine($"{ping.City}: {ping.Time} ms");
-}
-```
-
-The library exposes rich objects for each measurement type. In this example `GetPingTimings` flattens the response and yields the time values directly.
-
-## Combining Locations and Limits
-
-Use `AddCountry`, `AddCity` or other location helpers multiple times when you need probes from specific places. When the `Limit` is not set, the service selects a single probe for each location request.
-
-```csharp
-var complex = new MeasurementRequestBuilder()
-    .WithType(MeasurementType.Traceroute)
-    .WithTarget("example.com")
-    .AddCountry("US")
-    .AddCity("Berlin")
-    .WithLimit(2)
+using var httpClient = new HttpClient();
+var builder = new MeasurementRequestBuilder()
+    .WithType(MeasurementType.Ping)
+    .WithTarget("cdn.jsdelivr.net")
+    .AddCountry("DE")
     .Build();
+
+var probeService = new ProbeService(httpClient, "your-api-key");
+var measurement = await probeService.CreateMeasurementAsync(builder);
+Console.WriteLine($"Measurement ID: {measurement.Id}");
 ```
 
-The example above asks for two probes total, one located in the United States and one in Berlin.
+---
 
-## HTTP Options
+## Advanced HTTP Options
 
-For HTTP measurements, `HttpOptions` offers additional control over the request that Globalping sends from a probe. You can specify the method, path and query string separately while still providing the full URL as the target.
+For HTTP measurements, you can specify methods, paths, and query strings. Here's an example:
 
 ```csharp
-var advanced = new MeasurementRequestBuilder()
+var builder = new MeasurementRequestBuilder()
     .WithType(MeasurementType.Http)
     .WithTarget("https://example.com/api/data?x=1")
-    .WithInProgressUpdates()
     .WithMeasurementOptions(new HttpOptions
     {
         Request = new HttpRequestOptions
@@ -91,29 +115,41 @@ var advanced = new MeasurementRequestBuilder()
         },
         Protocol = HttpProtocol.HTTPS,
         IpVersion = IpVersion.Six
-    })
-    .Build();
+    });
+
+var request = builder.Build();
+using var httpClient = new HttpClient();
+var probeService = new ProbeService(httpClient);
+var measurement = await probeService.CreateMeasurementAsync(request);
+
+Console.WriteLine($"HTTP Measurement ID: {measurement.Id}");
 ```
 
-## Handling API Usage Information
+---
 
-Each request exposes a `LastResponseInfo` property. It includes parsed headers such as the remaining credits and rate-limit details returned by the API. Inspect this object to track usage and keep an eye on limits:
+## Monitoring Limits
+
+Keep an eye on your API usage with the `GetLimitsAsync` method:
 
 ```csharp
-var info = client.LastResponseInfo;
-Console.WriteLine($"Credits remaining: {info.CreditsRemaining}");
+using var httpClient = new HttpClient();
+var probeService = new ProbeService(httpClient, "your-api-key");
+var limits = await probeService.GetLimitsAsync();
+
+Console.WriteLine($"Credits Remaining: {limits.CreditsRemaining}");
 ```
 
-## Caching with ETag
+---
 
-`MeasurementClient` supports ETag-based caching. Pass the previously retrieved `ETag` when fetching a measurement again. If the data is unchanged, the service returns `304 Not Modified` and the library uses the existing response.
+## Cross-Platform Diagnostics
 
-```csharp
-var cached = await client.GetMeasurementByIdAsync(create.Id);
-var next = await client.GetMeasurementByIdAsync(create.Id, cached!.LastResponseInfo.ETag);
-```
+If you're working in both C# and PowerShell, the Globalping ecosystem has you covered. Use [Globalping PowerShell Module](./using-globalping-powershell.md) for quick scripting and automation, and leverage Globalping.NET for robust application development. Together, they form a powerful toolkit for network diagnostics.
+
+---
 
 ## Conclusion
 
-The Globalping library streamlines calls to the Globalping API from C# code. It lets you run diagnostics from diverse locations, control how probes behave and handle common features like caching and Brotli compression out of the box. Explore the example project in this repository for more scenarios and advanced usages.
+Globalping.NET is a game-changer for network diagnostics. With its intuitive API and powerful features, you can run measurements from diverse locations, control probe behavior, and handle caching with ease. Explore the example project in this repository for more scenarios and advanced usages.
+
+Ready to supercharge your diagnostics? Install Globalping.NET today and start exploring the world of network measurements!
 
