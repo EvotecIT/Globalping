@@ -1,4 +1,4 @@
-name: Test .NET Libraries
+name: Test .NET
 
 on:
   push:
