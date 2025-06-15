@@ -22,5 +22,5 @@ public class DnsRecordResult
     public int Asn { get; set; }
     public string State { get; set; } = string.Empty;
     public string Continent { get; set; } = string.Empty;
-    public string? Status { get; set; }
+    public TestStatus Status { get; set; }
 }

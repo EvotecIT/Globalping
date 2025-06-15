@@ -15,6 +15,7 @@ public sealed class MeasurementResponseDeserializationTests
     static MeasurementResponseDeserializationTests()
     {
         JsonOptions.Converters.Add(new JsonStringEnumConverter<MeasurementStatus>(JsonNamingPolicy.KebabCaseLower));
+        JsonOptions.Converters.Add(new JsonStringEnumConverter<TestStatus>(JsonNamingPolicy.KebabCaseLower));
         JsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
     }
     [Fact]

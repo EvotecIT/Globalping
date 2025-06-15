@@ -27,7 +27,7 @@ public static class ResultExtensions
                     Continent = result.Probe.Continent,
                     ResolvedAddress = result.Data?.ResolvedAddress,
                     ResolvedHostname = result.Data?.ResolvedHostname,
-                    Status = result.Data?.Status,
+                    Status = result.Data != null ? result.Data.Status : default,
                 };
             }).ToList();
         }
@@ -47,7 +47,7 @@ public static class ResultExtensions
             h.Continent = result.Probe.Continent;
             h.ResolvedAddress = result.Data?.ResolvedAddress;
             h.ResolvedHostname = result.Data?.ResolvedHostname;
-            h.Status = result.Data?.Status;
+            h.Status = result.Data != null ? result.Data.Status : default;
             return h;
         }).ToList();
     }
@@ -65,7 +65,7 @@ public static class ResultExtensions
             h.Continent = result.Probe.Continent;
             h.ResolvedAddress = result.Data?.ResolvedAddress;
             h.ResolvedHostname = result.Data?.ResolvedHostname;
-            h.Status = result.Data?.Status;
+            h.Status = result.Data != null ? result.Data.Status : default;
             return h;
         }).ToList();
     }
@@ -81,7 +81,7 @@ public static class ResultExtensions
             h.Asn = result.Probe.Asn;
             h.State = result.Probe.State;
             h.Continent = result.Probe.Continent;
-            h.Status = result.Data?.Status;
+            h.Status = result.Data != null ? result.Data.Status : default;
             return h;
         }).ToList();
     }
@@ -103,7 +103,7 @@ public static class ResultExtensions
         resp.Continent = result.Probe.Continent;
         resp.ResolvedAddress = result.Data?.ResolvedAddress;
         resp.ResolvedHostname = result.Data?.ResolvedHostname;
-        resp.Status = result.Data?.Status;
+        resp.Status = result.Data != null ? result.Data.Status : default;
         return resp;
     }
 }

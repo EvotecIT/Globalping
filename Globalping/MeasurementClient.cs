@@ -31,6 +31,7 @@ public class MeasurementClient {
     public MeasurementClient(HttpClient httpClient, string? apiKey = null) {
         _httpClient = httpClient;
         _jsonOptions.Converters.Add(new JsonStringEnumConverter<MeasurementStatus>(JsonNamingPolicy.KebabCaseLower));
+        _jsonOptions.Converters.Add(new JsonStringEnumConverter<TestStatus>(JsonNamingPolicy.KebabCaseLower));
         _jsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 
         if (!_httpClient.DefaultRequestHeaders.UserAgent.Any()) {
