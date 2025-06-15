@@ -30,8 +30,8 @@ public class MeasurementClient {
     /// <param name="apiKey">Optional API key for authenticated calls.</param>
     public MeasurementClient(HttpClient httpClient, string? apiKey = null) {
         _httpClient = httpClient;
-        _jsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
         _jsonOptions.Converters.Add(new JsonStringEnumConverter<MeasurementStatus>(JsonNamingPolicy.KebabCaseLower));
+        _jsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 
         if (!_httpClient.DefaultRequestHeaders.UserAgent.Any()) {
             _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Globalping.Net/1.0 (+https://github.com/EvotecIT/Globalping)");
