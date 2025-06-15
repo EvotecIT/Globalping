@@ -138,6 +138,30 @@ foreach (var ping in result!.GetPingTimings())
 }
 ```
 
+More advanced requests can customize locations, limits and measurement options:
+
+```csharp
+var advanced = new MeasurementRequestBuilder()
+    .WithType(MeasurementType.Http)
+    .WithTarget("https://example.com/api/data?x=1")
+    .AddCountry("DE", 2)
+    .AddCity("Berlin")
+    .WithLimit(3)
+    .WithInProgressUpdates()
+    .WithMeasurementOptions(new HttpOptions
+    {
+        Request = new HttpRequestOptions
+        {
+            Method = HttpRequestMethod.GET,
+            Path = "/api/data",
+            Query = "x=1"
+        },
+        Protocol = HttpProtocol.HTTPS,
+        IpVersion = IpVersion.Six
+    })
+    .Build();
+```
+
 For HTTP measurements the target may include the scheme (e.g. `https://example.com`). The library automatically converts it to the correct host, protocol and path.
 
 The API specification is available at [api.globalping.io/v1/spec.yaml](https://api.globalping.io/v1/spec.yaml).
