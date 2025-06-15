@@ -36,7 +36,7 @@ public static class ResultExtensions
 
     public static List<TracerouteHopResult> ToTracerouteHops(this Result result, string target)
     {
-        return MeasurementResponseExtensions.ParseTraceroute(result.Data?.RawOutput).Select(h =>
+        return MeasurementResponseExtensions.ParseTraceroute(result.Data).Select(h =>
         {
             h.Target = target;
             h.Country = result.Probe.Country;
@@ -54,7 +54,7 @@ public static class ResultExtensions
 
     public static List<MtrHopResult> ToMtrHops(this Result result, string target)
     {
-        return MeasurementResponseExtensions.ParseMtr(result.Data?.RawOutput).Select(h =>
+        return MeasurementResponseExtensions.ParseMtr(result.Data).Select(h =>
         {
             h.Target = target;
             h.Country = result.Probe.Country;
@@ -72,7 +72,7 @@ public static class ResultExtensions
 
     public static List<DnsRecordResult> ToDnsRecords(this Result result, string target)
     {
-        return MeasurementResponseExtensions.ParseDns(result.Data?.RawOutput).Select(h =>
+        return MeasurementResponseExtensions.ParseDns(result.Data).Select(h =>
         {
             h.Target = target;
             h.Country = result.Probe.Country;
@@ -88,7 +88,7 @@ public static class ResultExtensions
 
     public static HttpResponseResult? ToHttpResponse(this Result result, string target)
     {
-        var resp = MeasurementResponseExtensions.ParseHttp(result.Data?.RawOutput).FirstOrDefault();
+        var resp = MeasurementResponseExtensions.ParseHttp(result.Data).FirstOrDefault();
         if (resp is null)
         {
             return null;
