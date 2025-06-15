@@ -12,6 +12,7 @@ namespace Globalping.PowerShell;
 ///   <para>Returns rate limit information for the anonymous user or provided API key.</para>
 /// </example>
 [Cmdlet(VerbsCommon.Get, "GlobalpingLimit")]
+[OutputType(typeof(LimitInfo))]
 [OutputType(typeof(Limits))]
 [OutputType(typeof(Credits))]
 public class GetGlobalpingLimitCommand : PSCmdlet {
@@ -19,6 +20,11 @@ public class GetGlobalpingLimitCommand : PSCmdlet {
     [Parameter]
     [Alias("Token")]
     public string? ApiKey { get; set; }
+
+    /// <summary>Return the raw <see cref="Limits"/> object.</summary>
+    [Parameter]
+    [Alias("AsRaw")]
+    public SwitchParameter Raw { get; set; }
 
     /// <inheritdoc/>
     protected override void ProcessRecord() {
@@ -31,6 +37,21 @@ public class GetGlobalpingLimitCommand : PSCmdlet {
         });
         var service = new ProbeService(httpClient, ApiKey);
         var limits = service.GetLimitsAsync().GetAwaiter().GetResult();
-        WriteObject(limits);
+
+        if (Raw.IsPresent)
+        {
+            WriteObject(limits);
+            return;
+        }
+
+        if (limits is null)
+        {
+            return;
+        }
+
+        foreach (var info in limits.Flatten())
+        {
+            WriteObject(info);
+        }
     }
 }
