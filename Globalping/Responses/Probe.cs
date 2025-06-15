@@ -36,4 +36,7 @@ public class Probe {
 
     [JsonPropertyName("resolvers")]
     public List<string> Resolvers { get; set; } = new();
+
+    [JsonPropertyName("version")]
+    public string Version { get; set; } = string.Empty;
 }

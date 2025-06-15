@@ -25,6 +25,7 @@ public static class ResultExtensions
                     Asn = result.Probe.Asn,
                     State = result.Probe.State,
                     Continent = result.Probe.Continent,
+                    Version = result.Probe.Version,
                     ResolvedAddress = result.Data?.ResolvedAddress,
                     ResolvedHostname = result.Data?.ResolvedHostname,
                     Status = result.Data != null ? result.Data.Status : default,
@@ -45,6 +46,7 @@ public static class ResultExtensions
             h.Asn = result.Probe.Asn;
             h.State = result.Probe.State;
             h.Continent = result.Probe.Continent;
+            h.Version = result.Probe.Version;
             h.ResolvedAddress = result.Data?.ResolvedAddress;
             h.ResolvedHostname = result.Data?.ResolvedHostname;
             h.Status = result.Data != null ? result.Data.Status : default;
@@ -63,6 +65,7 @@ public static class ResultExtensions
             h.ProbeAsn = result.Probe.Asn;
             h.State = result.Probe.State;
             h.Continent = result.Probe.Continent;
+            h.Version = result.Probe.Version;
             h.ResolvedAddress = result.Data?.ResolvedAddress;
             h.ResolvedHostname = result.Data?.ResolvedHostname;
             h.Status = result.Data != null ? result.Data.Status : default;
@@ -81,6 +84,7 @@ public static class ResultExtensions
             h.Asn = result.Probe.Asn;
             h.State = result.Probe.State;
             h.Continent = result.Probe.Continent;
+            h.Version = result.Probe.Version;
             h.Status = result.Data != null ? result.Data.Status : default;
             return h;
         }).ToList();
@@ -101,6 +105,7 @@ public static class ResultExtensions
         resp.Asn = result.Probe.Asn;
         resp.State = result.Probe.State;
         resp.Continent = result.Probe.Continent;
+        resp.Version = result.Probe.Version;
         resp.ResolvedAddress = result.Data?.ResolvedAddress;
         resp.ResolvedHostname = result.Data?.ResolvedHostname;
         resp.Status = result.Data != null ? result.Data.Status : default;

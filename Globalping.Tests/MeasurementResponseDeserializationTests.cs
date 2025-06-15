@@ -191,4 +191,48 @@ public sealed class MeasurementResponseDeserializationTests
         Assert.Equal(8080, opts.Port);
         Assert.Equal(HttpProtocol.HTTP, opts.Protocol);
     }
+
+    [Fact]
+    public void DeserializesProbeVersion()
+    {
+        var json = """
+        {
+            "id": "1",
+            "type": "ping",
+            "status": "finished",
+            "target": "example.com",
+            "probesCount": 1,
+            "results": [
+                {
+                    "probe": {
+                        "continent": "EU",
+                        "country": "DE",
+                        "city": "Berlin",
+                        "asn": 1,
+                        "longitude": 0,
+                        "latitude": 0,
+                        "network": "test",
+                        "tags": [],
+                        "resolvers": [],
+                        "version": "1.2.3"
+                    },
+                    "result": {
+                        "status": "finished",
+                        "timings": [ { "ttl": 64, "rtt": 1.0 } ]
+                    }
+                }
+            ]
+        }
+        """;
+
+        var response = JsonSerializer.Deserialize<MeasurementResponse>(json, JsonOptions);
+        Assert.NotNull(response);
+        Assert.NotNull(response!.Results);
+        Assert.Single(response.Results!);
+        Assert.Equal("1.2.3", response.Results![0].Probe.Version);
+
+        var timings = response.GetPingTimings();
+        Assert.Single(timings);
+        Assert.Equal("1.2.3", timings[0].Version);
+    }
 }
