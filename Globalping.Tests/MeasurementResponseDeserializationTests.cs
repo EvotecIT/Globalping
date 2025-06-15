@@ -1,10 +1,22 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Xunit;
 
 namespace Globalping.Tests;
 
 public sealed class MeasurementResponseDeserializationTests
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+    };
+
+    static MeasurementResponseDeserializationTests()
+    {
+        JsonOptions.Converters.Add(new JsonStringEnumConverter<MeasurementStatus>(JsonNamingPolicy.KebabCaseLower));
+        JsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+    }
     [Fact]
     public void DeserializesLocationsAndLimit()
     {
@@ -23,7 +35,7 @@ public sealed class MeasurementResponseDeserializationTests
         }
         """;
 
-        var response = JsonSerializer.Deserialize<MeasurementResponse>(json);
+        var response = JsonSerializer.Deserialize<MeasurementResponse>(json, JsonOptions);
         Assert.NotNull(response);
         Assert.NotNull(response!.Locations);
         Assert.Single(response.Locations!);
@@ -52,12 +64,30 @@ public sealed class MeasurementResponseDeserializationTests
         }
         """;
 
-        var response = JsonSerializer.Deserialize<MeasurementResponse>(json);
+        var response = JsonSerializer.Deserialize<MeasurementResponse>(json, JsonOptions);
         Assert.NotNull(response);
         Assert.NotNull(response!.Results);
         Assert.Single(response.Results!);
         Assert.NotNull(response.Results![0].Data.Tls);
         Assert.Equal(TlsKeyType.RSA, response.Results![0].Data.Tls!.KeyType);
+    }
+
+    [Fact]
+    public void ParsesInProgressStatus()
+    {
+        var json = """
+        {
+            "id": "1",
+            "type": "ping",
+            "status": "in-progress",
+            "target": "example.com",
+            "probesCount": 1
+        }
+        """;
+
+        var response = JsonSerializer.Deserialize<MeasurementResponse>(json, JsonOptions);
+        Assert.NotNull(response);
+        Assert.Equal(MeasurementStatus.InProgress, response!.Status);
     }
 
     [Fact]
@@ -74,7 +104,7 @@ public sealed class MeasurementResponseDeserializationTests
         }
         """;
 
-        var response = JsonSerializer.Deserialize<MeasurementResponse>(json);
+        var response = JsonSerializer.Deserialize<MeasurementResponse>(json, JsonOptions);
         var opts = Assert.IsType<PingOptions>(response!.MeasurementOptions);
         Assert.Equal(5, opts.Packets);
         Assert.Equal(IpVersion.Six, opts.IpVersion);
@@ -94,7 +124,7 @@ public sealed class MeasurementResponseDeserializationTests
         }
         """;
 
-        var response = JsonSerializer.Deserialize<MeasurementResponse>(json);
+        var response = JsonSerializer.Deserialize<MeasurementResponse>(json, JsonOptions);
         var opts = Assert.IsType<TracerouteOptions>(response!.MeasurementOptions);
         Assert.Equal(443, opts.Port);
         Assert.Equal(TracerouteProtocol.TCP, opts.Protocol);
@@ -115,7 +145,7 @@ public sealed class MeasurementResponseDeserializationTests
         }
         """;
 
-        var response = JsonSerializer.Deserialize<MeasurementResponse>(json);
+        var response = JsonSerializer.Deserialize<MeasurementResponse>(json, JsonOptions);
         var opts = Assert.IsType<DnsOptions>(response!.MeasurementOptions);
         Assert.Equal(DnsProtocol.UDP, opts.Protocol);
         Assert.True(opts.Trace);
@@ -135,7 +165,7 @@ public sealed class MeasurementResponseDeserializationTests
         }
         """;
 
-        var response = JsonSerializer.Deserialize<MeasurementResponse>(json);
+        var response = JsonSerializer.Deserialize<MeasurementResponse>(json, JsonOptions);
         var opts = Assert.IsType<MtrOptions>(response!.MeasurementOptions);
         Assert.Equal(4, opts.Packets);
         Assert.Equal(MtrProtocol.UDP, opts.Protocol);
@@ -155,7 +185,7 @@ public sealed class MeasurementResponseDeserializationTests
         }
         """;
 
-        var response = JsonSerializer.Deserialize<MeasurementResponse>(json);
+        var response = JsonSerializer.Deserialize<MeasurementResponse>(json, JsonOptions);
         var opts = Assert.IsType<HttpOptions>(response!.MeasurementOptions);
         Assert.Equal(8080, opts.Port);
         Assert.Equal(HttpProtocol.HTTP, opts.Protocol);

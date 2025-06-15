@@ -18,14 +18,14 @@ public static class ExecuteHttpExample {
             });
 
         var request = builder.Build();
-        request.InProgressUpdates = false;
+        request.InProgressUpdates = true;
 
         using var httpClient = new HttpClient(new HttpClientHandler {
             AutomaticDecompression = System.Net.DecompressionMethods.All
         });
         var apiKey = Environment.GetEnvironmentVariable("GLOBALPING_TOKEN");
         var probeService = new ProbeService(httpClient, apiKey);
-        var measurementId = await probeService.CreateMeasurementAsync(request);
+        var measurementId = await probeService.CreateMeasurementAsync(request, 60);
 
         ConsoleHelpers.WriteHeading($"HTTP example (ID: {measurementId})");
 

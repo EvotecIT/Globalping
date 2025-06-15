@@ -29,8 +29,8 @@ public class ProbeService {
     public ProbeService(HttpClient httpClient, string? apiKey = null)
     {
         _httpClient = httpClient;
-        _jsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
         _jsonOptions.Converters.Add(new JsonStringEnumConverter<MeasurementStatus>(JsonNamingPolicy.KebabCaseLower));
+        _jsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 
         if (!_httpClient.DefaultRequestHeaders.UserAgent.Any())
         {
@@ -130,13 +130,15 @@ public class ProbeService {
     /// </summary>
     /// <param name="measurementRequest">Request payload describing the measurement.</param>
     /// <returns>Identifier of the created measurement.</returns>
-    public async Task<string> CreateMeasurementAsync(MeasurementRequest measurementRequest) {
+    public async Task<string> CreateMeasurementAsync(
+        MeasurementRequest measurementRequest,
+        int waitTime = 150) {
         var requestUri = "https://api.globalping.io/v1/measurements";
         var requestContent = new StringContent(JsonSerializer.Serialize(measurementRequest, _jsonOptions), Encoding.UTF8, "application/json");
 
         if (measurementRequest.InProgressUpdates) {
             _httpClient.DefaultRequestHeaders.Remove("Prefer");
-            _httpClient.DefaultRequestHeaders.Add("Prefer", "respond-async, wait=150");
+            _httpClient.DefaultRequestHeaders.Add("Prefer", $"respond-async, wait={waitTime}");
         }
 
         var response = await _httpClient.PostAsync(requestUri, requestContent).ConfigureAwait(false);
@@ -149,6 +151,8 @@ public class ProbeService {
     /// <summary>
     /// Synchronous wrapper for <see cref="CreateMeasurementAsync"/>.
     /// </summary>
-    public string CreateMeasurement(MeasurementRequest measurementRequest) =>
-        CreateMeasurementAsync(measurementRequest).GetAwaiter().GetResult();
+    public string CreateMeasurement(
+        MeasurementRequest measurementRequest,
+        int waitTime = 150) =>
+        CreateMeasurementAsync(measurementRequest, waitTime).GetAwaiter().GetResult();
 }
