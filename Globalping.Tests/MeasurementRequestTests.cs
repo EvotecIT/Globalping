@@ -166,4 +166,17 @@ public sealed class MeasurementRequestTests
         var options = Assert.IsType<PingOptions>(request.MeasurementOptions);
         Assert.Equal(4, options.Packets);
     }
+
+    [Fact]
+    public void BuilderSerializesTypeInCamelCase()
+    {
+        var request = new MeasurementRequestBuilder()
+            .WithType(MeasurementType.Ping)
+            .WithTarget("example.com")
+            .Build();
+
+        var json = JsonSerializer.Serialize(request, JsonOptions);
+
+        Assert.Contains("\"type\":\"ping\"", json);
+    }
 }
