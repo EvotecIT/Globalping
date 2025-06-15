@@ -1,9 +1,13 @@
 <p align="center">
-  <a href="https://github.com/EvotecIT/Globalping/actions/workflows/test-dotnet.yml"><img src="https://github.com/EvotecIT/Globalping/actions/workflows/test-dotnet.yml/badge.svg"></a>
-  <a href="https://codecov.io/gh/EvotecIT/Globalping"><img src="https://codecov.io/gh/EvotecIT/Globalping/graph/badge.svg?token=BVO3QKQEHF" /></a>
-  <a href="https://www.powershellgallery.com/packages/Globalping"><img src="https://img.shields.io/powershellgallery/p/Globalping.svg"></a>
   <a href="https://github.com/EvotecIT/Globalping"><img src="https://img.shields.io/github/languages/top/evotecit/Globalping.svg"></a>
   <a href="https://github.com/EvotecIT/Globalping"><img src="https://img.shields.io/github/languages/code-size/evotecit/Globalping.svg"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/EvotecIT/Globalping/actions/workflows/test-dotnet.yml"><img src="https://github.com/EvotecIT/Globalping/actions/workflows/test-dotnet.yml/badge.svg"></a>
+  <a href="https://codecov.io/gh/EvotecIT/Globalping"><img src="https://img.shields.io/codecov/c/github/evotecit/Globalping?token=BVO3QKQEHF" /></a>
+  <a href="https://www.nuget.org/packages/Globalping"><img src="https://img.shields.io/nuget/v/Globalping"></a>
+<a href="https://www.nuget.org/packages/Globalping"><img src="https://img.shields.io/nuget/dt/Globalping?label=nuget%20downloads"></a>
 </p>
 
 <p align="center">

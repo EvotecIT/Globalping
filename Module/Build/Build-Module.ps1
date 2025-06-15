@@ -121,7 +121,7 @@ Build-Module -ModuleName 'Globalping' {
         ModulesPath         = "$PSScriptRoot\..\Artefacts\Packed\Modules"
         RequiredModulesPath = "$PSScriptRoot\..\Artefacts\Packed\Modules"
         AddRequiredModules  = $true
-        ArtefactName        = '<ModuleName>.<TagModuleVersionWithPreRelease>.zip'
+        ArtefactName        = 'PowerShell<ModuleName>.<TagModuleVersionWithPreRelease>.zip'
     }
     New-ConfigurationArtefact @newConfigurationArtefactSplat
 
