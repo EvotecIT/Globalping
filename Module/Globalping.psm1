@@ -89,6 +89,24 @@ $Assembly = $Assembly | Sort-Object {
     if ($_.BaseName -like 'Globalping*') { 1 } else { 0 }
 }, Name
 
+# Provide binding redirect for System.Runtime.CompilerServices.Unsafe on Windows PowerShell
+if ($PSEdition -ne 'Core') {
+    if ($Development) {
+        $UnsafePath = Join-Path $DevelopmentAssemblyFolder.Path 'System.Runtime.CompilerServices.Unsafe.dll'
+    } elseif ($FrameworkNet) {
+        $UnsafePath = Join-Path $PSScriptRoot "Lib/$FrameworkNet/System.Runtime.CompilerServices.Unsafe.dll"
+    }
+    if (Test-Path $UnsafePath) {
+        $handler = {
+            param($sender, $args)
+            if ($args.Name -like 'System.Runtime.CompilerServices.Unsafe*') {
+                return [System.Reflection.Assembly]::LoadFrom($UnsafePath)
+            }
+        }.GetNewClosure()
+        [System.AppDomain]::CurrentDomain.add_AssemblyResolve($handler) | Out-Null
+    }
+}
+
 $FoundErrors = @(
     if ($Development) {
         foreach ($BinaryModule in $BinaryDev) {
