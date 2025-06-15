@@ -26,7 +26,7 @@ public static class MeasurementResponseExtensions {
             return info;
         }
 
-        var lines = raw.Split('\n');
+        var lines = raw!.Split('\n');
         for (var i = 0; i < lines.Length; i++) {
             var t = lines[i].Trim();
             if (t.StartsWith(";; ->>HEADER<<-")) {
@@ -70,7 +70,7 @@ public static class MeasurementResponseExtensions {
             return dict;
         }
 
-        var lines = raw.Split('\n');
+        var lines = raw!.Split('\n');
         var start = false;
         foreach (var line in lines) {
             var t = line.Trim();
