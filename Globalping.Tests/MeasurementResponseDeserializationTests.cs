@@ -31,4 +31,32 @@ public sealed class MeasurementResponseDeserializationTests
         Assert.Equal(1, response.Locations![0].Limit);
         Assert.Equal(1, response.Limit);
     }
+
+    [Fact]
+    public void DeserializesTlsKeyType()
+    {
+        var json = """
+        {
+            "id": "1",
+            "type": "http",
+            "status": "finished",
+            "target": "https://example.com",
+            "probesCount": 1,
+            "results": [
+                {
+                    "result": {
+                        "tls": { "keyType": "RSA" }
+                    }
+                }
+            ]
+        }
+        """;
+
+        var response = JsonSerializer.Deserialize<MeasurementResponse>(json);
+        Assert.NotNull(response);
+        Assert.NotNull(response!.Results);
+        Assert.Single(response.Results!);
+        Assert.NotNull(response.Results![0].Data.Tls);
+        Assert.Equal(TlsKeyType.RSA, response.Results![0].Data.Tls!.KeyType);
+    }
 }
