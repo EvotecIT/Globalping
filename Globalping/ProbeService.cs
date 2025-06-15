@@ -30,6 +30,7 @@ public class ProbeService {
     {
         _httpClient = httpClient;
         _jsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+        _jsonOptions.Converters.Add(new JsonStringEnumConverter<MeasurementStatus>(JsonNamingPolicy.KebabCaseLower));
 
         if (!_httpClient.DefaultRequestHeaders.UserAgent.Any())
         {
