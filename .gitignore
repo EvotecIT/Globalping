@@ -372,3 +372,4 @@ build/*
 # Tools
 /dotnet-install.sh
 /packages-microsoft-prod.deb
+coverage_report/

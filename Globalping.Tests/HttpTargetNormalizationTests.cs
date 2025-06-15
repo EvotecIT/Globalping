@@ -60,4 +60,46 @@ public sealed class HttpTargetNormalizationTests
         Assert.True(root.TryGetProperty("measurementOptions", out var opts));
         Assert.Equal(JsonValueKind.Object, opts.ValueKind);
     }
+
+    [Fact]
+    public async Task CreateMeasurementAsync_ParsesPathQueryAndPort()
+    {
+        var handler = new CaptureHandler();
+        var client = new HttpClient(handler);
+        var service = new ProbeService(client);
+
+        var request = new MeasurementRequestBuilder()
+            .WithType(MeasurementType.Http)
+            .WithTarget("http://example.com:8080/api/data?x=1")
+            .Build();
+
+        await service.CreateMeasurementAsync(request);
+
+        Assert.NotNull(handler.Payload);
+        var opts = Assert.IsType<HttpOptions>(request.MeasurementOptions);
+        Assert.Equal(HttpProtocol.HTTP, opts.Protocol);
+        Assert.Equal(8080, opts.Port);
+        Assert.Equal("/api/data", opts.Request.Path);
+        Assert.Equal("x=1", opts.Request.Query);
+    }
+
+    [Fact]
+    public async Task CreateMeasurementAsync_DoesNotChangeNonHttpRequest()
+    {
+        var handler = new CaptureHandler();
+        var client = new HttpClient(handler);
+        var service = new ProbeService(client);
+
+        var request = new MeasurementRequestBuilder()
+            .WithType(MeasurementType.Ping)
+            .WithTarget("https://example.com/test")
+            .Build();
+
+        await service.CreateMeasurementAsync(request);
+
+        using var doc = JsonDocument.Parse(handler.Payload!);
+        var root = doc.RootElement;
+        Assert.Equal("https://example.com/test", root.GetProperty("target").GetString());
+        Assert.False(root.TryGetProperty("measurementOptions", out _));
+    }
 }
