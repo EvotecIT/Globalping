@@ -18,8 +18,9 @@ public class ResultParsingTests
         JsonOptions.Converters.Add(new JsonStringEnumConverter<MeasurementStatus>(JsonNamingPolicy.KebabCaseLower));
         JsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
     }
-        """;
-        """;
+
+    [Fact]
+    public void ParsesTracerouteHopsFromJson()
     {
         var json = """
             {
@@ -164,6 +165,47 @@ public class ResultParsingTests
     public void ParsesMtrAsnListFromJson()
     {
         var json = """
+            {
+                "id": "1",
+                "type": "mtr",
+                "status": "finished",
+                "target": "example.com",
+                "probesCount": 1,
+                "results": [
+                    {
+                        "probe": {
+                            "continent": "EU",
+                            "region": "EU",
+                            "country": "DE",
+                            "state": null,
+                            "city": "Berlin",
+                            "asn": 1,
+                            "longitude": 0,
+                            "latitude": 0,
+                            "network": "test",
+                            "tags": [],
+                            "resolvers": []
+                        },
+                        "result": {
+                            "status": "finished",
+                            "hops": [
+                                { "resolvedHostname": "h1", "resolvedAddress": "1.1.1.1", "asn": [ 64500, 64501 ] },
+                                { "resolvedHostname": "h2", "resolvedAddress": "2.2.2.2", "asn": [ 64502 ] }
+                            ]
+                        }
+                    }
+                ]
+            }
+            """;
+
+        var resp = JsonSerializer.Deserialize<MeasurementResponse>(json, JsonOptions);
+        Assert.NotNull(resp);
+        var hops = resp!.GetMtrHops();
+        Assert.Equal(2, hops.Count);
+        Assert.Equal(new List<int> { 64500, 64501 }, hops[0].Asn);
+        Assert.Equal(new List<int> { 64502 }, hops[1].Asn);
+    }
+
     [Fact]
     public void ParsesMtrAsnNumberFromJson()
     {
@@ -200,50 +242,10 @@ public class ResultParsingTests
             }
             """;
 
-        var resp = JsonSerializer.Deserialize<MeasurementResponse>(json);
+        var resp = JsonSerializer.Deserialize<MeasurementResponse>(json, JsonOptions);
         Assert.NotNull(resp);
         var hops = resp!.GetMtrHops();
         Assert.Single(hops);
         Assert.Equal(new List<int> { 64500 }, hops[0].Asn);
-    }
-            {
-                "id": "1",
-                "type": "mtr",
-                "status": "finished",
-                "target": "example.com",
-                "probesCount": 1,
-                "results": [
-                    {
-                        "probe": {
-                            "continent": "EU",
-                            "region": "EU",
-                            "country": "DE",
-                            "state": null,
-                            "city": "Berlin",
-                            "asn": 1,
-                            "longitude": 0,
-                            "latitude": 0,
-                            "network": "test",
-                            "tags": [],
-                            "resolvers": []
-                        },
-                        "result": {
-                            "status": "finished",
-                            "hops": [
-                                { "resolvedHostname": "h1", "resolvedAddress": "1.1.1.1", "asn": [ 64500, 64501 ] },
-                                { "resolvedHostname": "h2", "resolvedAddress": "2.2.2.2", "asn": [ 64502 ] }
-                            ]
-                        }
-                    }
-                ]
-            }
-            """;
-
-        var resp = JsonSerializer.Deserialize<MeasurementResponse>(json);
-        Assert.NotNull(resp);
-        var hops = resp!.GetMtrHops();
-        Assert.Equal(2, hops.Count);
-        Assert.Equal(new List<int> { 64500, 64501 }, hops[0].Asn);
-        Assert.Equal(new List<int> { 64502 }, hops[1].Asn);
     }
 }
