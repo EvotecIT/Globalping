@@ -129,4 +129,41 @@ public sealed class MeasurementRequestTests
         Assert.Equal("Europe", loc.Magic);
         Assert.Null(loc.Limit);
     }
+
+    [Fact]
+    public void BuilderAddsVariousLocationTypes()
+    {
+        var request = new MeasurementRequestBuilder()
+            .WithType(MeasurementType.Ping)
+            .WithTarget("example.com")
+            .AddCity("Berlin", 1)
+            .AddState("BY")
+            .AddAsn(64500)
+            .AddNetwork("1.1.1.0/24")
+            .AddTags(new[] { "edge", "test" })
+            .Build();
+
+        Assert.Equal(5, request.Locations!.Count);
+        Assert.Equal("Berlin", request.Locations[0].City);
+        Assert.Equal(1, request.Locations[0].Limit);
+        Assert.Equal("BY", request.Locations[1].State);
+        Assert.Equal(64500, request.Locations[2].Asn);
+        Assert.Equal("1.1.1.0/24", request.Locations[3].Network);
+        Assert.Equal(new[] { "edge", "test" }, request.Locations[4].Tags);
+    }
+
+    [Fact]
+    public void BuilderSetsOptionsAndLimit()
+    {
+        var request = new MeasurementRequestBuilder()
+            .WithType(MeasurementType.Ping)
+            .WithTarget("example.com")
+            .WithMeasurementOptions(new PingOptions { Packets = 4 })
+            .WithLimit(3)
+            .Build();
+
+        Assert.Equal(3, request.Limit);
+        var options = Assert.IsType<PingOptions>(request.MeasurementOptions);
+        Assert.Equal(4, options.Packets);
+    }
 }
