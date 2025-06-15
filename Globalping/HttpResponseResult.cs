@@ -8,7 +8,7 @@ public class HttpResponseResult
     public string Protocol { get; set; } = string.Empty;
     public int StatusCode { get; set; }
     public string StatusDescription { get; set; } = string.Empty;
-    public Dictionary<string, List<string>> Headers { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+    public Dictionary<string, object?> Headers { get; set; } = new(StringComparer.OrdinalIgnoreCase);
     public string? Body { get; set; }
     public string Country { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;

@@ -588,16 +588,10 @@ public static class MeasurementResponseExtensions {
             {
                 foreach (var kv in data.Headers)
                 {
-                    if (kv.Value.ValueKind == JsonValueKind.Array)
-                    {
-                        resp.Headers[kv.Key] = kv.Value.EnumerateArray()
-                            .Select(e => e.GetString() ?? string.Empty)
-                            .ToList();
-                    }
-                    else
-                    {
-                        resp.Headers[kv.Key] = new List<string> { kv.Value.GetString() ?? string.Empty };
-                    }
+                    List<string> values = kv.Value.ValueKind == JsonValueKind.Array
+                        ? kv.Value.EnumerateArray().Select(e => e.GetString() ?? string.Empty).ToList()
+                        : new List<string> { kv.Value.GetString() ?? string.Empty };
+                    resp.Headers[kv.Key] = Normalize(values);
                 }
             }
             return new List<HttpResponseResult> { resp };
@@ -622,6 +616,7 @@ public static class MeasurementResponseExtensions {
             index = 1;
         }
 
+        var tempHeaders = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
         for (; index < lines.Length; index++) {
             var line = lines[index].TrimEnd();
             if (string.IsNullOrEmpty(line)) {
@@ -633,13 +628,18 @@ public static class MeasurementResponseExtensions {
             if (sep > 0) {
                 var key = line.Substring(0, sep).Trim();
                 var value = line.Substring(sep + 1).Trim();
-                if (!result.Headers.TryGetValue(key, out var list))
+                if (!tempHeaders.TryGetValue(key, out var list))
                 {
                     list = new List<string>();
-                    result.Headers[key] = list;
+                    tempHeaders[key] = list;
                 }
                 list.Add(value);
             }
+        }
+
+        foreach (var kv in tempHeaders)
+        {
+            result.Headers[kv.Key] = Normalize(kv.Value);
         }
 
         if (index < lines.Length) {
@@ -650,5 +650,15 @@ public static class MeasurementResponseExtensions {
         result.Tls = data.Tls;
 
         return new List<HttpResponseResult> { result };
+    }
+
+    private static object? Normalize(List<string> values)
+    {
+        return values.Count switch
+        {
+            0 => null,
+            1 => values[0],
+            _ => values
+        };
     }
 }

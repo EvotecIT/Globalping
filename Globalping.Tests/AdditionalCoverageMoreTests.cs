@@ -210,6 +210,7 @@ public class AdditionalCoverageMoreTests
         Assert.Equal(200, http.StatusCode);
         Assert.Equal("Hello", http.Body);
         Assert.True(http.Headers.ContainsKey("Content-Type"));
-        Assert.Equal(2, http.Headers["X-Test"].Count);
+        var xTest = Assert.IsType<List<string>>(http.Headers["X-Test"]!);
+        Assert.Equal(2, xTest.Count);
     }
 }

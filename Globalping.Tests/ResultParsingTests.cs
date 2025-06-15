@@ -160,8 +160,8 @@ public class ResultParsingTests
         Assert.Equal(200, http[0].StatusCode);
         Assert.Equal("hello", http[0].Body);
         Assert.True(http[0].Headers.ContainsKey("content-type"));
-        Assert.Single(http[0].Headers["content-type"]);
-        Assert.Equal("text/plain", http[0].Headers["content-type"][0]);
+        var contentType = Assert.IsType<string>(http[0].Headers["content-type"]!);
+        Assert.Equal("text/plain", contentType);
         Assert.NotNull(http[0].Timings);
         Assert.Equal(10, http[0].Timings!.Dns);
         Assert.NotNull(http[0].Tls);
