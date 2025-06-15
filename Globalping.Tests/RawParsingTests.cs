@@ -87,4 +87,32 @@ public class RawParsingTests
         Assert.Equal("hello", http[0].Body);
         Assert.True(http[0].Headers.ContainsKey("Content-Type"));
     }
+
+    [Fact]
+    public void ParsesMtrRawOutput()
+    {
+        var raw = "header\n" +
+                  "Host\n" +
+                  "1. AS100 router (192.168.0.1) 0.0% 1 1 1.0 1.0 1.0\n" +
+                  "2. AS101 example.com (93.184.216.34) 0.0% 1 1 2.0 2.0 2.0\n" +
+                  "3  waiting for reply\n";
+        var resp = new MeasurementResponse
+        {
+            Target = "example.com",
+            Results = new List<Result>
+            {
+                new()
+                {
+                    Probe = new Probe(),
+                    Data = new ResultDetails { RawOutput = raw }
+                }
+            }
+        };
+
+        var hops = resp.GetMtrHops();
+        Assert.Equal(3, hops.Count);
+        Assert.Equal("router", hops[0].Host);
+        Assert.Equal("192.168.0.1", hops[0].IpAddress);
+        Assert.Equal("waiting for reply", hops[2].Host);
+    }
 }
