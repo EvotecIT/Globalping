@@ -294,12 +294,17 @@ public static class MeasurementResponseExtensions {
                 }
                 if (hop.TryGetProperty("asn", out var asnEl)) {
                     if (asnEl.ValueKind == JsonValueKind.Array) {
-                        r.Asn = asnEl.EnumerateArray()
+                        var asns = asnEl.EnumerateArray()
                             .Where(a => a.ValueKind == JsonValueKind.Number)
                             .Select(a => a.GetInt32())
                             .ToList();
+                        r.Asn = asns.Count switch {
+                            0 => null,
+                            1 => (object)asns[0],
+                            _ => asns
+                        };
                     } else if (asnEl.ValueKind == JsonValueKind.Number) {
-                        r.Asn = new List<int> { asnEl.GetInt32() };
+                        r.Asn = asnEl.GetInt32();
                     }
                 }
                 if (hop.TryGetProperty("stats", out var statsEl)) {
@@ -358,7 +363,7 @@ public static class MeasurementResponseExtensions {
                     asnText = asnText.Substring(2);
                 }
                 if (int.TryParse(asnText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var asn)) {
-                    hop.Asn = new List<int> { asn };
+                    hop.Asn = asn;
                 }
                 if (double.TryParse(m.Groups[5].Value, NumberStyles.Float, CultureInfo.InvariantCulture, out var loss)) {
                     hop.LossPercent = loss;

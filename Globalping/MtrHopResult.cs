@@ -6,7 +6,7 @@ public class MtrHopResult
 {
     public string Target { get; set; } = string.Empty;
     public int Hop { get; set; }
-    public List<int> Asn { get; set; } = new();
+    public object? Asn { get; set; }
     public string Host { get; set; } = string.Empty;
     public string IpAddress { get; set; } = string.Empty;
     public double? LossPercent { get; set; }
