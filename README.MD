@@ -33,12 +33,12 @@ The repository contains a cross platform .NET library and a PowerShell module bu
 
 * Make Globalping easy to consume from scripts and applications.
 * Offer rich objects for each measurement type while still allowing access to the raw API response.
-* Keep dependencies minimal – only the .NET runtime and PowerShell 5.1 or newer are required.
+* Keep dependencies minimal - only the .NET runtime and PowerShell 5.1 or newer are required.
 
 ## Requirements
 
-* **.NET** 8 or newer to build and run the library and example projects.
-* **PowerShell** 5.1 or newer when using the module. PowerShell 7+ is recommended on non‑Windows platforms.
+* **.NET** 8 or newer to build and run the library and example projects.
+* **PowerShell** 5.1 or newer when using the module. PowerShell 7+ is recommended on non‑Windows platforms.
 
 ## PowerShell usage
 
