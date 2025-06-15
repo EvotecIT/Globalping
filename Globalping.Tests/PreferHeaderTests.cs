@@ -18,7 +18,7 @@ public sealed class PreferHeaderTests
             CancellationToken cancellationToken)
         {
             LastRequest = request;
-            var response = new HttpResponseMessage(HttpStatusCode.Created)
+            var response = new HttpResponseMessage(HttpStatusCode.Accepted)
             {
                 Content = new StringContent("{\"id\":\"1\"}", Encoding.UTF8, "application/json")
             };
