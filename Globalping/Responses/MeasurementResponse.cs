@@ -12,7 +12,7 @@ public class MeasurementResponse {
     public string? Type { get; set; }
 
     [JsonPropertyName("status")]
-    public string? Status { get; set; }
+    public MeasurementStatus Status { get; set; }
 
     [JsonPropertyName("createdAt")]
     public DateTime CreatedAt { get; set; }

@@ -31,6 +31,7 @@ public class MeasurementClient {
     public MeasurementClient(HttpClient httpClient, string? apiKey = null) {
         _httpClient = httpClient;
         _jsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+        _jsonOptions.Converters.Add(new JsonStringEnumConverter<MeasurementStatus>(JsonNamingPolicy.KebabCaseLower));
 
         if (!_httpClient.DefaultRequestHeaders.UserAgent.Any()) {
             _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Globalping.Net/1.0 (+https://github.com/EvotecIT/Globalping)");
@@ -109,10 +110,10 @@ public class MeasurementClient {
                 }
             }
 
-            if (measurementResponse?.Status == "in-progress") {
+            if (measurementResponse?.Status == MeasurementStatus.InProgress) {
                 await Task.Delay(500).ConfigureAwait(false);
             }
-        } while (measurementResponse != null && measurementResponse.Status == "in-progress");
+        } while (measurementResponse != null && measurementResponse.Status == MeasurementStatus.InProgress);
 
         return measurementResponse;
     }
