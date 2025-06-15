@@ -21,7 +21,20 @@
 
 # Globalping
 
-This project contains a .NET client library and PowerShell module for the [Globalping API](https://api.globalping.io/).
+Globalping provides convenient access to the [Globalping API](https://api.globalping.io/) from .NET applications and PowerShell. It lets you run network diagnostics such as ping, traceroute, DNS or HTTP checks from hundreds of probes around the world.
+
+The repository contains a cross platform .NET library and a PowerShell module built on top of it. Examples under `Globalping.Examples` demonstrate advanced usage.
+
+## Goals
+
+* Make Globalping easy to consume from scripts and applications.
+* Offer rich objects for each measurement type while still allowing access to the raw API response.
+* Keep dependencies minimal – only the .NET runtime and PowerShell 5.1 or newer are required.
+
+## Requirements
+
+* **.NET** 6 or newer to build and run the library and example projects.
+* **PowerShell** 5.1 or newer when using the module. PowerShell 7+ is recommended on non‑Windows platforms.
 
 ## PowerShell usage
 
@@ -94,12 +107,38 @@ To fetch only HTTP headers use `Start-GlobalpingHttp` with the `-HeadersOnly` pa
 ```powershell
 Start-GlobalpingHttp -Target "https://example.com" -HeadersOnly
 ```
+Both `https://example.com` and `example.com` are accepted when running HTTP measurements. The cmdlet automatically extracts the scheme and path.
 
 Request in-progress updates and customize the wait time:
 
 ```powershell
 Start-GlobalpingHttp -Target "https://example.com" -Limit 3 -InProgressUpdates -WaitTime 60
 ```
+
+## C# usage
+
+The .NET library exposes the same functionality for applications. A minimal example to run a ping measurement:
+
+```csharp
+using var httpClient = new HttpClient();
+var request = new MeasurementRequestBuilder()
+    .WithType(MeasurementType.Ping)
+    .WithTarget("example.com")
+    .AddCountry("DE")
+    .Build();
+
+var service = new ProbeService(httpClient);
+var create = await service.CreateMeasurementAsync(request);
+
+var client = new MeasurementClient(httpClient);
+var result = await client.GetMeasurementByIdAsync(create.Id);
+foreach (var ping in result!.GetPingTimings())
+{
+    Console.WriteLine($"{ping.City}: {ping.Time} ms");
+}
+```
+
+For HTTP measurements the target may include the scheme (e.g. `https://example.com`). The library automatically converts it to the correct host, protocol and path.
 
 The API specification is available at [api.globalping.io/v1/spec.yaml](https://api.globalping.io/v1/spec.yaml).
 

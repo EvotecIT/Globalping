@@ -112,6 +112,52 @@ public class ProbeService {
         throw new GlobalpingApiException((int)response.StatusCode, error?.Error ?? new ErrorDetails(), LastResponseInfo);
     }
 
+    private static void NormalizeHttpRequest(MeasurementRequest request)
+    {
+        if (request.Type != MeasurementType.Http)
+        {
+            return;
+        }
+
+        if (!Uri.TryCreate(request.Target, UriKind.Absolute, out var uri))
+        {
+            return;
+        }
+
+        var options = request.MeasurementOptions as HttpOptions ?? new HttpOptions();
+        request.MeasurementOptions ??= options;
+
+        var reqOpts = options.Request ??= new HttpRequestOptions();
+        if (string.IsNullOrEmpty(reqOpts.Path))
+        {
+            reqOpts.Path = string.IsNullOrEmpty(uri.AbsolutePath) ? "/" : uri.AbsolutePath;
+        }
+        if (string.IsNullOrEmpty(reqOpts.Query) && !string.IsNullOrEmpty(uri.Query))
+        {
+            reqOpts.Query = uri.Query.TrimStart('?');
+        }
+
+        if (options.Protocol == HttpProtocol.HTTPS && uri.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase))
+        {
+            options.Protocol = HttpProtocol.HTTP;
+        }
+        else if (options.Protocol == HttpProtocol.HTTPS && uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
+        {
+            options.Protocol = HttpProtocol.HTTPS;
+        }
+
+        if (uri.IsDefaultPort)
+        {
+            options.Port = options.Protocol == HttpProtocol.HTTPS ? 443 : 80;
+        }
+        else
+        {
+            options.Port = uri.Port;
+        }
+
+        request.Target = uri.Host;
+    }
+
     /// <summary>
     /// Retrieves the list of currently online probes.
     /// </summary>
@@ -155,6 +201,8 @@ public class ProbeService {
     public async Task<CreateMeasurementResponse> CreateMeasurementAsync(
         MeasurementRequest measurementRequest,
         int waitTime = 150) {
+        NormalizeHttpRequest(measurementRequest);
+
         var requestUri = "https://api.globalping.io/v1/measurements";
         var requestContent = new StringContent(
             JsonSerializer.Serialize(measurementRequest, _jsonOptions),
