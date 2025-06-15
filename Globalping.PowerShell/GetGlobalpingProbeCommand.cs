@@ -13,7 +13,7 @@ namespace Globalping.PowerShell;
 ///   <para>Outputs flattened probe objects describing each online probe.</para>
 /// </example>
 [Cmdlet(VerbsCommon.Get, "GlobalpingProbe")]
-[OutputType(typeof(Probe))]
+[OutputType(typeof(ProbeInfo))]
 [OutputType(typeof(Probes))]
 public class GetGlobalpingProbeCommand : PSCmdlet {
     /// <summary>API key used for authenticated calls.</summary>
@@ -46,23 +46,7 @@ public class GetGlobalpingProbeCommand : PSCmdlet {
 
         foreach (var p in probes)
         {
-            var loc = p.Location;
-            var probe = new Probe
-            {
-                Continent = loc?.Continent ?? string.Empty,
-                Region = loc?.Region ?? string.Empty,
-                Country = loc?.Country ?? string.Empty,
-                State = loc?.State ?? string.Empty,
-                City = loc?.City ?? string.Empty,
-                Asn = loc?.Asn ?? 0,
-                Longitude = loc?.Longitude ?? 0,
-                Latitude = loc?.Latitude ?? 0,
-                Network = loc?.Network ?? string.Empty,
-                Tags = p.Tags ?? new List<string>(),
-                Resolvers = p.Resolvers ?? new List<string>(),
-                Version = p.Version
-            };
-            WriteObject(probe);
+            WriteObject(p.ToProbeInfo());
         }
     }
 }
