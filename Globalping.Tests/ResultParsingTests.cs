@@ -164,6 +164,48 @@ public class ResultParsingTests
     public void ParsesMtrAsnListFromJson()
     {
         var json = """
+    [Fact]
+    public void ParsesMtrAsnNumberFromJson()
+    {
+        var json = """
+            {
+                "id": "1",
+                "type": "mtr",
+                "status": "finished",
+                "target": "example.com",
+                "probesCount": 1,
+                "results": [
+                    {
+                        "probe": {
+                            "continent": "EU",
+                            "region": "EU",
+                            "country": "DE",
+                            "state": null,
+                            "city": "Berlin",
+                            "asn": 1,
+                            "longitude": 0,
+                            "latitude": 0,
+                            "network": "test",
+                            "tags": [],
+                            "resolvers": []
+                        },
+                        "result": {
+                            "status": "finished",
+                            "hops": [
+                                { "resolvedHostname": "h1", "resolvedAddress": "1.1.1.1", "asn": 64500 }
+                            ]
+                        }
+                    }
+                ]
+            }
+            """;
+
+        var resp = JsonSerializer.Deserialize<MeasurementResponse>(json);
+        Assert.NotNull(resp);
+        var hops = resp!.GetMtrHops();
+        Assert.Single(hops);
+        Assert.Equal(new List<int> { 64500 }, hops[0].Asn);
+    }
             {
                 "id": "1",
                 "type": "mtr",
