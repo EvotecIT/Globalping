@@ -284,4 +284,46 @@ public sealed class MeasurementResponseDeserializationTests
         Assert.NotNull(records[0].Timings);
         Assert.Equal(42.0, records[0].Timings!.Total);
     }
+
+    [Fact]
+    public void DeserializesStatsWithNullableValues()
+    {
+        var json = """
+        {
+            "id": "1",
+            "type": "ping",
+            "status": "finished",
+            "target": "example.com",
+            "probesCount": 1,
+            "results": [
+                {
+                    "probe": {
+                        "continent": "EU",
+                        "country": "DE",
+                        "city": "Berlin",
+                        "asn": 1,
+                        "longitude": 0,
+                        "latitude": 0,
+                        "network": "test",
+                        "tags": [],
+                        "resolvers": []
+                    },
+                    "result": {
+                        "status": "finished",
+                        "stats": { "min": null, "max": 2.0, "avg": 1.5, "loss": null }
+                    }
+                }
+            ]
+        }
+        """;
+
+        var response = JsonSerializer.Deserialize<MeasurementResponse>(json, JsonOptions);
+        Assert.NotNull(response);
+        var stats = response!.Results![0].Data.Stats;
+        Assert.NotNull(stats);
+        Assert.Null(stats!.Min);
+        Assert.Equal(2.0, stats.Max);
+        Assert.Equal(1.5, stats.Avg);
+        Assert.Null(stats.Loss);
+    }
 }
