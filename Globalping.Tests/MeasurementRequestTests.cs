@@ -84,4 +84,21 @@ public sealed class MeasurementRequestTests
         Assert.Equal("new", request.ReuseLocationsFromId);
         Assert.Null(request.Locations);
     }
+
+    [Fact]
+    public void SerializesInProgressUpdates()
+    {
+        var request = new MeasurementRequestBuilder()
+            .WithType(MeasurementType.Ping)
+            .WithTarget("example.com")
+            .WithInProgressUpdates()
+            .Build();
+
+        var json = JsonSerializer.Serialize(request, JsonOptions);
+        using var doc = JsonDocument.Parse(json);
+
+        var root = doc.RootElement;
+        Assert.True(root.TryGetProperty("inProgressUpdates", out var prop));
+        Assert.True(prop.GetBoolean());
+    }
 }

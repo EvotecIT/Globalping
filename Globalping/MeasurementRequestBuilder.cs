@@ -103,6 +103,12 @@ public class MeasurementRequestBuilder
         return this;
     }
 
+    public MeasurementRequestBuilder WithInProgressUpdates(bool value = true)
+    {
+        _request.InProgressUpdates = value;
+        return this;
+    }
+
     public MeasurementRequestBuilder WithLimit(int? limit)
     {
         _request.Limit = limit;
