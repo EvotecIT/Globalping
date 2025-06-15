@@ -34,13 +34,13 @@ public class MeasurementRequestBuilder
         return AddLocation(loc);
     }
 
-    public MeasurementRequestBuilder AddContinent(string continent, int? limit = null)
+    public MeasurementRequestBuilder AddContinent(ContinentCode continent, int? limit = null)
     {
         var loc = new LocationRequest { Continent = continent, Limit = limit };
         return AddLocation(loc);
     }
 
-    public MeasurementRequestBuilder AddRegion(string region, int? limit = null)
+    public MeasurementRequestBuilder AddRegion(RegionName region, int? limit = null)
     {
         var loc = new LocationRequest { Region = region, Limit = limit };
         return AddLocation(loc);
