@@ -24,6 +24,12 @@ Describe "Globalping Cmdlets" {
         $results.StatusCode | Should -Be 200
     }
 
+    It "Start-GlobalpingHttp handles URL target" {
+        $results = Start-GlobalpingHttp -Target "https://evotec.xyz" -Limit 1 -ErrorAction Stop
+        $results | Should -Not -BeNullOrEmpty
+        $results.Target | Should -Be "evotec.xyz"
+    }
+
     It "Start-GlobalpingTraceroute returns output" {
         $results = Start-GlobalpingTraceroute -Target "evotec.xyz" -Limit 1 -ErrorAction Stop
         $results | Should -Not -BeNullOrEmpty
