@@ -148,7 +148,7 @@ Get-GlobalpingLimit -ApiKey "your-api-key" -Raw | Format-List
 
 ## Cross-Platform Diagnostics
 
-If you're working in both PowerShell and C#, the Globalping ecosystem has you covered. Use the PowerShell module for quick scripting and automation, and leverage [Globalping.NET](./using-globalping-csharp.md) for robust application development. Together, they form a powerful toolkit for network diagnostics.
+If you're working in both PowerShell and C#, the Globalping ecosystem has you covered. Use the PowerShell module for quick scripting and automation, and leverage [Globalping.NET](https://evotec.xyz/supercharging-your-network-diagnostics-with-globalping-for-net/) for robust application development. Together, they form a powerful toolkit for network diagnostics.
 
 ## Conclusion
 

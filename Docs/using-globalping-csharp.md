@@ -135,7 +135,7 @@ Console.WriteLine($"Credits Remaining: {limits.CreditsRemaining}");
 
 ## Cross-Platform Diagnostics
 
-If you're working in both C# and PowerShell, the Globalping ecosystem has you covered. Use [Globalping PowerShell Module](./using-globalping-powershell.md) for quick scripting and automation, and leverage Globalping.NET for robust application development. Together, they form a powerful toolkit for network diagnostics.
+If you're working in both C# and PowerShell, the Globalping ecosystem has you covered. Use [Globalping PowerShell Module](https://evotec.xyz/automating-network-diagnostics-with-globalping-powershell-module/) for quick scripting and automation, and leverage Globalping.NET for robust application development. Together, they form a powerful toolkit for network diagnostics.
 
 
 ## Conclusion
