@@ -88,14 +88,35 @@ public class ProbeService {
         return null;
     }
 
+    private async Task EnsureSuccessOrThrow(HttpResponseMessage response)
+    {
+        UpdateUsageInfo(response);
+        if (response.IsSuccessStatusCode)
+        {
+            return;
+        }
+
+        ErrorResponse? error = null;
+        try
+        {
+            var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            error = await JsonSerializer.DeserializeAsync<ErrorResponse>(stream, _jsonOptions).ConfigureAwait(false);
+        }
+        catch
+        {
+            // ignore parse failures
+        }
+
+        throw new GlobalpingApiException((int)response.StatusCode, error?.Error ?? new ErrorDetails(), LastResponseInfo);
+    }
+
     /// <summary>
     /// Retrieves the list of currently online probes.
     /// </summary>
     /// <returns>Collection of available probes.</returns>
     public async Task<List<Probes>> GetOnlineProbesAsync() {
         var response = await _httpClient.GetAsync("https://api.globalping.io/v1/probes").ConfigureAwait(false);
-        UpdateUsageInfo(response);
-        response.EnsureSuccessStatusCode();
+        await EnsureSuccessOrThrow(response).ConfigureAwait(false);
         var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
         return await JsonSerializer.DeserializeAsync<List<Probes>>(stream, _jsonOptions).ConfigureAwait(false) ?? new List<Probes>();
     }
@@ -113,8 +134,7 @@ public class ProbeService {
     public async Task<Limits?> GetLimitsAsync()
     {
         var response = await _httpClient.GetAsync("https://api.globalping.io/v1/limits").ConfigureAwait(false);
-        UpdateUsageInfo(response);
-        response.EnsureSuccessStatusCode();
+        await EnsureSuccessOrThrow(response).ConfigureAwait(false);
         var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
         return await JsonSerializer.DeserializeAsync<Limits>(stream, _jsonOptions).ConfigureAwait(false);
     }
@@ -142,8 +162,7 @@ public class ProbeService {
         }
 
         var response = await _httpClient.PostAsync(requestUri, requestContent).ConfigureAwait(false);
-        UpdateUsageInfo(response);
-        response.EnsureSuccessStatusCode();
+        await EnsureSuccessOrThrow(response).ConfigureAwait(false);
         var result = await response.Content.ReadFromJsonAsync<MeasurementResponse>(_jsonOptions).ConfigureAwait(false);
         return result?.Id ?? string.Empty;
     }
