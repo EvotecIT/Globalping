@@ -111,7 +111,7 @@ public sealed class MeasurementRequestTests
             .AddMagic("Europe", 5)
             .Build();
 
-        var loc = Assert.Single(request.Locations);
+        var loc = Assert.Single(request.Locations!);
         Assert.Equal("Europe", loc.Magic);
         Assert.Equal(5, loc.Limit);
     }
@@ -125,7 +125,7 @@ public sealed class MeasurementRequestTests
             .AddMagic("Europe")
             .Build();
 
-        var loc = Assert.Single(request.Locations);
+        var loc = Assert.Single(request.Locations!);
         Assert.Equal("Europe", loc.Magic);
         Assert.Null(loc.Limit);
     }
