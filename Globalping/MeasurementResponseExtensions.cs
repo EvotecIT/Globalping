@@ -67,7 +67,7 @@ public static class MeasurementResponseExtensions {
             return new List<TracerouteHopResult>();
         }
 
-        return response.Results.SelectMany(r => ParseTraceroute(r.Data?.RawOutput).Select(h =>
+        return response.Results.SelectMany(r => ParseTraceroute(r.Data).Select(h =>
         {
             h.Target = response.Target;
             h.Continent = r.Probe.Continent;
@@ -88,7 +88,7 @@ public static class MeasurementResponseExtensions {
             return new List<MtrHopResult>();
         }
 
-        return response.Results.SelectMany(r => ParseMtr(r.Data?.RawOutput).Select(h =>
+        return response.Results.SelectMany(r => ParseMtr(r.Data).Select(h =>
         {
             h.Target = response.Target;
             h.Continent = r.Probe.Continent;
@@ -109,7 +109,7 @@ public static class MeasurementResponseExtensions {
             return new List<DnsRecordResult>();
         }
 
-        return response.Results.SelectMany(r => ParseDns(r.Data?.RawOutput).Select(h =>
+        return response.Results.SelectMany(r => ParseDns(r.Data).Select(h =>
         {
             h.Target = response.Target;
             h.Continent = r.Probe.Continent;
@@ -123,7 +123,31 @@ public static class MeasurementResponseExtensions {
         })).ToList();
     }
 
-    internal static List<TracerouteHopResult> ParseTraceroute(string? raw) {
+    internal static List<TracerouteHopResult> ParseTraceroute(ResultDetails? data) {
+        if (data?.Hops is JsonElement hops && hops.ValueKind == JsonValueKind.Array) {
+            var list = new List<TracerouteHopResult>();
+            var idx = 1;
+            foreach (var hop in hops.EnumerateArray()) {
+                var r = new TracerouteHopResult {
+                    Hop = idx++,
+                    Host = hop.GetProperty("resolvedHostname").GetString() ?? string.Empty,
+                    IpAddress = hop.GetProperty("resolvedAddress").GetString() ?? string.Empty
+                };
+                if (hop.TryGetProperty("timings", out var timings) && timings.ValueKind == JsonValueKind.Array) {
+                    var arr = timings.EnumerateArray().Select(e => e.GetProperty("rtt").GetDouble()).ToList();
+                    if (arr.Count > 0) r.Time1 = arr[0];
+                    if (arr.Count > 1) r.Time2 = arr[1];
+                    if (arr.Count > 2) r.Time3 = arr[2];
+                }
+                list.Add(r);
+            }
+            return list;
+        }
+
+        return ParseTracerouteRaw(data?.RawOutput);
+    }
+
+    internal static List<TracerouteHopResult> ParseTracerouteRaw(string? raw) {
         if (string.IsNullOrWhiteSpace(raw)) {
             return new List<TracerouteHopResult>();
         }
@@ -157,7 +181,36 @@ public static class MeasurementResponseExtensions {
         return list;
     }
 
-    internal static List<MtrHopResult> ParseMtr(string? raw) {
+    internal static List<MtrHopResult> ParseMtr(ResultDetails? data) {
+        if (data?.Hops is JsonElement hops && hops.ValueKind == JsonValueKind.Array) {
+            var jsonList = new List<MtrHopResult>();
+            var idx = 1;
+            foreach (var hop in hops.EnumerateArray()) {
+                var r = new MtrHopResult {
+                    Hop = idx++,
+                    Host = hop.GetProperty("resolvedHostname").GetString() ?? string.Empty,
+                    IpAddress = hop.GetProperty("resolvedAddress").GetString() ?? string.Empty,
+                };
+                if (hop.TryGetProperty("asn", out var asnEl) && asnEl.ValueKind == JsonValueKind.Array) {
+                    r.Asn = string.Join(",", asnEl.EnumerateArray().Select(a => a.GetInt32().ToString()));
+                }
+                if (hop.TryGetProperty("stats", out var statsEl)) {
+                    var stats = JsonSerializer.Deserialize<Stats>(statsEl.GetRawText());
+                    if (stats != null) {
+                        r.LossPercent = stats.Loss;
+                        r.Drop = stats.Drop;
+                        r.Rcv = stats.Rcv;
+                        r.Avg = stats.Avg;
+                        r.StDev = stats.StDev;
+                        r.Javg = stats.JAvg;
+                    }
+                }
+                jsonList.Add(r);
+            }
+            return jsonList;
+        }
+
+        var raw = data?.RawOutput;
         if (string.IsNullOrWhiteSpace(raw)) {
             return new List<MtrHopResult>();
         }
@@ -217,7 +270,39 @@ public static class MeasurementResponseExtensions {
         return list;
     }
 
-    internal static List<DnsRecordResult> ParseDns(string? raw) {
+    internal static List<DnsRecordResult> ParseDns(ResultDetails? data) {
+        if (data?.Answers != null && data.Answers.Count > 0) {
+            return data.Answers.Select(a => new DnsRecordResult {
+                Name = a.Name,
+                Ttl = a.Ttl,
+                Type = a.Type,
+                Data = a.Value,
+                QuestionName = string.Empty,
+                QuestionType = string.Empty,
+                Flags = string.Empty,
+                Opcode = string.Empty,
+                HeaderStatus = string.Empty
+            }).ToList();
+        }
+        if (data?.Hops is JsonElement hops && hops.ValueKind == JsonValueKind.Array) {
+            var records = new List<DnsRecordResult>();
+            foreach (var hop in hops.EnumerateArray()) {
+                if (hop.TryGetProperty("answers", out var ansEl) && ansEl.ValueKind == JsonValueKind.Array) {
+                    var ans = JsonSerializer.Deserialize<List<DnsAnswer>>(ansEl.GetRawText());
+                    if (ans != null) {
+                        records.AddRange(ans.Select(a => new DnsRecordResult {
+                            Name = a.Name,
+                            Ttl = a.Ttl,
+                            Type = a.Type,
+                            Data = a.Value
+                        }));
+                    }
+                }
+            }
+            return records;
+        }
+
+        var raw = data?.RawOutput;
         if (string.IsNullOrWhiteSpace(raw)) {
             return new List<DnsRecordResult>();
         }
@@ -304,7 +389,7 @@ public static class MeasurementResponseExtensions {
             return new List<HttpResponseResult>();
         }
 
-        return response.Results.SelectMany(r => ParseHttp(r.Data?.RawOutput).Select(h =>
+        return response.Results.SelectMany(r => ParseHttp(r.Data).Select(h =>
         {
             h.Target = response.Target;
             h.Continent = r.Probe.Continent;
@@ -320,7 +405,36 @@ public static class MeasurementResponseExtensions {
         })).ToList();
     }
 
-    internal static List<HttpResponseResult> ParseHttp(string? raw) {
+    internal static List<HttpResponseResult> ParseHttp(ResultDetails? data) {
+        if (data == null) {
+            return new List<HttpResponseResult>();
+        }
+        if (data.RawHeaders != null) {
+            var resp = new HttpResponseResult
+            {
+                Protocol = string.Empty,
+                StatusCode = data.StatusCode ?? 0,
+                StatusDescription = data.StatusCodeName ?? string.Empty,
+                Body = data.RawBody,
+            };
+            if (data.Headers != null)
+            {
+                foreach (var kv in data.Headers)
+                {
+                    if (kv.Value.ValueKind == JsonValueKind.Array)
+                    {
+                        resp.Headers[kv.Key] = string.Join(",", kv.Value.EnumerateArray().Select(e => e.GetString()));
+                    }
+                    else
+                    {
+                        resp.Headers[kv.Key] = kv.Value.GetString() ?? string.Empty;
+                    }
+                }
+            }
+            return new List<HttpResponseResult> { resp };
+        }
+
+        var raw = data.RawOutput;
         if (string.IsNullOrWhiteSpace(raw)) {
             return new List<HttpResponseResult>();
         }

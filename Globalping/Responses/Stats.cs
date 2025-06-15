@@ -22,5 +22,17 @@ public class Stats {
 
     [JsonPropertyName("drop")]
     public int Drop { get; set; }
+
+    [JsonPropertyName("stDev")]
+    public double? StDev { get; set; }
+
+    [JsonPropertyName("jMin")]
+    public double? JMin { get; set; }
+
+    [JsonPropertyName("jAvg")]
+    public double? JAvg { get; set; }
+
+    [JsonPropertyName("jMax")]
+    public double? JMax { get; set; }
 }
 
