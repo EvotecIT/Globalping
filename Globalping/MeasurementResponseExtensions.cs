@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -291,8 +292,15 @@ public static class MeasurementResponseExtensions {
                         r.Host = rawHost;
                     }
                 }
-                if (hop.TryGetProperty("asn", out var asnEl) && asnEl.ValueKind == JsonValueKind.Array) {
-                    r.Asn = string.Join(",", asnEl.EnumerateArray().Select(a => a.GetInt32().ToString()));
+                if (hop.TryGetProperty("asn", out var asnEl)) {
+                    if (asnEl.ValueKind == JsonValueKind.Array) {
+                        r.Asn = asnEl.EnumerateArray()
+                            .Where(a => a.ValueKind == JsonValueKind.Number)
+                            .Select(a => a.GetInt32())
+                            .ToList();
+                    } else if (asnEl.ValueKind == JsonValueKind.Number) {
+                        r.Asn = new List<int> { asnEl.GetInt32() };
+                    }
                 }
                 if (hop.TryGetProperty("stats", out var statsEl)) {
                     var stats = JsonSerializer.Deserialize<Stats>(statsEl.GetRawText());
@@ -342,10 +350,16 @@ public static class MeasurementResponseExtensions {
             if (m.Success) {
                 var hop = new MtrHopResult {
                     Hop = int.Parse(m.Groups[1].Value),
-                    Asn = m.Groups[2].Value,
                     Host = m.Groups[3].Value.Trim(),
                     IpAddress = m.Groups[4].Value
                 };
+                var asnText = m.Groups[2].Value;
+                if (asnText.StartsWith("AS", StringComparison.OrdinalIgnoreCase)) {
+                    asnText = asnText.Substring(2);
+                }
+                if (int.TryParse(asnText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var asn)) {
+                    hop.Asn = new List<int> { asn };
+                }
                 if (double.TryParse(m.Groups[5].Value, NumberStyles.Float, CultureInfo.InvariantCulture, out var loss)) {
                     hop.LossPercent = loss;
                 }

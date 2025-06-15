@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text.Json;
 using Xunit;
 
@@ -142,5 +143,50 @@ public class ResultParsingTests
         Assert.Single(http);
         Assert.Equal(200, http[0].StatusCode);
         Assert.Equal("hello", http[0].Body);
+    }
+
+    [Fact]
+    public void ParsesMtrAsnListFromJson()
+    {
+        var json = """
+            {
+                "id": "1",
+                "type": "mtr",
+                "status": "finished",
+                "target": "example.com",
+                "probesCount": 1,
+                "results": [
+                    {
+                        "probe": {
+                            "continent": "EU",
+                            "region": "EU",
+                            "country": "DE",
+                            "state": null,
+                            "city": "Berlin",
+                            "asn": 1,
+                            "longitude": 0,
+                            "latitude": 0,
+                            "network": "test",
+                            "tags": [],
+                            "resolvers": []
+                        },
+                        "result": {
+                            "status": "finished",
+                            "hops": [
+                                { "resolvedHostname": "h1", "resolvedAddress": "1.1.1.1", "asn": [ 64500, 64501 ] },
+                                { "resolvedHostname": "h2", "resolvedAddress": "2.2.2.2", "asn": [ 64502 ] }
+                            ]
+                        }
+                    }
+                ]
+            }
+            """;
+
+        var resp = JsonSerializer.Deserialize<MeasurementResponse>(json);
+        Assert.NotNull(resp);
+        var hops = resp!.GetMtrHops();
+        Assert.Equal(2, hops.Count);
+        Assert.Equal(new List<int> { 64500, 64501 }, hops[0].Asn);
+        Assert.Equal(new List<int> { 64502 }, hops[1].Asn);
     }
 }

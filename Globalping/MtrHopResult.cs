@@ -1,10 +1,12 @@
+using System.Collections.Generic;
+
 namespace Globalping;
 
 public class MtrHopResult
 {
     public string Target { get; set; } = string.Empty;
     public int Hop { get; set; }
-    public string Asn { get; set; } = string.Empty;
+    public List<int> Asn { get; set; } = new();
     public string Host { get; set; } = string.Empty;
     public string IpAddress { get; set; } = string.Empty;
     public double? LossPercent { get; set; }
