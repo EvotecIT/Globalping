@@ -111,3 +111,8 @@ falls back to `gzip`.
 All API clients expose the most recent usage headers via the `LastResponseInfo`
 property. When the service returns values such as `X-RateLimit-Limit` or
 `X-Credits-Remaining` they will be parsed into this object for easy inspection.
+
+`MeasurementClient` supports basic caching via `ETag`. Pass the `LastResponseInfo.ETag`
+value to `GetMeasurementByIdAsync` or `GetMeasurementById`. When the API returns
+`304 Not Modified` the previously retrieved measurement data is reused and parsing
+is skipped.
