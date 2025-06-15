@@ -10,7 +10,7 @@
         <Copyright>(c) 2011 - 2025 Przemyslaw Klys @ Evotec. All rights reserved.</Copyright>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
-        <PackageReadmeFile>../README.MD</PackageReadmeFile>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <IncludePackageReadmeFile>true</IncludePackageReadmeFile>
     </PropertyGroup>
 
@@ -22,6 +22,10 @@
         Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'net472'">
         <PackageReference Include="System.Text.Json" Version="8.0.5" />
         <PackageReference Include="System.Net.Http.Json" Version="8.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\README.MD" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
 </Project>
