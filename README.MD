@@ -95,6 +95,12 @@ To fetch only HTTP headers use `Start-GlobalpingHttp` with the `-HeadersOnly` pa
 Start-GlobalpingHttp -Target "https://example.com" -HeadersOnly
 ```
 
+Request in-progress updates and customize the wait time:
+
+```powershell
+Start-GlobalpingHttp -Target "https://example.com" -Limit 3 -InProgressUpdates -WaitTime 60
+```
+
 The API specification is available at [api.globalping.io/v1/spec.yaml](https://api.globalping.io/v1/spec.yaml).
 
 By default both the .NET client and PowerShell module set helpful HTTP headers.

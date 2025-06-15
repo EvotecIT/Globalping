@@ -23,8 +23,8 @@ namespace Globalping.PowerShell;
 /// <example>
 ///   <summary>HTTP request with live updates</summary>
 ///   <prefix>PS> </prefix>
-///   <code>Start-GlobalpingHttp -Target "https://example.com" -Limit 3 -InProgressUpdates</code>
-///   <para>Requests three probes and streams intermediate results.</para>
+///   <code>Start-GlobalpingHttp -Target "https://example.com" -Limit 3 -InProgressUpdates -WaitTime 60</code>
+///   <para>Requests three probes and streams intermediate results for up to one minute.</para>
 /// </example>
 public abstract class StartGlobalpingBaseCommand : PSCmdlet
 {
@@ -66,6 +66,12 @@ public abstract class StartGlobalpingBaseCommand : PSCmdlet
     /// arrive.</para>
     [Parameter]
     public SwitchParameter InProgressUpdates { get; set; }
+
+    /// <para>Time in seconds to wait for progress updates.</para>
+    /// <para>Only applies when <see cref="InProgressUpdates"/> is specified.</para>
+    [Parameter]
+    [ValidateRange(1, int.MaxValue)]
+    public int WaitTime { get; set; } = 150;
 
     /// <para>API key used to authenticate with Globalping.</para>
     /// <para>Anonymous requests may be rate limited.</para>
@@ -174,7 +180,7 @@ public abstract class StartGlobalpingBaseCommand : PSCmdlet
         string id;
         try
         {
-            id = service.CreateMeasurementAsync(request).GetAwaiter().GetResult();
+            id = service.CreateMeasurementAsync(request, WaitTime).GetAwaiter().GetResult();
             WriteVerbose($"Measurement id: {id}");
         }
         catch (HttpRequestException ex)
