@@ -1,4 +1,4 @@
-Clear-Host
+Import-Module PSPublishModule -Force -ErrorAction Stop
 
 Build-Module -ModuleName 'Globalping' {
     # Usual defaults as per standard module
@@ -99,7 +99,7 @@ Build-Module -ModuleName 'Globalping' {
         DotSourceLibraries                = $true
         DotSourceClasses                  = $true
         DeleteTargetModuleBeforeBuild     = $true
-        RefreshPSD1Only                   = $false
+        RefreshPSD1Only                   = $true
         NETBinaryModuleDocumenation       = $true
     }
 
