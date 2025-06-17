@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Management.Automation;
 using System.Net;
@@ -33,11 +34,11 @@ public abstract class StartGlobalpingBaseCommand : PSCmdlet
     /// </summary>
     protected abstract MeasurementType Type { get; }
 
-    /// <para>Target host name, IP address or URL to test.</para>
-    /// <para>The target string is passed verbatim to the underlying
+    /// <para>Target host names, IP addresses or URLs to test.</para>
+    /// <para>Each value is passed verbatim to the underlying
     /// measurement API.</para>
     [Parameter(Mandatory = true)]
-    public string Target { get; set; } = string.Empty;
+    public string[] Target { get; set; } = Array.Empty<string>();
 
     /// <para>Detailed location definitions for probes.</para>
     /// <para>Each <see cref="LocationRequest"/> may specify city, country,
@@ -99,75 +100,7 @@ public abstract class StartGlobalpingBaseCommand : PSCmdlet
 #endif
         });
         var service = new ProbeService(httpClient, ApiKey);
-
-        int? limit = Limit;
-        var calculateLimit = !MyInvocation.BoundParameters.ContainsKey(nameof(Limit));
-        var hasLocationLimits = ReuseLocationsFromId is null &&
-            Locations is not null && Locations.Any(l => l.Limit.HasValue);
-
-        if (ReuseLocationsFromId is null && calculateLimit && !hasLocationLimits)
-        {
-            limit = 0;
-
-            if (SimpleLocations is not null)
-            {
-                limit += SimpleLocations.Length;
-            }
-
-            if (Locations is not null)
-            {
-                foreach (var loc in Locations)
-                {
-                    limit += loc.Limit ?? 1;
-                }
-            }
-
-            if (limit == 0)
-            {
-                limit = 1;
-            }
-        }
-        var builder = new MeasurementRequestBuilder()
-            .WithType(Type)
-            .WithTarget(Target);
-
-        if (ReuseLocationsFromId is not null)
-        {
-            builder.ReuseLocationsFromId(ReuseLocationsFromId);
-        }
-
-        if (limit.HasValue)
-        {
-            builder.WithLimit(limit);
-        }
-
-        if (ReuseLocationsFromId is null && SimpleLocations is not null)
-        {
-            foreach (var loc in SimpleLocations)
-            {
-                if (loc.Length == 2)
-                {
-                    builder.AddCountry(loc);
-                }
-                else
-                {
-                    builder.AddMagic(loc);
-                }
-            }
-        }
-
-        if (ReuseLocationsFromId is null && Locations is not null)
-        {
-            builder.WithLocations(Locations);
-        }
-
-        if (MeasurementOptions is not null)
-        {
-            builder.WithMeasurementOptions(MeasurementOptions);
-        }
-
-        var request = builder.Build();
-        request.InProgressUpdates = InProgressUpdates.IsPresent;
+        var client = new MeasurementClient(httpClient, ApiKey);
 
         var jsonOptions = new JsonSerializerOptions
         {
@@ -176,30 +109,102 @@ public abstract class StartGlobalpingBaseCommand : PSCmdlet
         };
         jsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 
-        WriteVerbose($"Request: {JsonSerializer.Serialize(request, jsonOptions)}");
-
-        CreateMeasurementResponse createResponse;
-        try
+        foreach (var target in Target)
         {
-            createResponse = service.CreateMeasurementAsync(request, WaitTime).GetAwaiter().GetResult();
-            WriteVerbose($"Measurement id: {createResponse.Id}");
-        }
-        catch (HttpRequestException ex)
-        {
-            WriteVerbose($"Request failed: {ex.Message}");
-            throw;
-        }
-        if (string.IsNullOrEmpty(createResponse.Id))
-        {
-            WriteError(new ErrorRecord(new InvalidOperationException("Measurement creation failed"), "CreateFailed", ErrorCategory.InvalidOperation, Target));
-            return;
-        }
+            int? limit = Limit;
+            var calculateLimit = !MyInvocation.BoundParameters.ContainsKey(nameof(Limit));
+            var hasLocationLimits = ReuseLocationsFromId is null &&
+                Locations is not null && Locations.Any(l => l.Limit.HasValue);
 
-        var client = new MeasurementClient(httpClient, ApiKey);
-        var result = client.GetMeasurementByIdAsync(createResponse.Id).GetAwaiter().GetResult();
-        WriteVerbose($"Response: {JsonSerializer.Serialize(result, jsonOptions)}");
+            if (ReuseLocationsFromId is null && calculateLimit && !hasLocationLimits)
+            {
+                limit = 0;
 
-        HandleOutput(result);
+                if (SimpleLocations is not null)
+                {
+                    limit += SimpleLocations.Length;
+                }
+
+                if (Locations is not null)
+                {
+                    foreach (var loc in Locations)
+                    {
+                        limit += loc.Limit ?? 1;
+                    }
+                }
+
+                if (limit == 0)
+                {
+                    limit = 1;
+                }
+            }
+
+            var builder = new MeasurementRequestBuilder()
+                .WithType(Type)
+                .WithTarget(target);
+
+            if (ReuseLocationsFromId is not null)
+            {
+                builder.ReuseLocationsFromId(ReuseLocationsFromId);
+            }
+
+            if (limit.HasValue)
+            {
+                builder.WithLimit(limit);
+            }
+
+            if (ReuseLocationsFromId is null && SimpleLocations is not null)
+            {
+                foreach (var loc in SimpleLocations)
+                {
+                    if (loc.Length == 2)
+                    {
+                        builder.AddCountry(loc);
+                    }
+                    else
+                    {
+                        builder.AddMagic(loc);
+                    }
+                }
+            }
+
+            if (ReuseLocationsFromId is null && Locations is not null)
+            {
+                builder.WithLocations(Locations);
+            }
+
+            if (MeasurementOptions is not null)
+            {
+                builder.WithMeasurementOptions(MeasurementOptions);
+            }
+
+            var request = builder.Build();
+            request.InProgressUpdates = InProgressUpdates.IsPresent;
+
+            WriteVerbose($"Request: {JsonSerializer.Serialize(request, jsonOptions)}");
+
+            CreateMeasurementResponse createResponse;
+            try
+            {
+                createResponse = service.CreateMeasurementAsync(request, WaitTime).GetAwaiter().GetResult();
+                WriteVerbose($"Measurement id: {createResponse.Id}");
+            }
+            catch (HttpRequestException ex)
+            {
+                WriteVerbose($"Request failed: {ex.Message}");
+                throw;
+            }
+            if (string.IsNullOrEmpty(createResponse.Id))
+            {
+                WriteError(new ErrorRecord(new InvalidOperationException("Measurement creation failed"), "CreateFailed", ErrorCategory.InvalidOperation, target));
+                continue;
+            }
+
+            var result = client.GetMeasurementByIdAsync(createResponse.Id).GetAwaiter().GetResult();
+            WriteVerbose($"Response: {JsonSerializer.Serialize(result, jsonOptions)}");
+
+            HandleOutput(result);
+        }
     }
 
     /// <summary>

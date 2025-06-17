@@ -13,7 +13,7 @@ Describe "Globalping Cmdlets" {
     }
 
     It "Start-GlobalpingPing returns output" {
-        $results = Start-GlobalpingPing -Target "evotec.xyz" -Limit 1 -ErrorAction Stop
+        $results = Start-GlobalpingPing -Target "evotec.xyz","example.com" -Limit 1 -ErrorAction Stop
         $results | Should -Not -BeNullOrEmpty
     }
 
