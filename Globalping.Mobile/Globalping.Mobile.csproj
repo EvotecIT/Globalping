@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0-android;net8.0-ios</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+    <Nullable>enable</Nullable>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationTitle>Globalping Mobile</ApplicationTitle>
+    <ApplicationId>com.evotec.globalpingmobile</ApplicationId>
+    <AndroidManifest>Platforms/Android/AndroidManifest.xml</AndroidManifest>
+    <RootNamespace>Globalping.Mobile</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
+    <ProjectReference Include="..\Globalping\Globalping.csproj" />
+  </ItemGroup>
+</Project>

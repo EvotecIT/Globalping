@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Globalping.Mobile.MainPage">
+    <VerticalStackLayout Spacing="10" Padding="20">
+        <Label Text="Globalping Mobile Sample" FontAttributes="Bold" FontSize="18" />
+        <Entry x:Name="HostEntry" Placeholder="Enter host" />
+        <Picker x:Name="TypePicker" Title="Measurement Type">
+            <Picker.Items>
+                <x:String>Ping</x:String>
+                <x:String>HTTP</x:String>
+            </Picker.Items>
+        </Picker>
+        <Button Text="Run" Clicked="OnRunClicked" />
+        <ScrollView>
+            <Label x:Name="ResultLabel" LineBreakMode="CharacterWrap" />
+        </ScrollView>
+    </VerticalStackLayout>
+</ContentPage>

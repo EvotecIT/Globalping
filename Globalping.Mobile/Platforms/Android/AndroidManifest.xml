@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.evotec.globalpingmobile">
+    <application android:label="Globalping Mobile" android:theme="@style/Maui.SplashTheme">
+        <activity android:name="crc6470a56ad98627b04b.MainActivity"
+                  android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
