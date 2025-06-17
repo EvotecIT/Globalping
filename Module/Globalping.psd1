@@ -1,4 +1,4 @@
-@{
+﻿@{
     AliasesToExport      = @()
     Author               = 'Przemyslaw Klys'
     CmdletsToExport      = @('Get-GlobalpingLimit', 'Get-GlobalpingProbe', 'Start-GlobalpingDns', 'Start-GlobalpingHttp', 'Start-GlobalpingMtr', 'Start-GlobalpingPing', 'Start-GlobalpingTraceroute')
@@ -8,7 +8,7 @@
     Description          = 'Module using globaling.net API to ping any host globally and return results from multiple locations.'
     FunctionsToExport    = @()
     GUID                 = 'a587d150-7ab5-47da-ae3a-3bb879e2c07f'
-    ModuleVersion        = '1.0.1'
+    ModuleVersion        = '1.0.2'
     PowerShellVersion    = '5.1'
     PrivateData          = @{
         PSData = @{
