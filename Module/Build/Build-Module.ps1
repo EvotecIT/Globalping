@@ -10,7 +10,7 @@ Build-Module -ModuleName 'Globalping' {
         # ID used to uniquely identify this module
         GUID                 = 'a587d150-7ab5-47da-ae3a-3bb879e2c07f'
         # Version number of this module.
-        ModuleVersion        = '1.0.1'
+        ModuleVersion        = '1.0.X'
         # Author of this module
         Author               = 'Przemyslaw Klys'
         # Company or vendor of this module
@@ -128,6 +128,6 @@ Build-Module -ModuleName 'Globalping' {
     #New-ConfigurationTest -TestsPath "$PSScriptRoot\..\Tests" -Enable
 
     # global options for publishing to github/psgallery
-    #New-ConfigurationPublish -Type PowerShellGallery -FilePath 'C:\Support\Important\PowerShellGalleryAPI.txt' -Enabled:$true
-    #New-ConfigurationPublish -Type GitHub -FilePath 'C:\Support\Important\GitHubAPI.txt' -UserName 'EvotecIT' -Enabled:$true
+    New-ConfigurationPublish -Type PowerShellGallery -FilePath 'C:\Support\Important\PowerShellGalleryAPI.txt' -Enabled:$true
+    New-ConfigurationPublish -Type GitHub -FilePath 'C:\Support\Important\GitHubAPI.txt' -UserName 'EvotecIT' -Enabled:$true
 } -ExitCode
