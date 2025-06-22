@@ -25,7 +25,7 @@
 
 # Globalping
 
-Globalping provides convenient access to the [Globalping API](https://api.globalping.io/) from .NET applications and PowerShell. It lets you run network diagnostics such as ping, traceroute, DNS or HTTP checks from hundreds of probes around the world.
+Globalping provides convenient access to the [Globalping API](https://globalping.io/) from .NET applications and PowerShell. It lets you run network diagnostics such as ping, traceroute, DNS or HTTP checks from hundreds of probes around the world.
 
 The repository contains a cross platform .NET library and a PowerShell module built on top of it. Examples under `Globalping.Examples` demonstrate advanced usage.
 
