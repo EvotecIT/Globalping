@@ -3,15 +3,31 @@ using System.Text.Json.Serialization;
 
 namespace Globalping;
 
+/// <summary>
+/// ISO continent codes used in location information.
+/// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ContinentCode
 {
+    /// <summary>Africa.</summary>
     AF,
+
+    /// <summary>Antarctica.</summary>
     AN,
+
+    /// <summary>Asia.</summary>
     AS,
+
+    /// <summary>Europe.</summary>
     EU,
+
+    /// <summary>North America.</summary>
     NA,
+
+    /// <summary>Oceania.</summary>
     OC,
+
+    /// <summary>South America.</summary>
     SA
 }
 

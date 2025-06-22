@@ -6,6 +6,9 @@ using System.Text.Json.Serialization;
 
 namespace Globalping;
 
+/// <summary>
+/// Geographical regions used for locating probes.
+/// </summary>
 [JsonConverter(typeof(RegionNameConverter))]
 public enum RegionName
 {
