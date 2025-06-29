@@ -202,11 +202,16 @@ A minimal .NET MAUI sample is provided in the `Globalping.Mobile` project. It wo
 
 ### Build and run
 
-1. Install the .NET mobile workloads for Android and iOS (`dotnet workload install maui-android maui-ios`).
-2. Open `Globalping.sln` in Visual Studio 2022 or run the project from the command line:
+1. Install the .NET mobile workloads for Android and iOS and restore them:
+   ```bash
+   dotnet workload install maui-android maui-ios
+   dotnet workload restore
+   ```
+2. Build and run the sample by targeting either Android or iOS directly:
    ```bash
    dotnet build Globalping.Mobile/Globalping.Mobile.csproj -t:Run -f net8.0-android
    ```
-   Replace `net8.0-android` with `net8.0-ios` to run on iOS.
+   Replace `net8.0-android` with `net8.0-ios` to run on iOS. You can open the project
+   in Visual Studio 2022 as well, but it's not included in the main solution.
 
 Enter a host, choose the measurement type and press **Run** to execute the request. The returned measurement result is shown in the app.
