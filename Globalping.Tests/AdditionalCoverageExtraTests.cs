@@ -73,10 +73,10 @@ public class AdditionalCoverageExtraTests
         var request = new MeasurementRequestBuilder()
             .WithType(MeasurementType.Ping)
             .WithTarget("example.com")
-            .AddLocation(new LocationRequest { Country = "DE", Limit = 1 })
+            .AddLocation(new LocationRequest { Country = CountryCode.Germany, Limit = 1 })
             .Build();
         Assert.Single(request.Locations!);
-        Assert.Equal("DE", request.Locations![0].Country);
+        Assert.Equal(CountryCode.Germany, request.Locations![0].Country);
         Assert.Equal(1, request.Locations![0].Limit);
     }
 

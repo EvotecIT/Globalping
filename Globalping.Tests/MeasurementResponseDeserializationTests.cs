@@ -16,6 +16,7 @@ public sealed class MeasurementResponseDeserializationTests
     {
         JsonOptions.Converters.Add(new JsonStringEnumConverter<MeasurementStatus>(JsonNamingPolicy.KebabCaseLower));
         JsonOptions.Converters.Add(new JsonStringEnumConverter<TestStatus>(JsonNamingPolicy.KebabCaseLower));
+        JsonOptions.Converters.Add(new CountryCodeConverter());
         JsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
     }
     [Fact]
@@ -40,7 +41,7 @@ public sealed class MeasurementResponseDeserializationTests
         Assert.NotNull(response);
         Assert.NotNull(response!.Locations);
         Assert.Single(response.Locations!);
-        Assert.Equal("DE", response.Locations![0].Country);
+        Assert.Equal(CountryCode.Germany, response.Locations![0].Country);
         Assert.Equal(1, response.Locations![0].Limit);
         Assert.Equal(1, response.Limit);
     }

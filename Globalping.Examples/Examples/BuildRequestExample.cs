@@ -11,15 +11,15 @@ public static class BuildRequestExample
         var builder = new MeasurementRequestBuilder()
             .WithType(MeasurementType.Ping)
             .WithTarget("cdn.jsdelivr.net")
-            .AddCountry("DE")
-            .AddCountry("PL");
+            .AddCountry(CountryCode.Germany)
+            .AddCountry(CountryCode.Poland);
         ConsoleHelpers.WriteJson(builder.Build(), "Request 1");
 
         builder = new MeasurementRequestBuilder()
             .WithType(MeasurementType.Ping)
             .WithTarget("cdn.jsdelivr.net")
-            .AddCountry("DE", 4)
-            .AddCountry("PL", 2);
+            .AddCountry(CountryCode.Germany, 4)
+            .AddCountry(CountryCode.Poland, 2);
         ConsoleHelpers.WriteJson(builder.Build(), "Request 2");
 
         builder = new MeasurementRequestBuilder()

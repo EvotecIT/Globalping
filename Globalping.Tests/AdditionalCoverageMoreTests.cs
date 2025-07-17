@@ -170,7 +170,7 @@ public class AdditionalCoverageMoreTests
             .WithType(MeasurementType.Ping)
             .WithTarget("example.com")
             .ReuseLocationsFromId("old")
-            .WithLocations(new[]{ new LocationRequest{ Country="DE" } });
+            .WithLocations(new[]{ new LocationRequest{ Country = CountryCode.Germany } });
         var request = builder.Build();
         Assert.Null(request.ReuseLocationsFromId);
         Assert.NotNull(request.Locations);
