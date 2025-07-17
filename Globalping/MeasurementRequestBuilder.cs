@@ -28,7 +28,7 @@ public class MeasurementRequestBuilder
         return this;
     }
 
-    public MeasurementRequestBuilder AddCountry(string country, int? limit = null)
+    public MeasurementRequestBuilder AddCountry(CountryCode country, int? limit = null)
     {
         var loc = new LocationRequest { Country = country, Limit = limit };
         return AddLocation(loc);

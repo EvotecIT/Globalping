@@ -157,9 +157,9 @@ public abstract class StartGlobalpingBaseCommand : PSCmdlet
             {
                 foreach (var loc in SimpleLocations)
                 {
-                    if (loc.Length == 2)
+                    if (CountryCodeExtensions.TryParse(loc, out var code))
                     {
-                        builder.AddCountry(loc);
+                        builder.AddCountry(code);
                     }
                     else
                     {

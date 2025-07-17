@@ -14,6 +14,7 @@ public sealed class MeasurementRequestTests
 
     static MeasurementRequestTests()
     {
+        JsonOptions.Converters.Add(new CountryCodeConverter());
         JsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
     }
 
@@ -43,8 +44,8 @@ public sealed class MeasurementRequestTests
         var request = new MeasurementRequestBuilder()
             .WithType(MeasurementType.Ping)
             .WithTarget("example.com")
-            .AddCountry("DE")
-            .AddCountry("US")
+            .AddCountry(CountryCode.Germany)
+            .AddCountry(CountryCode.UnitedStates)
             .Build();
 
         var json = JsonSerializer.Serialize(request, JsonOptions);
@@ -64,7 +65,7 @@ public sealed class MeasurementRequestTests
             .WithType(MeasurementType.Ping)
             .WithTarget("example.com")
             .ReuseLocationsFromId("old")
-            .AddCountry("DE")
+            .AddCountry(CountryCode.Germany)
             .Build();
 
         Assert.Null(request.ReuseLocationsFromId);
@@ -77,7 +78,7 @@ public sealed class MeasurementRequestTests
         var request = new MeasurementRequestBuilder()
             .WithType(MeasurementType.Ping)
             .WithTarget("example.com")
-            .AddCountry("DE")
+            .AddCountry(CountryCode.Germany)
             .ReuseLocationsFromId("new")
             .Build();
 

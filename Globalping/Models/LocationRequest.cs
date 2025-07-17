@@ -15,9 +15,9 @@ public class LocationRequest {
     [JsonPropertyName("region")]
     public RegionName? Region { get; set; }
 
-    /// <summary>ISO country name.</summary>
+    /// <summary>ISO country code.</summary>
     [JsonPropertyName("country")]
-    public string? Country { get; set; }
+    public CountryCode? Country { get; set; }
 
     /// <summary>State or province within the country.</summary>
     [JsonPropertyName("state")]
