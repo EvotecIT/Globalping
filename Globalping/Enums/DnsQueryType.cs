@@ -1,8 +1,11 @@
+using System.Text.Json.Serialization;
+
 namespace Globalping;
 
 /// <summary>
 /// Common DNS record types that can be queried.
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum DnsQueryType
 {
     /// <summary>IPv4 host address record.</summary>

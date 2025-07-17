@@ -7,6 +7,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 
@@ -163,11 +164,15 @@ public class ProbeService {
     /// Retrieves the list of currently online probes.
     /// </summary>
     /// <returns>Collection of available probes.</returns>
-    public async Task<List<Probes>> GetOnlineProbesAsync() {
-        var response = await _httpClient.GetAsync("https://api.globalping.io/v1/probes").ConfigureAwait(false);
+    public async Task<List<Probes>> GetOnlineProbesAsync(CancellationToken cancellationToken = default) {
+        var response = await _httpClient.GetAsync("https://api.globalping.io/v1/probes", cancellationToken).ConfigureAwait(false);
         await EnsureSuccessOrThrow(response).ConfigureAwait(false);
+#if NETSTANDARD2_0 || NET472
         var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-        return await JsonSerializer.DeserializeAsync<List<Probes>>(stream, _jsonOptions).ConfigureAwait(false) ?? new List<Probes>();
+#else
+        var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+#endif
+        return await JsonSerializer.DeserializeAsync<List<Probes>>(stream, _jsonOptions, cancellationToken).ConfigureAwait(false) ?? new List<Probes>();
     }
 
     /// <summary>
@@ -180,12 +185,16 @@ public class ProbeService {
     /// Retrieves API usage limits for the current caller.
     /// </summary>
     /// <returns>Object describing remaining rate limits.</returns>
-    public async Task<Limits?> GetLimitsAsync()
+    public async Task<Limits?> GetLimitsAsync(CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.GetAsync("https://api.globalping.io/v1/limits").ConfigureAwait(false);
+        var response = await _httpClient.GetAsync("https://api.globalping.io/v1/limits", cancellationToken).ConfigureAwait(false);
         await EnsureSuccessOrThrow(response).ConfigureAwait(false);
+#if NETSTANDARD2_0 || NET472
         var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-        return await JsonSerializer.DeserializeAsync<Limits>(stream, _jsonOptions).ConfigureAwait(false);
+#else
+        var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+#endif
+        return await JsonSerializer.DeserializeAsync<Limits>(stream, _jsonOptions, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -201,7 +210,8 @@ public class ProbeService {
     /// <returns>Information about the created measurement.</returns>
     public async Task<CreateMeasurementResponse> CreateMeasurementAsync(
         MeasurementRequest measurementRequest,
-        int waitTime = 150) {
+        int waitTime = 150,
+        CancellationToken cancellationToken = default) {
         NormalizeHttpRequest(measurementRequest);
 
         var requestUri = "https://api.globalping.io/v1/measurements";
@@ -220,9 +230,9 @@ public class ProbeService {
             request.Headers.Add("Prefer", $"respond-async, wait={waitTime}");
         }
 
-        var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
+        var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
         await EnsureSuccessOrThrow(response).ConfigureAwait(false);
-        var result = await response.Content.ReadFromJsonAsync<CreateMeasurementResponse>(_jsonOptions).ConfigureAwait(false);
+        var result = await response.Content.ReadFromJsonAsync<CreateMeasurementResponse>(_jsonOptions, cancellationToken).ConfigureAwait(false);
         return result ?? new CreateMeasurementResponse();
     }
 

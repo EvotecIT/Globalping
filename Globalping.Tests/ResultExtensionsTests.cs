@@ -47,7 +47,7 @@ public class ResultExtensionsTests
 
         var http = result.ToHttpResponse("example.com");
         Assert.NotNull(http);
-        Assert.Equal("HTTP/1.1", http!.Protocol);
+        Assert.Equal(HttpProtocolVersion.Http11, http!.Protocol);
         Assert.Equal(200, http.StatusCode);
         Assert.Equal("hello", http.Body);
         Assert.True(http.Headers.ContainsKey("Content-Type"));

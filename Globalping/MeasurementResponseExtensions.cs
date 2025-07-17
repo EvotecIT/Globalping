@@ -577,7 +577,7 @@ public static class MeasurementResponseExtensions {
         if (data.RawHeaders != null) {
             var resp = new HttpResponseResult
             {
-                Protocol = string.Empty,
+                Protocol = HttpProtocolVersion.Unknown,
                 StatusCode = data.StatusCode ?? 0,
                 StatusDescription = data.StatusCodeName ?? string.Empty,
                 Body = data.RawBody,
@@ -608,8 +608,9 @@ public static class MeasurementResponseExtensions {
         if (lines.Length > 0) {
             var first = lines[0].Trim();
             var m = Regex.Match(first, "^(HTTP/\\S+)\\s+(\\d{3})\\s*(.*)$");
-            if (m.Success) {
-                result.Protocol = m.Groups[1].Value;
+            if (m.Success)
+            {
+                result.Protocol = ParseHttpVersion(m.Groups[1].Value);
                 result.StatusCode = int.Parse(m.Groups[2].Value);
                 result.StatusDescription = m.Groups[3].Value.Trim();
             }
@@ -650,6 +651,18 @@ public static class MeasurementResponseExtensions {
         result.Tls = data.Tls;
 
         return new List<HttpResponseResult> { result };
+    }
+
+    private static HttpProtocolVersion ParseHttpVersion(string version)
+    {
+        return version switch
+        {
+            "HTTP/1.0" => HttpProtocolVersion.Http10,
+            "HTTP/1.1" => HttpProtocolVersion.Http11,
+            "HTTP/2" or "HTTP/2.0" => HttpProtocolVersion.Http20,
+            "HTTP/3" or "HTTP/3.0" => HttpProtocolVersion.Http30,
+            _ => HttpProtocolVersion.Unknown
+        };
     }
 
     private static object? Normalize(List<string> values)

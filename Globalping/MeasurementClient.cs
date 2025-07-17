@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Globalping;
@@ -114,7 +115,7 @@ public class MeasurementClient {
     /// </summary>
     /// <param name="id">Unique measurement identifier.</param>
     /// <returns>The full measurement response or <c>null</c> if not found.</returns>
-    public async Task<MeasurementResponse?> GetMeasurementByIdAsync(string id, string? etag = null) {
+    public async Task<MeasurementResponse?> GetMeasurementByIdAsync(string id, string? etag = null, CancellationToken cancellationToken = default) {
         if (string.IsNullOrWhiteSpace(id)) {
             throw new ArgumentException("Measurement id cannot be empty", nameof(id));
         }
@@ -128,7 +129,7 @@ public class MeasurementClient {
                 request.Headers.IfNoneMatch.ParseAdd(etag);
             }
 
-            var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
+            var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
             if (response.StatusCode == HttpStatusCode.NotModified) {
                 UpdateUsageInfo(response);
@@ -136,8 +137,12 @@ public class MeasurementClient {
             }
 
             await EnsureSuccessOrThrow(response).ConfigureAwait(false);
+#if NETSTANDARD2_0 || NET472
             var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-            measurementResponse = await JsonSerializer.DeserializeAsync<MeasurementResponse>(stream, _jsonOptions).ConfigureAwait(false);
+#else
+            var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+#endif
+            measurementResponse = await JsonSerializer.DeserializeAsync<MeasurementResponse>(stream, _jsonOptions, cancellationToken).ConfigureAwait(false);
             if (measurementResponse?.Results != null)
             {
                 foreach (var r in measurementResponse.Results)
@@ -149,7 +154,7 @@ public class MeasurementClient {
             LastMeasurement = measurementResponse;
 
             if (measurementResponse?.Status == MeasurementStatus.InProgress) {
-                await Task.Delay(500).ConfigureAwait(false);
+                await Task.Delay(500, cancellationToken).ConfigureAwait(false);
             }
         } while (measurementResponse != null && measurementResponse.Status == MeasurementStatus.InProgress);
 
