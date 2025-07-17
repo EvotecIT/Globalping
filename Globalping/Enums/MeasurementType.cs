@@ -4,6 +4,7 @@ namespace Globalping;
 /// <summary>
 /// Supported measurement types that can be executed on a probe.
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum MeasurementType {
     /// <summary>ICMP ping measurement.</summary>
     Ping,

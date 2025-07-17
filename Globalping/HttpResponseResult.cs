@@ -5,7 +5,7 @@ namespace Globalping;
 public class HttpResponseResult
 {
     public string Target { get; set; } = string.Empty;
-    public string Protocol { get; set; } = string.Empty;
+    public HttpProtocolVersion Protocol { get; set; } = HttpProtocolVersion.Unknown;
     public int StatusCode { get; set; }
     public string StatusDescription { get; set; } = string.Empty;
     public Dictionary<string, object?> Headers { get; set; } = new(StringComparer.OrdinalIgnoreCase);
