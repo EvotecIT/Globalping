@@ -86,6 +86,44 @@ public abstract class StartGlobalpingBaseCommand : PSCmdlet
     /// </summary>
     protected virtual IMeasurementOptions? MeasurementOptions => null;
 
+    internal static int? ComputeLimit(
+        int? userLimit,
+        bool limitSpecified,
+        string? reuseId,
+        string[]? simpleLocations,
+        LocationRequest[]? locations)
+    {
+        var limit = userLimit;
+        var calculateLimit = !limitSpecified;
+        var hasLocationLimits = reuseId is null &&
+            locations is not null && locations.Any(l => l.Limit.HasValue);
+
+        if (reuseId is null && calculateLimit && !hasLocationLimits)
+        {
+            limit = 0;
+
+            if (simpleLocations is not null)
+            {
+                limit += simpleLocations.Length;
+            }
+
+            if (locations is not null)
+            {
+                foreach (var loc in locations)
+                {
+                    limit += loc.Limit ?? 1;
+                }
+            }
+
+            if (limit == 0)
+            {
+                limit = 1;
+            }
+        }
+
+        return limit;
+    }
+
     /// <summary>
     /// Creates the measurement request and writes the resulting objects to the pipeline.
     /// </summary>
@@ -111,33 +149,12 @@ public abstract class StartGlobalpingBaseCommand : PSCmdlet
 
         foreach (var target in Target)
         {
-            int? limit = Limit;
-            var calculateLimit = !MyInvocation.BoundParameters.ContainsKey(nameof(Limit));
-            var hasLocationLimits = ReuseLocationsFromId is null &&
-                Locations is not null && Locations.Any(l => l.Limit.HasValue);
-
-            if (ReuseLocationsFromId is null && calculateLimit && !hasLocationLimits)
-            {
-                limit = 0;
-
-                if (SimpleLocations is not null)
-                {
-                    limit += SimpleLocations.Length;
-                }
-
-                if (Locations is not null)
-                {
-                    foreach (var loc in Locations)
-                    {
-                        limit += loc.Limit ?? 1;
-                    }
-                }
-
-                if (limit == 0)
-                {
-                    limit = 1;
-                }
-            }
+            var limit = ComputeLimit(
+                Limit,
+                MyInvocation.BoundParameters.ContainsKey(nameof(Limit)),
+                ReuseLocationsFromId,
+                SimpleLocations,
+                Locations);
 
             var builder = new MeasurementRequestBuilder()
                 .WithType(Type)
