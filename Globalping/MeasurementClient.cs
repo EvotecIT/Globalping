@@ -55,37 +55,7 @@ public class MeasurementClient {
 
     private void UpdateUsageInfo(HttpResponseMessage response)
     {
-        var headers = response.Headers;
-        LastResponseInfo = new ApiUsageInfo
-        {
-            RateLimitLimit = TryGetInt(headers, "X-RateLimit-Limit"),
-            RateLimitConsumed = TryGetInt(headers, "X-RateLimit-Consumed"),
-            RateLimitRemaining = TryGetInt(headers, "X-RateLimit-Remaining"),
-            RateLimitReset = TryGetLong(headers, "X-RateLimit-Reset"),
-            CreditsConsumed = TryGetInt(headers, "X-Credits-Consumed"),
-            CreditsRemaining = TryGetInt(headers, "X-Credits-Remaining"),
-            RequestCost = TryGetInt(headers, "X-Request-Cost"),
-            RetryAfter = TryGetInt(headers, "Retry-After"),
-            ETag = headers.ETag?.Tag
-        };
-    }
-
-    private static int? TryGetInt(HttpResponseHeaders headers, string name)
-    {
-        if (headers.TryGetValues(name, out var values) && int.TryParse(values.FirstOrDefault(), out var v))
-        {
-            return v;
-        }
-        return null;
-    }
-
-    private static long? TryGetLong(HttpResponseHeaders headers, string name)
-    {
-        if (headers.TryGetValues(name, out var values) && long.TryParse(values.FirstOrDefault(), out var v))
-        {
-            return v;
-        }
-        return null;
+        LastResponseInfo = UsageInfoParser.Parse(response);
     }
 
     private async Task EnsureSuccessOrThrow(HttpResponseMessage response)
