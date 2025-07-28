@@ -127,7 +127,9 @@ public class CaptureHandler : HttpMessageHandler
     }
 }
 "@
-        Add-Type -TypeDefinition $code -Language CSharp
+        $refs = [System.Net.Http.HttpClient].Assembly.Location,
+                [System.Net.HttpStatusCode].Assembly.Location
+        Add-Type -TypeDefinition $code -Language CSharp -ReferencedAssemblies $refs
         $handler = [CaptureHandler]::new()
         $client = [System.Net.Http.HttpClient]::new($handler)
         $service = [Globalping.ProbeService]::new($client)
