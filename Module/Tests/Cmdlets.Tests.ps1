@@ -96,4 +96,61 @@ Describe "Globalping Cmdlets" {
         { Start-GlobalpingPing -Target "evotec.xyz" -Limit 501 -ErrorAction Stop } |
             Should -Throw -ErrorId 'ParameterArgumentValidationError,Globalping.PowerShell.StartGlobalpingPingCommand'
     }
+
+    It "Sets Prefer header when waiting for updates" {
+        $cs = @"
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+public class CaptureHandler : HttpMessageHandler
+{
+    public HttpRequestMessage LastRequest { get; private set; }
+    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    {
+        LastRequest = request;
+        var resp = new HttpResponseMessage(HttpStatusCode.Accepted)
+        {
+            Content = new StringContent("{\"id\":\"1\",\"probesCount\":1}", Encoding.UTF8, "application/json")
+        };
+        return Task.FromResult(resp);
+    }
+}
+"@
+        $httpDll = [System.Net.Http.HttpClient].Assembly.Location
+        $primitivesDll = [System.Net.HttpStatusCode].Assembly.Location
+        Add-Type -TypeDefinition $cs -Language CSharp -ReferencedAssemblies @($httpDll, $primitivesDll) | Out-Null
+
+        $handler = [CaptureHandler]::new()
+        $client = [System.Net.Http.HttpClient]::new($handler)
+        $service = [Globalping.ProbeService]::new($client)
+
+        $builder = [Globalping.MeasurementRequestBuilder]::new()
+        $builder.WithType([Globalping.MeasurementType]::Ping) | Out-Null
+        $builder.WithTarget('example.com') | Out-Null
+        $req = $builder.Build()
+        $req.InProgressUpdates = $true
+
+        $null = $service.CreateMeasurementAsync($req, 42).GetAwaiter().GetResult()
+
+        $handler.LastRequest.Headers.GetValues('Prefer') | Should -Contain 'respond-async, wait=42'
+    }
+
+    It "Uses default wait time when not specified" {
+        $handler = [CaptureHandler]::new()
+        $client = [System.Net.Http.HttpClient]::new($handler)
+        $service = [Globalping.ProbeService]::new($client)
+
+        $builder = [Globalping.MeasurementRequestBuilder]::new()
+        $builder.WithType([Globalping.MeasurementType]::Ping) | Out-Null
+        $builder.WithTarget('example.com') | Out-Null
+        $req = $builder.Build()
+        $req.InProgressUpdates = $true
+
+        $null = $service.CreateMeasurementAsync($req).GetAwaiter().GetResult()
+
+        $handler.LastRequest.Headers.GetValues('Prefer') | Should -Contain 'respond-async, wait=150'
+    }
 }
