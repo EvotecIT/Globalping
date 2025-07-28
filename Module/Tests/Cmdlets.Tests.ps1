@@ -96,4 +96,46 @@ Describe "Globalping Cmdlets" {
         { Start-GlobalpingPing -Target "evotec.xyz" -Limit 501 -ErrorAction Stop } |
             Should -Throw -ErrorId 'ParameterArgumentValidationError,Globalping.PowerShell.StartGlobalpingPingCommand'
     }
+
+    It "Start-GlobalpingPing streams progress with custom wait time" {
+        $results = Start-GlobalpingPing -Target "evotec.xyz" -Limit 1 -InProgressUpdates -WaitTime 10 -ErrorAction Stop
+        $results | Should -Not -BeNullOrEmpty
+    }
+
+    It "Start-GlobalpingHttp streams progress with custom wait time" {
+        $results = Start-GlobalpingHttp -Target "https://evotec.xyz" -Limit 1 -InProgressUpdates -WaitTime 10 -ErrorAction Stop
+        $results | Should -Not -BeNullOrEmpty
+    }
+
+    It "ProbeService sets Prefer header with wait time" {
+        $code = @"
+using System.Net;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+public class CaptureHandler : HttpMessageHandler
+{
+    public HttpRequestMessage LastRequest { get; private set; }
+    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    {
+        LastRequest = request;
+        var resp = new HttpResponseMessage(HttpStatusCode.Accepted)
+        {
+            Content = new StringContent("{\"id\":\"1\"}")
+        };
+        return Task.FromResult(resp);
+    }
+}
+"@
+        Add-Type -TypeDefinition $code -Language CSharp
+        $handler = [CaptureHandler]::new()
+        $client = [System.Net.Http.HttpClient]::new($handler)
+        $service = [Globalping.ProbeService]::new($client)
+        $builder = [Globalping.MeasurementRequestBuilder]::new().WithType([Globalping.MeasurementType]::Ping).WithTarget('example.com')
+        $request = $builder.Build()
+        $request.InProgressUpdates = $true
+        $null = $service.CreateMeasurement($request, 22)
+        $pref = $handler.LastRequest.Headers.GetValues('Prefer')
+        $pref | Should -Contain 'respond-async, wait=22'
+    }
 }
