@@ -119,7 +119,9 @@ public class CaptureHandler : HttpMessageHandler
     }
 }
 "@
-        Add-Type -TypeDefinition $cs -Language CSharp | Out-Null
+        $httpDll = [System.Net.Http.HttpClient].Assembly.Location
+        $primitivesDll = [System.Net.HttpStatusCode].Assembly.Location
+        Add-Type -TypeDefinition $cs -Language CSharp -ReferencedAssemblies @($httpDll, $primitivesDll) | Out-Null
 
         $handler = [CaptureHandler]::new()
         $client = [System.Net.Http.HttpClient]::new($handler)
