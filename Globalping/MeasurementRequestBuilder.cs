@@ -97,11 +97,15 @@ public class MeasurementRequestBuilder
         return this;
     }
 
-    public MeasurementRequestBuilder WithMeasurementOptions(IMeasurementOptions options)
+    public MeasurementRequestBuilder WithOptions<TOptions>(TOptions options)
+        where TOptions : IMeasurementOptions
     {
         _request.MeasurementOptions = options;
         return this;
     }
+
+    public MeasurementRequestBuilder WithMeasurementOptions(IMeasurementOptions options)
+        => WithOptions(options);
 
     public MeasurementRequestBuilder WithInProgressUpdates(bool value = true)
     {

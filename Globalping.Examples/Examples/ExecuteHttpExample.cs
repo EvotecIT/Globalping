@@ -11,7 +11,7 @@ public static class ExecuteHttpExample {
             .WithType(MeasurementType.Http)
             .WithTarget("cdn.jsdelivr.net")
             .AddMagic("Europe")
-            .WithMeasurementOptions(new HttpOptions {
+            .WithOptions(new HttpOptions {
                 Request = new HttpRequestOptions {
                     Method = HttpRequestMethod.GET,
                     Path = "/"

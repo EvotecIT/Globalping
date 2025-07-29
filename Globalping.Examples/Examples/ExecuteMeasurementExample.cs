@@ -14,7 +14,7 @@ public static class ExecuteMeasurementExample
             .WithType(MeasurementType.Ping)
             .WithTarget("cdn.jsdelivr.net")
             .AddMagic("Europe")
-            .WithMeasurementOptions(new PingOptions { Packets = 2 });
+            .WithOptions(new PingOptions { Packets = 2 });
 
         var request = builder.Build();
         request.InProgressUpdates = false;
