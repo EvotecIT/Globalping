@@ -138,6 +138,22 @@ public class CaptureHandler : HttpMessageHandler
         $handler.LastRequest.Headers.GetValues('Prefer') | Should -Contain 'respond-async, wait=42'
     }
 
+    It "Sets Prefer header with custom wait time" {
+        $handler = [CaptureHandler]::new()
+        $client = [System.Net.Http.HttpClient]::new($handler)
+        $service = [Globalping.ProbeService]::new($client)
+
+        $builder = [Globalping.MeasurementRequestBuilder]::new()
+        $builder.WithType([Globalping.MeasurementType]::Ping) | Out-Null
+        $builder.WithTarget('example.com') | Out-Null
+        $req = $builder.Build()
+        $req.InProgressUpdates = $true
+
+        $null = $service.CreateMeasurementAsync($req, 25).GetAwaiter().GetResult()
+
+        $handler.LastRequest.Headers.GetValues('Prefer') | Should -Contain 'respond-async, wait=25'
+    }
+
     It "Uses default wait time when not specified" {
         $handler = [CaptureHandler]::new()
         $client = [System.Net.Http.HttpClient]::new($handler)
