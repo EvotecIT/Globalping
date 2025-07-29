@@ -1,7 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-        <PropertyGroup>
+        <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
                 <TargetFrameworks>net8.0;net472</TargetFrameworks>
+        </PropertyGroup>
+        <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+                <TargetFrameworks>net8.0</TargetFrameworks>
+        </PropertyGroup>
+        <PropertyGroup>
                 <ImplicitUsings>enable</ImplicitUsings>
                 <Nullable>enable</Nullable>
                 <LangVersion>latest</LangVersion>

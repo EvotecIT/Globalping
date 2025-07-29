@@ -38,7 +38,7 @@ public class OnModuleImportAndRemoveTests
         finally
         {
             initializer.OnRemove(null!);
-            Directory.Delete(tempDir, true);
+            TryDelete(tempDir);
         }
     }
 
@@ -62,7 +62,7 @@ public class OnModuleImportAndRemoveTests
         }
         finally
         {
-            Directory.Delete(tempDir, true);
+            TryDelete(tempDir);
         }
     }
 
@@ -79,4 +79,18 @@ public class OnModuleImportAndRemoveTests
     }
 
     private static bool IsNetFramework() => System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework", StringComparison.OrdinalIgnoreCase);
+
+    private static void TryDelete(string path)
+    {
+        try
+        {
+            Directory.Delete(path, true);
+        }
+        catch (IOException)
+        {
+        }
+        catch (UnauthorizedAccessException)
+        {
+        }
+    }
 }
