@@ -13,7 +13,7 @@ public static class ExecuteDnsExample
             .WithType(MeasurementType.Dns)
             .WithTarget("cloudflare.com")
             .AddMagic("US")
-            .WithMeasurementOptions(new DnsOptions
+            .WithOptions(new DnsOptions
             {
                 Query = new DnsQuery { Type = DnsQueryType.A },
                 Resolver = "8.8.8.8",

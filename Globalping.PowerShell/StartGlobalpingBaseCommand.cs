@@ -192,7 +192,7 @@ public abstract class StartGlobalpingBaseCommand : PSCmdlet
 
             if (MeasurementOptions is not null)
             {
-                builder.WithMeasurementOptions(MeasurementOptions);
+                builder.WithOptions(MeasurementOptions);
             }
 
             var request = builder.Build();

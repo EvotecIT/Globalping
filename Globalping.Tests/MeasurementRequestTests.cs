@@ -1,3 +1,4 @@
+using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Xunit;
@@ -159,7 +160,7 @@ public sealed class MeasurementRequestTests
         var request = new MeasurementRequestBuilder()
             .WithType(MeasurementType.Ping)
             .WithTarget("example.com")
-            .WithMeasurementOptions(new PingOptions { Packets = 4 })
+            .WithOptions(new PingOptions { Packets = 4 })
             .WithLimit(3)
             .Build();
 
@@ -179,5 +180,23 @@ public sealed class MeasurementRequestTests
         var json = JsonSerializer.Serialize(request, JsonOptions);
 
         Assert.Contains("\"type\":\"ping\"", json);
+    }
+
+    [Theory]
+    [InlineData(typeof(PingOptions))]
+    [InlineData(typeof(MtrOptions))]
+    [InlineData(typeof(DnsOptions))]
+    [InlineData(typeof(HttpOptions))]
+    [InlineData(typeof(TracerouteOptions))]
+    public void BuilderWithOptionsAcceptsVariousTypes(Type optionType)
+    {
+        var options = (IMeasurementOptions)Activator.CreateInstance(optionType)!;
+        var request = new MeasurementRequestBuilder()
+            .WithType(MeasurementType.Ping)
+            .WithTarget("example.com")
+            .WithOptions(options)
+            .Build();
+
+        Assert.IsType(optionType, request.MeasurementOptions);
     }
 }
