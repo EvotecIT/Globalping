@@ -114,6 +114,7 @@ Build-Module -ModuleName 'Globalping' {
         AddRequiredModules  = $true
     }
     New-ConfigurationArtefact @newConfigurationArtefactSplat -CopyFilesRelative
+
     $newConfigurationArtefactSplat = @{
         Type                = 'Packed'
         Enable              = $true
@@ -121,13 +122,12 @@ Build-Module -ModuleName 'Globalping' {
         ModulesPath         = "$PSScriptRoot\..\Artefacts\Packed\Modules"
         RequiredModulesPath = "$PSScriptRoot\..\Artefacts\Packed\Modules"
         AddRequiredModules  = $true
-        ArtefactName        = 'PowerShell<ModuleName>.<TagModuleVersionWithPreRelease>.zip'
+        ArtefactName        = 'Globalping-PowerShellModule.<TagModuleVersionWithPreRelease>.zip'
+        ID                  = 'ToGitHub'
     }
     New-ConfigurationArtefact @newConfigurationArtefactSplat
 
-    #New-ConfigurationTest -TestsPath "$PSScriptRoot\..\Tests" -Enable
-
     # global options for publishing to github/psgallery
     #New-ConfigurationPublish -Type PowerShellGallery -FilePath 'C:\Support\Important\PowerShellGalleryAPI.txt' -Enabled:$true
-    #New-ConfigurationPublish -Type GitHub -FilePath 'C:\Support\Important\GitHubAPI.txt' -UserName 'EvotecIT' -Enabled:$true
+    #New-ConfigurationPublish -Type GitHub -FilePath 'C:\Support\Important\GitHubAPI.txt' -UserName 'EvotecIT' -Enabled:$true -ID 'ToGitHub' -OverwriteTagName 'Globalping-PowerShellModule.<TagModuleVersionWithPreRelease>'
 } -ExitCode
