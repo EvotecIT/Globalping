@@ -169,4 +169,16 @@ public class CaptureHandler : HttpMessageHandler
 
         $handler.LastRequest.Headers.GetValues('Prefer') | Should -Contain 'respond-async, wait=150'
     }
+
+    It "ComputeLimit sums location limits" {
+        $loc1 = [Globalping.LocationRequest]@{ Limit = 2 }
+        $loc2 = [Globalping.LocationRequest]@{ }
+        $result = [Globalping.PowerShell.StartGlobalpingBaseCommand]::ComputeLimit($null, $false, $null, $null, @($loc1, $loc2))
+        $result | Should -Be 3
+    }
+
+    It "ComputeLimit defaults to one" {
+        $result = [Globalping.PowerShell.StartGlobalpingBaseCommand]::ComputeLimit($null, $false, $null, $null, $null)
+        $result | Should -Be 1
+    }
 }

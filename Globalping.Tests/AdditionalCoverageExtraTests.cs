@@ -4,13 +4,16 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+#if NET8_0_OR_GREATER
 using Globalping.Examples;
 using Spectre.Console;
 using Spectre.Console.Rendering;
+#endif
 using Xunit;
 
 namespace Globalping.Tests;
 
+#if NET8_0_OR_GREATER
 public class AdditionalCoverageExtraTests
 {
     [Fact]
@@ -109,3 +112,4 @@ public class AdditionalCoverageExtraTests
         ConsoleHelpers.WriteJson(obj, "title");
     }
 }
+#endif

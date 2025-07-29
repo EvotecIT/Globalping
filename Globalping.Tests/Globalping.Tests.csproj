@@ -1,13 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
+        <PropertyGroup>
+                <TargetFrameworks>net8.0;net472</TargetFrameworks>
+                <ImplicitUsings>enable</ImplicitUsings>
+                <Nullable>enable</Nullable>
+                <LangVersion>latest</LangVersion>
 
-		<IsPackable>false</IsPackable>
-		<IsTestProject>true</IsTestProject>
-	</PropertyGroup>
+                <IsPackable>false</IsPackable>
+                <IsTestProject>true</IsTestProject>
+        </PropertyGroup>
 
         <ItemGroup>
                 <PackageReference Include="coverlet.collector" Version="6.0.4">
@@ -30,8 +31,8 @@
 
         <ItemGroup>
                 <ProjectReference Include="../Globalping/Globalping.csproj" />
-                <ProjectReference Include="../Globalping.Examples/Globalping.Examples.csproj" />
                 <ProjectReference Include="../Globalping.PowerShell/Globalping.PowerShell.csproj" />
+                <ProjectReference Include="../Globalping.Examples/Globalping.Examples.csproj" Condition=" '$(TargetFramework)' == 'net8.0' " />
         </ItemGroup>
 
 </Project>

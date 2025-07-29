@@ -18,7 +18,12 @@ public sealed class HttpTargetNormalizationTests
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            Payload = await request.Content!.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            Payload = await request.Content!.ReadAsStringAsync(
+#if NETFRAMEWORK
+                ).ConfigureAwait(false);
+#else
+                cancellationToken).ConfigureAwait(false);
+#endif
             var response = new HttpResponseMessage(HttpStatusCode.Accepted)
             {
                 Content = new StringContent("{\"id\":\"1\",\"probesCount\":1}", Encoding.UTF8, "application/json")
