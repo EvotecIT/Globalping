@@ -8,8 +8,10 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
+#if NET8_0_OR_GREATER
 using Globalping.Examples;
 using Spectre.Console.Rendering;
+#endif
 using Xunit;
 
 namespace Globalping.Tests;
@@ -138,6 +140,7 @@ public class AdditionalCoverageMoreTests
         Assert.Equal(result.Target, result.Results![0].Target);
     }
 
+#if NET8_0_OR_GREATER
     private static object InvokePrivate(string name, object? arg)
     {
         var method = typeof(ConsoleHelpers).GetMethod(name, BindingFlags.NonPublic | BindingFlags.Static);
@@ -162,6 +165,7 @@ public class AdditionalCoverageMoreTests
         var renderable = InvokePrivate("RenderJsonElement", element);
         Assert.IsAssignableFrom<IRenderable>(renderable);
     }
+#endif
 
     [Fact]
     public void WithLocations_OverridesReuseId()

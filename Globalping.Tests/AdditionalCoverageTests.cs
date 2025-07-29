@@ -40,7 +40,11 @@ public class AdditionalCoverageTests
             LastRequest = request;
             if (request.Content != null)
             {
+#if NETFRAMEWORK
+                Payload = await request.Content.ReadAsStringAsync();
+#else
                 Payload = await request.Content.ReadAsStringAsync(cancellationToken);
+#endif
             }
             return _response;
         }

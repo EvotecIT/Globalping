@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
+#if !NETFRAMEWORK
 
 namespace Globalping.Tests;
 
@@ -48,11 +49,24 @@ public class BrotliResponseTests
             var response = await base.SendAsync(request, cancellationToken);
             if (response.Content.Headers.ContentEncoding.Contains("br"))
             {
-                var input = await response.Content.ReadAsStreamAsync(cancellationToken);
+                var input = await response.Content.ReadAsStreamAsync(
+#if NETFRAMEWORK
+                    );
+#else
+                    cancellationToken);
+#endif
                 var output = new MemoryStream();
+#if NETFRAMEWORK
+                using (var brotli = new System.IO.Compression.BrotliStream(input, CompressionMode.Decompress))
+#else
                 using (var brotli = new BrotliStream(input, CompressionMode.Decompress))
+#endif
                 {
+#if NETFRAMEWORK
+                    await brotli.CopyToAsync(output);
+#else
                     await brotli.CopyToAsync(output, cancellationToken);
+#endif
                 }
                 output.Position = 0;
                 response.Content = new StreamContent(output);
@@ -100,3 +114,4 @@ public class BrotliResponseTests
         Assert.Equal("example.com", result!.Target);
     }
 }
+#endif

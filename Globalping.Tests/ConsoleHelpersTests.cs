@@ -1,12 +1,15 @@
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Reflection;
+#if NET8_0_OR_GREATER
 using Globalping.Examples;
 using Spectre.Console.Rendering;
+#endif
 using Xunit;
 
 namespace Globalping.Tests;
 
+#if NET8_0_OR_GREATER
 public class ConsoleHelpersTests
 {
     [Fact]
@@ -23,3 +26,4 @@ public class ConsoleHelpersTests
         Assert.IsAssignableFrom<IRenderable>(table);
     }
 }
+#endif
