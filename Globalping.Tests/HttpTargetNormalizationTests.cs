@@ -145,4 +145,25 @@ public sealed class HttpTargetNormalizationTests
         Assert.Equal(HttpProtocol.HTTPS, opts.Protocol);
         Assert.Equal(443, opts.Port);
     }
+
+    [Fact]
+    public async Task CreateMeasurementAsync_IgnoresInvalidUri()
+    {
+        var handler = new CaptureHandler();
+        var client = new HttpClient(handler);
+        var service = new ProbeService(client);
+
+        var request = new MeasurementRequestBuilder()
+            .WithType(MeasurementType.Http)
+            .WithTarget("not-a-url")
+            .Build();
+
+        await service.CreateMeasurementAsync(request);
+
+        Assert.Null(request.MeasurementOptions);
+        using var doc = JsonDocument.Parse(handler.Payload!);
+        var root = doc.RootElement;
+        Assert.False(root.TryGetProperty("measurementOptions", out _));
+        Assert.Equal("not-a-url", root.GetProperty("target").GetString());
+    }
 }

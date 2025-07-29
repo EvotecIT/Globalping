@@ -40,4 +40,34 @@ public class ConvertersAndExceptionsTests
         Assert.Equal(1, ex.UsageInfo.CreditsRemaining);
         Assert.Equal(2, ex.UsageInfo.RateLimitRemaining);
     }
+
+    [Fact]
+    public void GlobalpingApiException_DefaultsWhenNull()
+    {
+        var ex = new GlobalpingApiException(500, null, null);
+        Assert.Equal(500, ex.StatusCode);
+        Assert.NotNull(ex.Error);
+        Assert.NotNull(ex.UsageInfo);
+        Assert.Equal(string.Empty, ex.Error.Message);
+        Assert.NotEqual(string.Empty, ex.Message);
+    }
+
+    [Fact]
+    public void ErrorResponse_SerializeAndDeserialize()
+    {
+        var err = new ErrorResponse
+        {
+            Error = new ErrorDetails
+            {
+                Type = "bad_request",
+                Message = "wrong",
+                Params = new() { ["foo"] = "bar" }
+            }
+        };
+        var json = JsonSerializer.Serialize(err);
+        var result = JsonSerializer.Deserialize<ErrorResponse>(json);
+        Assert.NotNull(result);
+        Assert.Equal("bad_request", result!.Error.Type);
+        Assert.Equal("bar", result.Error.Params!["foo"]);
+    }
 }
