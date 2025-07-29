@@ -170,15 +170,20 @@ public class CaptureHandler : HttpMessageHandler
         $handler.LastRequest.Headers.GetValues('Prefer') | Should -Contain 'respond-async, wait=150'
     }
 
-    It "ComputeLimit sums location limits" {
+    It "ComputeLimit returns null when locations specify limits" {
         $loc1 = [Globalping.LocationRequest]@{ Limit = 2 }
         $loc2 = [Globalping.LocationRequest]@{ }
-        $result = [Globalping.PowerShell.StartGlobalpingBaseCommand]::ComputeLimit($null, $false, $null, $null, @($loc1, $loc2))
-        $result | Should -Be 3
+        $method = [Globalping.PowerShell.StartGlobalpingBaseCommand].GetMethod(
+            'ComputeLimit', [System.Reflection.BindingFlags]::NonPublic -bor [System.Reflection.BindingFlags]::Static)
+        $locs = [Globalping.LocationRequest[]]@($loc1, $loc2)
+        $result = $method.Invoke($null, @($null, $false, $null, $null, $locs))
+        $null -eq $result | Should -BeTrue
     }
 
     It "ComputeLimit defaults to one" {
-        $result = [Globalping.PowerShell.StartGlobalpingBaseCommand]::ComputeLimit($null, $false, $null, $null, $null)
+        $method = [Globalping.PowerShell.StartGlobalpingBaseCommand].GetMethod(
+            'ComputeLimit', [System.Reflection.BindingFlags]::NonPublic -bor [System.Reflection.BindingFlags]::Static)
+        $result = $method.Invoke($null, @($null, $false, $null, $null, $null))
         $result | Should -Be 1
     }
 }
