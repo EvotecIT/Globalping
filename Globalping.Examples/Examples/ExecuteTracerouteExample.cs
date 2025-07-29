@@ -13,7 +13,7 @@ public static class ExecuteTracerouteExample
             .WithType(MeasurementType.Traceroute)
             .WithTarget("cdn.jsdelivr.net")
             .AddMagic("Europe")
-            .WithMeasurementOptions(new TracerouteOptions());
+            .WithOptions(new TracerouteOptions());
 
         var request = builder.Build();
         request.InProgressUpdates = false;

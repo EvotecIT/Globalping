@@ -13,7 +13,7 @@ public static class ExecuteMtrExample
             .WithType(MeasurementType.Mtr)
             .WithTarget("cdn.jsdelivr.net")
             .AddMagic("Europe")
-            .WithMeasurementOptions(new MtrOptions { Packets = 3 });
+            .WithOptions(new MtrOptions { Packets = 3 });
 
         var request = builder.Build();
         request.InProgressUpdates = false;
