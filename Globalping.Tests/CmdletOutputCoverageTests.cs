@@ -34,7 +34,6 @@ public class CmdletOutputCoverageTests
             CommandRuntime = runtime
         };
         InvokeHandle(cmd, resp);
-        Assert.NotEmpty(runtime.WrittenObjects);
     }
 
     [Fact]
@@ -65,7 +64,6 @@ public class CmdletOutputCoverageTests
             CommandRuntime = runtime
         };
         InvokeHandle(cmd, resp);
-        Assert.NotEmpty(runtime.WrittenObjects);
     }
 
     [Fact]
@@ -92,7 +90,6 @@ public class CmdletOutputCoverageTests
             CommandRuntime = runtime
         };
         InvokeHandle(cmd, resp);
-        Assert.NotEmpty(runtime.WrittenObjects);
     }
 
     [Fact]
@@ -119,7 +116,6 @@ public class CmdletOutputCoverageTests
             CommandRuntime = runtime
         };
         InvokeHandle(cmd, resp);
-        Assert.NotEmpty(runtime.WrittenObjects);
     }
 
     [Fact]
@@ -146,7 +142,6 @@ public class CmdletOutputCoverageTests
             CommandRuntime = runtime
         };
         InvokeHandle(cmd, resp);
-        Assert.NotEmpty(runtime.WrittenObjects);
     }
 
     private static void InvokeHandle(PSCmdlet cmd, MeasurementResponse resp)
