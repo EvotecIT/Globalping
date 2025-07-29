@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
 
-namespace Globalping.PowerShell.Tests;
+namespace Globalping.Tests;
 
 public class OnModuleImportAndRemoveTests
 {
