@@ -28,8 +28,13 @@ public class CmdletOutputCoverageTests
                 }
             }
         };
-        var cmd = new PingCmd();
+        var runtime = new TestCommandRuntime();
+        var cmd = new PingCmd
+        {
+            CommandRuntime = runtime
+        };
         InvokeHandle(cmd, resp);
+        Assert.NotEmpty(runtime.WrittenObjects);
     }
 
     [Fact]
@@ -54,8 +59,13 @@ public class CmdletOutputCoverageTests
                 }
             }
         };
-        var cmd = new DnsCmd();
+        var runtime = new TestCommandRuntime();
+        var cmd = new DnsCmd
+        {
+            CommandRuntime = runtime
+        };
         InvokeHandle(cmd, resp);
+        Assert.NotEmpty(runtime.WrittenObjects);
     }
 
     [Fact]
@@ -76,8 +86,13 @@ public class CmdletOutputCoverageTests
                 }
             }
         };
-        var cmd = new HttpCmd();
+        var runtime = new TestCommandRuntime();
+        var cmd = new HttpCmd
+        {
+            CommandRuntime = runtime
+        };
         InvokeHandle(cmd, resp);
+        Assert.NotEmpty(runtime.WrittenObjects);
     }
 
     [Fact]
@@ -98,8 +113,13 @@ public class CmdletOutputCoverageTests
                 }
             }
         };
-        var cmd = new MtrCmd();
+        var runtime = new TestCommandRuntime();
+        var cmd = new MtrCmd
+        {
+            CommandRuntime = runtime
+        };
         InvokeHandle(cmd, resp);
+        Assert.NotEmpty(runtime.WrittenObjects);
     }
 
     [Fact]
@@ -120,8 +140,13 @@ public class CmdletOutputCoverageTests
                 }
             }
         };
-        var cmd = new TraceCmd();
+        var runtime = new TestCommandRuntime();
+        var cmd = new TraceCmd
+        {
+            CommandRuntime = runtime
+        };
         InvokeHandle(cmd, resp);
+        Assert.NotEmpty(runtime.WrittenObjects);
     }
 
     private static void InvokeHandle(PSCmdlet cmd, MeasurementResponse resp)
