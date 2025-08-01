@@ -1,30 +1,37 @@
-<p align="center">
-  <a href="https://github.com/EvotecIT/Globalping"><img src="https://img.shields.io/github/languages/top/evotecit/Globalping.svg"></a>
-  <a href="https://github.com/EvotecIT/Globalping"><img src="https://img.shields.io/github/languages/code-size/evotecit/Globalping.svg"></a>
-</p>
+# Globalping - Modern network diagnostics for .NET and PowerShell
 
-<p align="center">
-  <a href="https://github.com/EvotecIT/Globalping/actions/workflows/test-dotnet.yml"><img src="https://github.com/EvotecIT/Globalping/actions/workflows/test-dotnet.yml/badge.svg"></a>
-  <a href="https://codecov.io/gh/EvotecIT/Globalping"><img src="https://img.shields.io/codecov/c/github/evotecit/Globalping?token=BVO3QKQEHF" /></a>
-  <a href="https://www.nuget.org/packages/Globalping"><img src="https://img.shields.io/nuget/v/Globalping"></a>
-<a href="https://www.nuget.org/packages/Globalping"><img src="https://img.shields.io/nuget/dt/Globalping?label=nuget%20downloads"></a>
-</p>
+Globalping is available as a NuGet package from [NuGet](https://www.nuget.org/packages/Globalping) and as a PowerShell module from the [PowerShell Gallery](https://www.powershellgallery.com/packages/Globalping).
 
-<p align="center">
-  <a href="https://github.com/EvotecIT/Globalping/actions/workflows/test-powershell-module.yml"><img src="https://github.com/EvotecIT/Globalping/actions/workflows/test-powershell-module.yml/badge.svg"></a>
-  <a href="https://www.powershellgallery.com/packages/Globalping"><img src="https://img.shields.io/powershellgallery/v/Globalping.svg?label=powershell"></a>
-  <a href="https://www.powershellgallery.com/packages/Globalping"><img src="https://img.shields.io/powershellgallery/vpre/Globalping.svg?label=powershell%20preview&colorB=yellow"></a>
-  <a href="https://www.powershellgallery.com/packages/Globalping"><img src="https://img.shields.io/powershellgallery/dt/Globalping.svg"></a>
-</p>
+📦 NuGet Package
 
-<p align="center">
-  <a href="https://evo.yt/discord"><img src="https://img.shields.io/discord/508328927853281280?style=flat-square&label=discord%20chat"></a>
-  <a href="https://twitter.com/PrzemyslawKlys"><img src="https://img.shields.io/twitter/follow/PrzemyslawKlys.svg?label=Twitter%20%40PrzemyslawKlys&style=social"></a>
-  <a href="https://evotec.xyz/hub"><img src="https://img.shields.io/badge/Blog-evotec.xyz-2A6496.svg"></a>
-  <a href="https://www.linkedin.com/in/pklys"><img src="https://img.shields.io/badge/LinkedIn-pklys-0077B5.svg?logo=LinkedIn"></a>
-</p>
+[![nuget version](https://img.shields.io/nuget/v/Globalping)](https://www.nuget.org/packages/Globalping)
+[![nuget downloads](https://img.shields.io/nuget/dt/Globalping?label=nuget%20downloads)](https://www.nuget.org/packages/Globalping)
 
-# Globalping
+💻 PowerShell Module
+
+[![powershell gallery version](https://img.shields.io/powershellgallery/v/Globalping.svg)](https://www.powershellgallery.com/packages/Globalping)
+[![powershell gallery preview](https://img.shields.io/powershellgallery/vpre/Globalping.svg?label=powershell%20gallery%20preview&colorB=yellow)](https://www.powershellgallery.com/packages/Globalping)
+[![powershell gallery platforms](https://img.shields.io/powershellgallery/p/Globalping.svg)](https://www.powershellgallery.com/packages/Globalping)
+[![powershell gallery downloads](https://img.shields.io/powershellgallery/dt/Globalping.svg)](https://www.powershellgallery.com/packages/Globalping)
+
+🛠️ Project Information
+
+[![dotnet tests](https://github.com/EvotecIT/Globalping/actions/workflows/test-dotnet.yml/badge.svg)](https://github.com/EvotecIT/Globalping/actions/workflows/test-dotnet.yml)
+[![powershell tests](https://github.com/EvotecIT/Globalping/actions/workflows/test-powershell-module.yml/badge.svg)](https://github.com/EvotecIT/Globalping/actions/workflows/test-powershell-module.yml)
+[![top language](https://img.shields.io/github/languages/top/evotecit/Globalping.svg)](https://github.com/EvotecIT/Globalping)
+[![code size](https://img.shields.io/github/languages/code-size/evotecit/Globalping.svg)](https://github.com/EvotecIT/Globalping)
+[![codecov](https://codecov.io/gh/EvotecIT/Globalping/branch/main/graph/badge.svg)](https://codecov.io/gh/EvotecIT/Globalping)
+[![license](https://img.shields.io/github/license/EvotecIT/Globalping.svg)](https://github.com/EvotecIT/Globalping)
+
+👨‍💻 Author & Social
+
+[![Twitter follow](https://img.shields.io/twitter/follow/PrzemyslawKlys.svg?label=Twitter%20%40PrzemyslawKlys&style=social)](https://twitter.com/PrzemyslawKlys)
+[![Blog](https://img.shields.io/badge/Blog-evotec.xyz-2A6496.svg)](https://evotec.xyz/hub)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-pklys-0077B5.svg?logo=LinkedIn)](https://www.linkedin.com/in/pklys)
+[![Threads](https://img.shields.io/badge/Threads-@PrzemyslawKlys-000000.svg?logo=Threads&logoColor=White)](https://www.threads.net/@przemyslaw.klys)
+[![Discord](https://img.shields.io/discord/508328927853281280?style=flat-square&label=discord%20chat)](https://evo.yt/discord)
+
+## What it's all about
 
 Globalping provides convenient access to the [Globalping API](https://globalping.io/) from .NET applications and PowerShell. It lets you run network diagnostics such as ping, traceroute, DNS or HTTP checks from hundreds of probes around the world.
 
