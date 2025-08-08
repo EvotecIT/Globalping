@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
 namespace Globalping;
+
+/// <summary>Represents a single DNS answer record.</summary>
 public class DnsAnswer
 {
     [JsonPropertyName("name")]

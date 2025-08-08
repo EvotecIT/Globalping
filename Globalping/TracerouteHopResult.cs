@@ -1,5 +1,6 @@
 namespace Globalping;
 
+/// <summary>Represents a single hop in a traceroute measurement.</summary>
 public class TracerouteHopResult
 {
     public string Target { get; set; } = string.Empty;

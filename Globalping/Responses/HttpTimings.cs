@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
 namespace Globalping;
+
+/// <summary>Timing breakdown for an HTTP request.</summary>
 public class HttpTimings
 {
     [JsonPropertyName("total")]

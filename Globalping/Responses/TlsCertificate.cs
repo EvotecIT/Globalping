@@ -1,6 +1,8 @@
 using System;
 using System.Text.Json.Serialization;
 namespace Globalping;
+
+/// <summary>TLS certificate details reported by a probe.</summary>
 public class TlsCertificate
 {
     [JsonPropertyName("protocol")]

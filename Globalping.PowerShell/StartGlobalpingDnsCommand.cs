@@ -5,36 +5,46 @@ namespace Globalping.PowerShell;
 
 /// <summary>Start a DNS lookup using Globalping.</summary>
 /// <para>Queries DNS records from remote probes and converts them to <see cref="DnsRecordResult"/> objects.</para>
+/// <list type="alertSet">
+///   <item>
+///     <term>Note</term>
+///     <description>DNS caches may cause different probes to return varying results.</description>
+///   </item>
+/// </list>
 /// <example>
 ///   <summary>Resolve A record</summary>
-///   <prefix>PS> </prefix>
-///   <code>Start-GlobalpingDns -Target "evotec.xyz"</code>
+///   <code>
+///     <para><prefix>PS&gt; </prefix>Start-GlobalpingDns -Target "evotec.xyz"</para>
+///   </code>
 ///   <para>Returns DNS records from available probes.</para>
 /// </example>
 /// <example>
 ///   <summary>Use custom resolver</summary>
-///   <prefix>PS> </prefix>
-///   <code>Start-GlobalpingDns -Target "cloudflare.com" -Options @{ Resolver = "8.8.8.8" }</code>
+///   <code>
+///     <para><prefix>PS&gt; </prefix>Start-GlobalpingDns -Target "cloudflare.com" -Options @{ Resolver = "8.8.8.8" }</para>
+///   </code>
 ///   <para>Sends the DNS query using the Google public resolver.</para>
 /// </example>
+/// <seealso href="https://learn.microsoft.com/powershell/" />
+/// <seealso href="https://github.com/EvotecIT/Globalping" />
 [Cmdlet(VerbsLifecycle.Start, "GlobalpingDns")]
 [OutputType(typeof(DnsRecordResult))]
 [OutputType(typeof(string))]
 [OutputType(typeof(MeasurementResponse))]
 public class StartGlobalpingDnsCommand : StartGlobalpingBaseCommand
 {
-    /// <para>Return the raw measurement response.</para>
+    /// <summary>Return the raw measurement response.</summary>
     /// <para>Use this switch to inspect the <see cref="MeasurementResponse"/> object without conversion.</para>
     [Parameter]
     [Alias("AsRaw")]
     public SwitchParameter Raw { get; set; }
 
-    /// <para>Output DNS results in classic text form.</para>
+    /// <summary>Output DNS results in classic text form.</summary>
     /// <para>The original text returned by the resolver is emitted.</para>
     [Parameter]
     public SwitchParameter Classic { get; set; }
 
-    /// <para>Additional DNS options for the request.</para>
+    /// <summary>Additional DNS options for the request.</summary>
     /// <para>Allows custom resolver, query type or trace options.</para>
     [Parameter]
     public DnsOptions? Options { get; set; }

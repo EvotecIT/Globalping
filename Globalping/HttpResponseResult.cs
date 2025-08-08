@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 namespace Globalping;
 
+/// <summary>HTTP response details returned by a probe.</summary>
 public class HttpResponseResult
 {
     public string Target { get; set; } = string.Empty;

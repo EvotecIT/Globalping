@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Globalping;
 
+/// <summary>Detailed data returned for a probe result.</summary>
 public class ResultDetails {
     [JsonPropertyName("status")]
     public TestStatus Status { get; set; }

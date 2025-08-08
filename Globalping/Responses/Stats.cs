@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 namespace Globalping;
 
+/// <summary>Statistical summary for measurement results.</summary>
 public class Stats {
     [JsonPropertyName("min")]
     public double? Min { get; set; }

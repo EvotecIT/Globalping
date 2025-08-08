@@ -22,6 +22,10 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <XmlDoc2CmdletDocArguments>-strict</XmlDoc2CmdletDocArguments>
+    </PropertyGroup>
+
+    <PropertyGroup>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
 

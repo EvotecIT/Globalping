@@ -14,17 +14,26 @@ namespace Globalping.PowerShell;
 /// and return structured results.</para>
 /// <para>The common parameters defined here control target host, probe
 /// selection and authentication.</para>
-/// <seealso href="https://github.com/EvotecIT/Globalping/tree/main/Globalping.Examples">Repository examples</seealso>
+/// <list type="alertSet">
+///   <item>
+///     <term>Note</term>
+///     <description>Measurements generate network traffic from remote probes.</description>
+///   </item>
+/// </list>
+/// <seealso href="https://learn.microsoft.com/powershell/" />
+/// <seealso href="https://github.com/EvotecIT/Globalping/tree/main/Globalping.Examples" />
 /// <example>
 ///   <summary>Ping from Germany</summary>
-///   <prefix>PS> </prefix>
-///   <code>Start-GlobalpingPing -Target "example.com" -SimpleLocations "DE"</code>
+///   <code>
+///     <para><prefix>PS&gt; </prefix>Start-GlobalpingPing -Target "example.com" -SimpleLocations "DE"</para>
+///   </code>
 ///   <para>Runs a ping measurement from German probes.</para>
 /// </example>
 /// <example>
 ///   <summary>HTTP request with live updates</summary>
-///   <prefix>PS> </prefix>
-///   <code>Start-GlobalpingHttp -Target "https://example.com" -Limit 3 -InProgressUpdates -WaitTime 60</code>
+///   <code>
+///     <para><prefix>PS&gt; </prefix>Start-GlobalpingHttp -Target "https://example.com" -Limit 3 -InProgressUpdates -WaitTime 60</para>
+///   </code>
 ///   <para>Requests three probes and streams intermediate results for up to one minute.</para>
 /// </example>
 public abstract class StartGlobalpingBaseCommand : PSCmdlet
@@ -34,15 +43,13 @@ public abstract class StartGlobalpingBaseCommand : PSCmdlet
     /// </summary>
     protected abstract MeasurementType Type { get; }
 
-    /// <para>Target host names, IP addresses or URLs to test.</para>
-    /// <para>Each value is passed verbatim to the underlying
-    /// measurement API.</para>
+    /// <summary>Target host names, IP addresses or URLs to test.</summary>
+    /// <para>Each value is passed verbatim to the underlying measurement API.</para>
     [Parameter(Mandatory = true)]
     public string[] Target { get; set; } = Array.Empty<string>();
 
-    /// <para>Detailed location definitions for probes.</para>
-    /// <para>Each <see cref="LocationRequest"/> may specify city, country,
-    /// ASN or provider details.</para>
+    /// <summary>Detailed location definitions for probes.</summary>
+    /// <para>Each <see cref="LocationRequest"/> may specify city, country, ASN or provider details.</para>
     [Parameter]
     public LocationRequest[]? Locations { get; set; }
 
@@ -50,32 +57,29 @@ public abstract class StartGlobalpingBaseCommand : PSCmdlet
     [Parameter]
     public string? ReuseLocationsFromId { get; set; }
 
-    /// <para>Short location identifiers such as city or country codes.</para>
-    /// <para>Two-letter strings are treated as ISO country codes. Longer
-    /// values map to the "magic" location syntax used by the API.</para>
+    /// <summary>Short location identifiers such as city or country codes.</summary>
+    /// <para>Two-letter strings are treated as ISO country codes. Longer values map to the "magic" location syntax used by the API.</para>
     [Parameter]
     public string[]? SimpleLocations { get; set; }
 
-    /// <para>Maximum number of probes to use.</para>
-    /// <para>If omitted the cmdlet estimates a value based on provided
-    /// locations.</para>
+    /// <summary>Maximum number of probes to use.</summary>
+    /// <para>If omitted the cmdlet estimates a value based on provided locations.</para>
     [Parameter]
     [ValidateRange(1, 500)]
     public int? Limit { get; set; }
 
-    /// <para>Request progress updates while the measurement runs.</para>
-    /// <para>When set the API streams partial results that are written as they
-    /// arrive.</para>
+    /// <summary>Request progress updates while the measurement runs.</summary>
+    /// <para>When set the API streams partial results that are written as they arrive.</para>
     [Parameter]
     public SwitchParameter InProgressUpdates { get; set; }
 
-    /// <para>Time in seconds to wait for progress updates.</para>
+    /// <summary>Time in seconds to wait for progress updates.</summary>
     /// <para>Only applies when <see cref="InProgressUpdates"/> is specified.</para>
     [Parameter]
     [ValidateRange(1, int.MaxValue)]
     public int WaitTime { get; set; } = 150;
 
-    /// <para>API key used to authenticate with Globalping.</para>
+    /// <summary>API key used to authenticate with Globalping.</summary>
     /// <para>Anonymous requests may be rate limited.</para>
     [Parameter]
     [Alias("Token")]

@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
 namespace Globalping;
+
+/// <summary>Issuer information for a TLS certificate.</summary>
 public class TlsCertificateIssuer
 {
     [JsonPropertyName("C")]
