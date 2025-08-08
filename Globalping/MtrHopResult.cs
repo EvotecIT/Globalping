@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 namespace Globalping;
 
+/// <summary>Hop statistics collected during an MTR measurement.</summary>
 public class MtrHopResult
 {
     public string Target { get; set; } = string.Empty;

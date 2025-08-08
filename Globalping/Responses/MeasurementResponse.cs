@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Globalping;
 
+/// <summary>Full response returned after creating a measurement.</summary>
 [JsonConverter(typeof(MeasurementResponseConverter))]
 public class MeasurementResponse {
     [JsonPropertyName("id")]

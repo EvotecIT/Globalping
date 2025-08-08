@@ -1,5 +1,6 @@
 namespace Globalping;
 
+/// <summary>DNS response information returned by a probe.</summary>
 public class DnsRecordResult
 {
     public string Target { get; set; } = string.Empty;

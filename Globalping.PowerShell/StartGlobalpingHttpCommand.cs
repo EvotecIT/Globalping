@@ -5,41 +5,51 @@ namespace Globalping.PowerShell;
 
 /// <summary>Start an HTTP request using Globalping.</summary>
 /// <para>Sends an HTTP request from remote probes and returns <see cref="HttpResponseResult"/> objects.</para>
+/// <list type="alertSet">
+///   <item>
+///     <term>Note</term>
+///     <description>Requests are executed from remote probes and may trigger security alerts on the target.</description>
+///   </item>
+/// </list>
 /// <example>
 ///   <summary>Fetch a webpage</summary>
-///   <prefix>PS> </prefix>
-///   <code>Start-GlobalpingHttp -Target "evotec.xyz" -SimpleLocations "Krakow+PL"</code>
+///   <code>
+///     <para><prefix>PS&gt; </prefix>Start-GlobalpingHttp -Target "evotec.xyz" -SimpleLocations "Krakow+PL"</para>
+///   </code>
 ///   <para>Returns HTTP response details from the Krakow probe.</para>
 /// </example>
 /// <example>
 ///   <summary>Headers only</summary>
-///   <prefix>PS> </prefix>
-///   <code>Start-GlobalpingHttp -Target "https://example.com" -HeadersOnly</code>
+///   <code>
+///     <para><prefix>PS&gt; </prefix>Start-GlobalpingHttp -Target "https://example.com" -HeadersOnly</para>
+///   </code>
 ///   <para>Outputs only the HTTP headers from each probe.</para>
 /// </example>
+/// <seealso href="https://learn.microsoft.com/powershell/" />
+/// <seealso href="https://github.com/EvotecIT/Globalping" />
 [Cmdlet(VerbsLifecycle.Start, "GlobalpingHttp")]
 [OutputType(typeof(HttpResponseResult))]
 [OutputType(typeof(string))]
 [OutputType(typeof(MeasurementResponse))]
 public class StartGlobalpingHttpCommand : StartGlobalpingBaseCommand
 {
-    /// <para>Return the raw measurement response.</para>
+    /// <summary>Return the raw measurement response.</summary>
     /// <para>The full <see cref="MeasurementResponse"/> is emitted without conversion.</para>
     [Parameter]
     [Alias("AsRaw")]
     public SwitchParameter Raw { get; set; }
 
-    /// <para>Output HTTP results in classic text form.</para>
+    /// <summary>Output HTTP results in classic text form.</summary>
     /// <para>Each probe returns the textual output of the underlying HTTP tool.</para>
     [Parameter]
     public SwitchParameter Classic { get; set; }
 
-    /// <para>Emit only HTTP headers from each response.</para>
+    /// <summary>Emit only HTTP headers from each response.</summary>
     /// <para>Ignores the body content from the probes.</para>
     [Parameter]
     public SwitchParameter HeadersOnly { get; set; }
 
-    /// <para>Additional HTTP options for the request.</para>
+    /// <summary>Additional HTTP options for the request.</summary>
     /// <para>Allows setting request method, headers or body.</para>
     [Parameter]
     public HttpOptions? Options { get; set; }

@@ -6,42 +6,53 @@ namespace Globalping.PowerShell;
 /// <summary>Start a ping measurement using Globalping.</summary>
 /// <para>Instructs remote probes to send ICMP echo requests to the specified target.</para>
 /// <para>The cmdlet outputs <see cref="PingTimingResult"/> objects, raw results or classic text depending on the selected parameters.</para>
+/// <list type="alertSet">
+///   <item>
+///     <term>Note</term>
+///     <description>Some networks block ICMP traffic which may affect results.</description>
+///   </item>
+/// </list>
 /// <example>
 ///   <summary>Ping from multiple locations</summary>
-///   <prefix>PS> </prefix>
-///   <code>Start-GlobalpingPing -Target "evotec.xyz" -SimpleLocations "DE", "US"</code>
+///   <code>
+///     <para><prefix>PS&gt; </prefix>Start-GlobalpingPing -Target "evotec.xyz" -SimpleLocations "DE", "US"</para>
+///   </code>
 ///   <para>Runs ping from probes in Germany and the United States.</para>
 /// </example>
 /// <example>
 ///   <summary>Request five packets</summary>
-///   <prefix>PS> </prefix>
-///   <code>Start-GlobalpingPing -Target "example.com" -SimpleLocations "PL" -Options @{ Packets = 5 }</code>
+///   <code>
+///     <para><prefix>PS&gt; </prefix>Start-GlobalpingPing -Target "example.com" -SimpleLocations "PL" -Options @{ Packets = 5 }</para>
+///   </code>
 ///   <para>Uses <see cref="PingOptions"/> to set the packet count.</para>
 /// </example>
 /// <example>
 ///   <summary>Output classic text</summary>
-///   <prefix>PS> </prefix>
-///   <code>Start-GlobalpingPing -Target "example.com" -Classic</code>
+///   <code>
+///     <para><prefix>PS&gt; </prefix>Start-GlobalpingPing -Target "example.com" -Classic</para>
+///   </code>
 ///   <para>Displays the raw ping output returned by the probe.</para>
 /// </example>
+/// <seealso href="https://learn.microsoft.com/powershell/" />
+/// <seealso href="https://github.com/EvotecIT/Globalping" />
 [Cmdlet(VerbsLifecycle.Start, "GlobalpingPing")]
 [OutputType(typeof(PingTimingResult))]
 [OutputType(typeof(string))]
 [OutputType(typeof(MeasurementResponse))]
 public class StartGlobalpingPingCommand : StartGlobalpingBaseCommand
 {
-    /// <para>Return the unprocessed measurement response.</para>
+    /// <summary>Return the unprocessed measurement response.</summary>
     /// <para>When set the cmdlet outputs the <see cref="MeasurementResponse"/> object returned by the API.</para>
     [Parameter]
     [Alias("AsRaw")]
     public SwitchParameter Raw { get; set; }
 
-    /// <para>Output ping results in the classic text format.</para>
+    /// <summary>Output ping results in the classic text format.</summary>
     /// <para>Each probe returns the textual output of its ping utility.</para>
     [Parameter]
     public SwitchParameter Classic { get; set; }
 
-    /// <para>Additional ping options sent with the request.</para>
+    /// <summary>Additional ping options sent with the request.</summary>
     /// <para>Use this to configure packet count or other low level settings.</para>
     [Parameter]
     public PingOptions? Options { get; set; }
