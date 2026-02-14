@@ -10,7 +10,7 @@ Globalping is available as a NuGet package from [NuGet](https://www.nuget.org/pa
 💻 PowerShell Module
 
 [![powershell gallery version](https://img.shields.io/powershellgallery/v/Globalping.svg)](https://www.powershellgallery.com/packages/Globalping)
-[![powershell gallery preview](https://img.shields.io/powershellgallery/vpre/Globalping.svg?label=powershell%20gallery%20preview&colorB=yellow)](https://www.powershellgallery.com/packages/Globalping)
+[![powershell gallery preview](https://img.shields.io/powershellgallery/v/Globalping.svg?label=powershell%20gallery%20preview&colorB=yellow&include_prereleases)](https://www.powershellgallery.com/packages/Globalping)
 [![powershell gallery platforms](https://img.shields.io/powershellgallery/p/Globalping.svg)](https://www.powershellgallery.com/packages/Globalping)
 [![powershell gallery downloads](https://img.shields.io/powershellgallery/dt/Globalping.svg)](https://www.powershellgallery.com/packages/Globalping)
 
