@@ -176,7 +176,12 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Install PowerShell
-        run: brew install --cask powershell
+        run: |
+          if command -v pwsh >/dev/null 2>&1; then
+            pwsh -NoLogo -NoProfile -Command '$PSVersionTable.PSVersion'
+            exit 0
+          fi
+          brew install --cask powershell || brew install --cask powershell@preview
 
       - name: Install PowerShell modules
         shell: pwsh
