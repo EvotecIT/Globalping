@@ -177,8 +177,11 @@ jobs:
 
       - name: Install PowerShell
         run: |
-          brew tap powershell/tap
-          brew install --cask powershell || brew install powershell/tap/powershell
+          if command -v pwsh >/dev/null 2>&1; then
+            pwsh -NoLogo -NoProfile -Command '$PSVersionTable.PSVersion'
+            exit 0
+          fi
+          brew install --cask powershell || brew install --cask powershell@preview
 
       - name: Install PowerShell modules
         shell: pwsh
