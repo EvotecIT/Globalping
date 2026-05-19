@@ -176,7 +176,9 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Install PowerShell
-        run: brew install --cask powershell
+        run: |
+          brew tap powershell/tap
+          brew install --cask powershell || brew install powershell/tap/powershell
 
       - name: Install PowerShell modules
         shell: pwsh
