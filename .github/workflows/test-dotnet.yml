@@ -53,6 +53,10 @@ jobs:
           name: coverage-reports-windows
           path: '**/coverage.cobertura.xml'
 
+      - name: Normalize coverage for Codecov
+        shell: pwsh
+        run: ./.github/scripts/Normalize-CoverageForCodecov.ps1
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
@@ -93,6 +97,10 @@ jobs:
           name: coverage-reports-ubuntu
           path: '**/coverage.cobertura.xml'
 
+      - name: Normalize coverage for Codecov
+        shell: pwsh
+        run: ./.github/scripts/Normalize-CoverageForCodecov.ps1
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
@@ -132,6 +140,10 @@ jobs:
         with:
           name: coverage-reports-macos
           path: '**/coverage.cobertura.xml'
+
+      - name: Normalize coverage for Codecov
+        shell: pwsh
+        run: ./.github/scripts/Normalize-CoverageForCodecov.ps1
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
