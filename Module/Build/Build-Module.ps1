@@ -78,7 +78,7 @@ Build-Module -ModuleName 'Globalping' {
     New-ConfigurationFormat -ApplyTo 'DefaultPSD1', 'OnMergePSD1' -PSD1Style 'Minimal'
 
     # configuration for documentation, at the same time it enables documentation processing
-    New-ConfigurationDocumentation -Enable:$false -PathReadme 'Docs\Readme.md' -Path 'Docs'
+    New-ConfigurationDocumentation -Enable -PathReadme 'Docs\Readme.md' -Path 'Docs' -SyncExternalHelpToProjectRoot
 
     New-ConfigurationImportModule -ImportSelf #-ImportRequiredModules
 
@@ -99,8 +99,8 @@ Build-Module -ModuleName 'Globalping' {
         DotSourceLibraries                = $true
         DotSourceClasses                  = $true
         DeleteTargetModuleBeforeBuild     = $true
-        RefreshPSD1Only                   = $true
-        NETBinaryModuleDocumenation       = $true
+        RefreshPSD1Only                   = $false
+        NETBinaryModuleDocumentation      = $true
     }
 
     New-ConfigurationBuild @newConfigurationBuildSplat
