@@ -11,7 +11,7 @@ Start an HTTP request using Globalping.
 ## SYNTAX
 ### __AllParameterSets
 ```powershell
-Start-GlobalpingHttp -Target <string[]> [-Raw] [-Classic] [-HeadersOnly] [-Options <HttpOptions>] [-Locations <LocationRequest[]>] [-ReuseLocationsFromId <string>] [-SimpleLocations <string[]>] [-Limit <int>] [-InProgressUpdates] [-WaitTime <int>] [-ApiKey <string>] [<CommonParameters>]
+Start-GlobalpingHttp -Target <string[]> [-Raw] [-Classic] [-HeadersOnly] [-Options <HttpOptions>] [-Locations <LocationRequest[]>] [-ReuseLocationsFromId <string>] [-SimpleLocations <string[]>] [-Limit <Int32>] [-InProgressUpdates] [-WaitTime <int>] [-ApiKey <string>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -36,7 +36,7 @@ Outputs only the HTTP headers from each probe.
 ## PARAMETERS
 
 ### -ApiKey
-{{ Fill ApiKey Description }}
+Anonymous requests may be rate limited.
 
 ```yaml
 Type: String
@@ -84,7 +84,7 @@ Accept wildcard characters: False
 ```
 
 ### -InProgressUpdates
-{{ Fill InProgressUpdates Description }}
+When set the API streams partial results that are written as they arrive.
 
 ```yaml
 Type: SwitchParameter
@@ -100,10 +100,10 @@ Accept wildcard characters: False
 ```
 
 ### -Limit
-{{ Fill Limit Description }}
+If omitted the cmdlet estimates a value based on provided locations.
 
 ```yaml
-Type: Nullable`1
+Type: Int32
 Parameter Sets: __AllParameterSets
 Aliases: None
 Possible values:
@@ -116,7 +116,7 @@ Accept wildcard characters: False
 ```
 
 ### -Locations
-{{ Fill Locations Description }}
+Each LocationRequest may specify city, country, ASN or provider details.
 
 ```yaml
 Type: LocationRequest[]
@@ -164,7 +164,7 @@ Accept wildcard characters: False
 ```
 
 ### -ReuseLocationsFromId
-{{ Fill ReuseLocationsFromId Description }}
+Reuse probe locations from a previous measurement.
 
 ```yaml
 Type: String
@@ -180,7 +180,7 @@ Accept wildcard characters: False
 ```
 
 ### -SimpleLocations
-{{ Fill SimpleLocations Description }}
+Two-letter strings are treated as ISO country codes. Longer values map to the "magic" location syntax used by the API.
 
 ```yaml
 Type: String[]
@@ -196,7 +196,7 @@ Accept wildcard characters: False
 ```
 
 ### -Target
-{{ Fill Target Description }}
+Each value is passed verbatim to the underlying measurement API.
 
 ```yaml
 Type: String[]
@@ -212,7 +212,7 @@ Accept wildcard characters: False
 ```
 
 ### -WaitTime
-{{ Fill WaitTime Description }}
+Only applies when InProgressUpdates is specified.
 
 ```yaml
 Type: Int32
