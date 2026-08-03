@@ -17,12 +17,8 @@
     </ItemGroup>
 
     <PropertyGroup>
-        <!-- This is needed for XmlDoc2CmdletDoc to generate a PowerShell documentation file. -->
+        <!-- PowerForge enriches module help from the compiler XML documentation file. -->
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <XmlDoc2CmdletDocArguments>-strict</XmlDoc2CmdletDocArguments>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -48,20 +44,6 @@
     <Target Name="RemoveFilesAfterBuild" AfterTargets="Build">
         <Delete Files="$(OutDir)System.Management.Automation.dll" />
         <Delete Files="$(OutDir)System.Management.dll" />
-    </Target>
-
-    <ItemGroup>
-        <PackageReference Include="MatejKafka.XmlDoc2CmdletDoc" Version="0.7.1">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-    </ItemGroup>
-
-    <!-- Copy help documentation to publish output after publish -->
-    <Target Name="CopyHelpDocumentationToPublishOutput" AfterTargets="Publish">
-        <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll-Help.xml"
-            DestinationFiles="$(PublishDir)$(AssemblyName).dll-Help.xml"
-            Condition="Exists('$(OutputPath)$(AssemblyName).dll-Help.xml')" />
     </Target>
 
     <ItemGroup>
