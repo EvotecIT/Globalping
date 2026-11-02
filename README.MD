@@ -203,3 +203,8 @@ property. When the service returns values such as `X-RateLimit-Limit` or
 value to `GetMeasurementByIdAsync` or `GetMeasurementById`. When the API returns
 `304 Not Modified` the previously retrieved measurement data is reused and parsing
 is skipped.
+
+## Releasing the library
+
+The NuGet library uses local USB signing and GitHub trusted publishing.
+See [NuGet publishing](Docs/NuGetPublishing.md) for setup, draft staging and retries.

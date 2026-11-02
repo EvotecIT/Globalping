@@ -1,0 +1,21 @@
+name: Publish NuGet
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  actions: read
+  id-token: write
+
+jobs:
+  nuget:
+    uses: EvotecIT/PSPublishModule/.github/workflows/powerforge-nuget-publish.yml@5585c15368418de8cc078a83cd333757af7e3a6a
+    with:
+      environment-name: nuget-release
+      release-tag-prefix: v
+      nuget-user: ${{ vars.NUGET_PUBLISHING_USER }}
+      author-fingerprints: D13C03BFEEC0CBF7FD0E0E7FFAF3F3D2076E62B1AF64665E806917B9191CFFDE
+      powerforge-version: ${{ vars.POWERFORGE_NUGET_PUBLISHER_VERSION }}
