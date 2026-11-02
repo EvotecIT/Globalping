@@ -11,9 +11,13 @@ in `Module/Build/Build-Module.ps1`.
 
 This configuration uses the commands introduced by
 [PSPublishModule #1214](https://github.com/EvotecIT/PSPublishModule/pull/1214).
-The caller pins the merged workflow commit. Set the repository variable
+The caller pins the merged publishing-action commit. Set the repository variable
 `POWERFORGE_NUGET_PUBLISHER_VERSION` to a published three-part PowerForge.Build
 version containing the new commands, and install that same version locally.
+
+The publishing job stays in this repository's `publish-nuget.yml` and invokes the
+shared PowerForge composite action as a step. nuget.org rejects OIDC identities
+from a cross-repository reusable workflow, even when its caller matches the policy.
 
 Install that same tool version locally:
 
@@ -60,13 +64,19 @@ and [certificate registration rules](https://learn.microsoft.com/nuget/nuget-org
 
 ## Pilot run
 
-Use committed source from `master` after the shared publisher and this
-configuration are available. The library version is prepared as `1.0.3`:
-`v1.0.2` already exists as a GitHub release tag, while the latest observed NuGet
-version is `1.0.1`. Check both destinations again before selecting a new version.
-Commit any version change before staging so the tag and manifest name the
-intended source commit. `UpdateVersions: false` keeps staging on the committed
-project version.
+Use committed source from `master` containing the final composite-action pin.
+The project version determines the release tag. Before staging, check that the
+version is absent from NuGet and its tag is unused on GitHub. Commit any version
+change before staging so the tag and manifest name the intended source commit.
+`UpdateVersions: false` keeps staging on the committed project version.
+
+A workflow correction merged into `master` does not update an existing release
+tag. Rerunning that tag still executes its original caller. For a failed pilot
+with **no package accepted by NuGet**, recovery can retain the same version only
+by preserving its diagnostic assets, confirming registry absence, and replacing
+that failed GitHub release/tag under the release owner's authority before staging
+corrected source. Once NuGet accepts a version, preserve its tag and assets;
+changes requiring a different source commit need a new version.
 
 ```powershell
 # From the repository root, with the USB token available:
@@ -87,7 +97,9 @@ configured. Confirm the registry readback and the resulting Globalping version
 on nuget.org. OIDC login, real USB signing, publishing and symbol ingestion need
 this live pilot.
 
-For a retry, manually run **Publish NuGet** with the same **published release
-tag** selected. A dispatch on `master` is rejected. An existing package counts
+For an ordinary publication retry, manually run **Publish NuGet** with the same
+**published release tag** selected. This requires the tag to already contain the
+corrected composite-action caller; it cannot repair an earlier tag's workflow.
+A dispatch on `master` is rejected. An existing package counts
 as success only when its id, version and author signer match the manifest;
 nuget.org adds its repository signature, so the published bytes can differ.

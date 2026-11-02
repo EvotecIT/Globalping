@@ -10,12 +10,21 @@ permissions:
   actions: read
   id-token: write
 
+concurrency:
+  group: nuget-publish-${{ github.repository }}
+  cancel-in-progress: false
+  queue: max
+
 jobs:
   nuget:
-    uses: EvotecIT/PSPublishModule/.github/workflows/powerforge-nuget-publish.yml@05b52c81b4ed5191d12329be527a3bcae2c031b8
-    with:
-      environment-name: nuget-release
-      release-tag-prefix: v
-      nuget-user: ${{ vars.NUGET_PUBLISHING_USER }}
-      author-fingerprints: D13C03BFEEC0CBF7FD0E0E7FFAF3F3D2076E62B1AF64665E806917B9191CFFDE
-      powerforge-version: ${{ vars.POWERFORGE_NUGET_PUBLISHER_VERSION }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: nuget-release
+    steps:
+      - uses: EvotecIT/PSPublishModule/.github/actions/nuget-publish@b9ea0ad21cac340b0521aa8e6567845484b48ab9
+        with:
+          environment-name: nuget-release
+          release-tag-prefix: v
+          nuget-user: ${{ vars.NUGET_PUBLISHING_USER }}
+          author-fingerprints: D13C03BFEEC0CBF7FD0E0E7FFAF3F3D2076E62B1AF64665E806917B9191CFFDE
+          powerforge-version: ${{ vars.POWERFORGE_NUGET_PUBLISHER_VERSION }}
