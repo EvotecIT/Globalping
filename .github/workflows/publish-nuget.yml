@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   nuget:
-    uses: EvotecIT/PSPublishModule/.github/workflows/powerforge-nuget-publish.yml@5585c15368418de8cc078a83cd333757af7e3a6a
+    uses: EvotecIT/PSPublishModule/.github/workflows/powerforge-nuget-publish.yml@05b52c81b4ed5191d12329be527a3bcae2c031b8
     with:
       environment-name: nuget-release
       release-tag-prefix: v

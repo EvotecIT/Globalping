@@ -11,11 +11,9 @@ in `Module/Build/Build-Module.ps1`.
 
 This configuration uses the commands introduced by
 [PSPublishModule #1214](https://github.com/EvotecIT/PSPublishModule/pull/1214).
-Before using it, merge that change and publish PowerForge.Build containing the
-new commands. Set the repository variable `POWERFORGE_NUGET_PUBLISHER_VERSION`
-to that published three-part version. Update the caller's reusable workflow pin
-to the final reviewed full commit SHA containing the change. The current pin
-identifies the source candidate; it does not establish a published tool version.
+The caller pins the merged workflow commit. Set the repository variable
+`POWERFORGE_NUGET_PUBLISHER_VERSION` to a published three-part PowerForge.Build
+version containing the new commands, and install that same version locally.
 
 Install that same tool version locally:
 

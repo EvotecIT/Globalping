@@ -20,7 +20,6 @@ Globalping is available as a NuGet package from [NuGet](https://www.nuget.org/pa
 [![powershell tests](https://github.com/EvotecIT/Globalping/actions/workflows/test-powershell-module.yml/badge.svg)](https://github.com/EvotecIT/Globalping/actions/workflows/test-powershell-module.yml)
 [![top language](https://img.shields.io/github/languages/top/evotecit/Globalping.svg)](https://github.com/EvotecIT/Globalping)
 [![code size](https://img.shields.io/github/languages/code-size/evotecit/Globalping.svg)](https://github.com/EvotecIT/Globalping)
-[![codecov](https://codecov.io/gh/EvotecIT/Globalping/branch/main/graph/badge.svg)](https://codecov.io/gh/EvotecIT/Globalping)
 [![license](https://img.shields.io/github/license/EvotecIT/Globalping.svg)](https://github.com/EvotecIT/Globalping)
 
 👨‍💻 Author & Social
