@@ -373,3 +373,6 @@ build/*
 /dotnet-install.sh
 /packages-microsoft-prod.deb
 coverage_report/
+
+# Signed NuGet assets staged for a draft release
+/Artefacts/

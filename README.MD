@@ -20,7 +20,6 @@ Globalping is available as a NuGet package from [NuGet](https://www.nuget.org/pa
 [![powershell tests](https://github.com/EvotecIT/Globalping/actions/workflows/test-powershell-module.yml/badge.svg)](https://github.com/EvotecIT/Globalping/actions/workflows/test-powershell-module.yml)
 [![top language](https://img.shields.io/github/languages/top/evotecit/Globalping.svg)](https://github.com/EvotecIT/Globalping)
 [![code size](https://img.shields.io/github/languages/code-size/evotecit/Globalping.svg)](https://github.com/EvotecIT/Globalping)
-[![codecov](https://codecov.io/gh/EvotecIT/Globalping/branch/main/graph/badge.svg)](https://codecov.io/gh/EvotecIT/Globalping)
 [![license](https://img.shields.io/github/license/EvotecIT/Globalping.svg)](https://github.com/EvotecIT/Globalping)
 
 👨‍💻 Author & Social
@@ -203,3 +202,8 @@ property. When the service returns values such as `X-RateLimit-Limit` or
 value to `GetMeasurementByIdAsync` or `GetMeasurementById`. When the API returns
 `304 Not Modified` the previously retrieved measurement data is reused and parsing
 is skipped.
+
+## Releasing the library
+
+The NuGet library uses local USB signing and GitHub trusted publishing.
+See [NuGet publishing](Docs/NuGetPublishing.md) for setup, draft staging and retries.
