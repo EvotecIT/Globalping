@@ -21,7 +21,7 @@ jobs:
     timeout-minutes: 30
     environment: nuget-release
     steps:
-      - uses: EvotecIT/PSPublishModule/.github/actions/nuget-publish@b9ea0ad21cac340b0521aa8e6567845484b48ab9
+      - uses: EvotecIT/PSPublishModule/.github/actions/nuget-publish@aec585cfb464390aa7727fa908050caf2e6ed663
         with:
           environment-name: nuget-release
           release-tag-prefix: v
